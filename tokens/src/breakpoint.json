@@ -1,0 +1,20 @@
+{
+  "breakpoint": {
+    "sm": {
+      "value": "48em",
+      "description": "768px, portrait mode tablets"
+    },
+    "md": {
+      "value": "64em",
+      "description": "1024px, landscape mode tablets and small laptop screens"
+    },
+    "lg": {
+      "value": "80em",
+      "description": "1280px, medium laptop screens and small desktop screens"
+    },
+    "xl": {
+      "value": "90em",
+      "description": "1440px, large laptop screens and medium desktop screens"
+    }
+  }
+}

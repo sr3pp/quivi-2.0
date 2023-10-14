@@ -1,0 +1,27 @@
+{
+  "color": {
+    "hover-background": { "value": "#CDF0EA" },
+    "active-background": { "value": "#FAF4B7" },
+    "active-color": { "value": "#F6C6EA" },
+    "text-color": { "value": "#332F2E" },
+    "white": { "value": "#F9F9F9" },
+    "black": { "value": "#332F2E" },
+    "dark-gray": { "value": "#636b6f" },
+    "system": {
+      "error": { "value": "#bf5329" },
+      "success": { "value": "#2ab27b" },
+      "warning": { "value": "#cbb956" }
+    },
+    "quivi": {
+      "gray": { "value": "#727176" },
+      "light-gray": { "value": "#9A999E" },
+      "dark-gray": { "value": "#5B5B5F" },
+      "darkest-gray": { "value": "#444242" },
+      "red": { "value": "#C54643" },
+      "light-red": { "value": "#F22435" },
+      "dark-red": { "value": "#921F1D" },
+      "darkest-red": { "value": "#38060E" },
+      "green": { "value": "#1C8741" }
+    }
+  }
+}

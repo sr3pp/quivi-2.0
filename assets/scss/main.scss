@@ -1,0 +1,29 @@
+body {
+  overflow-x: hidden;
+  margin: 0;
+  font-family: Inria, sans-serif;
+  color: $color-text-color;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+ul,
+ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+fieldset {
+  border: none;
+}
+
+p {
+  margin: 0;
+}

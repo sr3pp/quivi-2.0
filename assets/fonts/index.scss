@@ -1,0 +1,33 @@
+@font-face {
+  font-family: Bebas;
+  src: local("Bebas Bold"), local("BebasNeue-Bold"),
+    url(./bebas/BebasNeue_Bold.woff);
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: Bebas;
+  src: local("Bebas Regular"), local("BebasNeue-Regular"),
+    url(./bebas/BebasNeue-Regular.woff);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Inria;
+  src: local("Inria Regular"), local("InriaSans-Regular"),
+    url(./inria/InriaSans-Regular.woff);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Inria;
+  src: local("Inria Bold"), local("InriaSans-Bold"),
+    url(./inria/InriaSans-Bold.woff);
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: FrontPageNews;
+  src: local("FrontPageNews"), local("FrontPageNews"), url(./FrontPageNews.woff);
+  font-weight: bold;
+}
