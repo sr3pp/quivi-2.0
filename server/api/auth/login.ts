@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
-import { User } from "~/types/index";
 import { User as UserModel } from "~/server/Models";
 
 const { public: config } = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  const { email, password }: User = await readBody(event);
+  const { email, password } = await readBody(event);
 
   if (!email || !password) {
     event.node.res.statusCode = 400;
@@ -13,14 +12,18 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const user: User | null = await UserModel.findOne({ email: email });
+    const user: any = await UserModel.findOne(
+      { email: email },
+      { password: 1 },
+    );
     if (!user) {
       throw createError({
         statusCode: 404,
         statusMessage: "User with given email does not exists",
       });
     }
-    const validate_pass = await user.verifyPasswordSync(password as string);
+
+    const validate_pass = await user.verifyPasswordSync(password);
 
     if (validate_pass) {
       const { secret } = config.jwt as { secret: string };

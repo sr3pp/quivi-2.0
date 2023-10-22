@@ -3,6 +3,7 @@ export const colorActiveBackground = "#FAF4B7";
 export const colorActiveColor = "#F6C6EA";
 export const colorTextColor = "#332F2E";
 export const colorWhite = "#F9F9F9";
+export const colorNearWhite = "#E7E7E7";
 export const colorBlack = "#332F2E";
 export const colorDarkGray = "#636b6f";
 export const colorSystemError = "#bf5329";

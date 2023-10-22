@@ -9,8 +9,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "tokenize": "ts-node --esm tokens/index",
-    "lintfix": "eslint --ext .js,.ts,.vue --fix",
+    "lint": "eslint --ext .js,.ts,.vue --fix",
     "prettify": "prettier --write .",
+    "lintfix": "npm run lint && npm run prettify",
     "test": "vitest"
   },
   "devDependencies": {
@@ -23,18 +24,23 @@
     "eslint-plugin-prettier": "^5.0.1",
     "jsdom": "^22.1.0",
     "nuxt": "^3.7.4",
+    "playwright-core": "^1.39.0",
     "prettier": "^3.0.3",
     "vitest": "^0.33.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@typescript-eslint/parser": "^6.8.0",
     "@vue/test-utils": "^2.4.1",
+    "eslint-plugin-vue": "^9.17.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.2",
     "mongoose-bcrypt": "^1.11.0",
+    "nuxt-swiper": "^1.2.2",
     "pug": "^3.0.2",
     "sass": "^1.69.3",
-    "sr-content": "^0.0.191"
+    "sr-content": "^0.0.191",
+    "vue-eslint-parser": "^9.3.2"
   }
 }

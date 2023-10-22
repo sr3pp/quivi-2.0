@@ -1,3 +1,5 @@
 import User from "./User";
+import Product from "./Product";
+import Sale from "./Sale";
 
-export { User };
+export { User, Product, Sale };

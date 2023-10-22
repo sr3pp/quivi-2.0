@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    pageTransition: { name: "page", mode: "out-in" },
+  },
   runtimeConfig: {
     public: {
       jwt: {
@@ -15,23 +18,12 @@ export default defineNuxtConfig({
     global: true,
     dirs: ["~/components"],
   },
-  modules: [
-    "sr-content",
-    [
-      "@nuxtjs/eslint-module",
-      {
-        fix: true,
-        cache: false,
-        include: ["/**/*.{js,jsx,ts,tsx,vue}"],
-        extends: ["plugin:prettier/recommended"],
-        plugins: ["prettier"],
-        rules: {
-          "prettier/prettier": "error",
-        },
-      },
-    ],
+  modules: ["sr-content", "@nuxtjs/eslint-module", "nuxt-swiper"],
+  css: [
+    "@/assets/scss/main.scss",
+    "@/assets/scss/transitions/index.scss",
+    "@/assets/scss/components.scss",
   ],
-  css: ["@/assets/scss/main.scss"],
   nitro: {
     plugins: ["@/server/DB.ts"],
   },
@@ -46,6 +38,11 @@ export default defineNuxtConfig({
           `,
         },
       },
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: ["sr-content"],
     },
   },
 });

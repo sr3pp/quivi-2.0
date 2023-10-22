@@ -1,0 +1,14 @@
+{
+  "prettier.bracketSameLine": false,
+  "prettier.useEditorConfig": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.vueIndentScriptAndStyle": true,
+  "prettier.useTabs": true,
+  "scss.lint.emptyRules": "ignore",
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

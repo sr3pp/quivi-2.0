@@ -5,6 +5,7 @@
     "active-color": { "value": "#F6C6EA" },
     "text-color": { "value": "#332F2E" },
     "white": { "value": "#F9F9F9" },
+    "near-white": { "value": "#E7E7E7" },
     "black": { "value": "#332F2E" },
     "dark-gray": { "value": "#636b6f" },
     "system": {

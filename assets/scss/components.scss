@@ -1,0 +1,16 @@
+.sr-container,
+.sr-text {
+  position: relative;
+
+  &.kind {
+    &-subtitle {
+      font-family: Bebas;
+      font-size: unit(22);
+    }
+
+    &-title {
+      font-family: Bebas;
+      font-size: unit(36) !important;
+    }
+  }
+}
