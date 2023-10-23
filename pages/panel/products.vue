@@ -16,9 +16,7 @@ const uploading: Ref<boolean> = ref(false);
 const handleFileUpload = async (e: Event) => {
   console.log("handleFileUpload");
   uploading.value = true;
-  setTimeout(() => {
-    uploading.value = false;
-  }, 3000);
+
   const target = e.target as HTMLInputElement;
   const files = target.files ? target.files : [];
   const file = files[0];
@@ -30,6 +28,8 @@ const handleFileUpload = async (e: Event) => {
       method: "POST",
       body: formData,
     });
+
+    uploading.value = false;
   }
 };
 </script>

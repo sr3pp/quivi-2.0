@@ -2,9 +2,9 @@ import { colorDarkGray } from '~/assets/ts/tokens';
 <template lang="pug">
 nav.quivi-navbar
   SrContainer
-    NuxtLink(to="/")
-      SrImg(src="https://picsum.photos/180/100" alt="Comercializadora Quivi Logo" width="180" height="100")
-    SearchBar
+    NuxtLink.logo(to="/")
+      SrImg(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
+    SearchBar(endpoint="/api/product/search")
     ul.quivi-navbar-list
       li.quivi-navbar-list-item
         a(href="tel:5555555555") 5555555555
@@ -38,6 +38,8 @@ const loginSw = useState("loginSw", () => false);
 
 <style lang="scss" scoped>
 .quivi-navbar {
+  padding-top: unit(10);
+  padding-bottom: unit(10);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -52,9 +54,11 @@ const loginSw = useState("loginSw", () => false);
     }
   }
 
-  .sr-img {
+  .logo {
     width: 20%;
     min-width: unit(180);
+    margin: 0 !important;
+    padding-right: unit(20);
   }
 
   .quivi-searchbar {
@@ -68,7 +72,7 @@ const loginSw = useState("loginSw", () => false);
     display: flex;
     align-items: center;
     margin-left: auto;
-    margin-bottom: unit(-40);
+    margin-bottom: unit(-50);
     padding-left: unit(20);
     padding-right: unit(20);
   }

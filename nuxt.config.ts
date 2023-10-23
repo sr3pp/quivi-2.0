@@ -2,6 +2,9 @@
 export default defineNuxtConfig({
   app: {
     pageTransition: { name: "page", mode: "out-in" },
+    head: {
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
   },
   runtimeConfig: {
     public: {
@@ -18,7 +21,12 @@ export default defineNuxtConfig({
     global: true,
     dirs: ["~/components"],
   },
-  modules: ["sr-content", "@nuxtjs/eslint-module", "nuxt-swiper"],
+  modules: [
+    "sr-content",
+    "@nuxtjs/eslint-module",
+    "nuxt-swiper",
+    "@vueuse/nuxt",
+  ],
   css: [
     "@/assets/scss/main.scss",
     "@/assets/scss/transitions/index.scss",

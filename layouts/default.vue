@@ -16,7 +16,8 @@ main.default-layout
     template(#body)
       .sr-modal-body
         Login
-  Cart(:active="cartSwitch" @close="cartSwitch = false")
+  ClientOnly
+    Cart(:active="cartSwitch" @close="cartSwitch = false")
   Footer
 </template>
 

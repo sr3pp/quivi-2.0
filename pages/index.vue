@@ -7,13 +7,28 @@
         .sr-grid-col-1(class="sr-grid-col-4/5 column")
             SrText(value="Envios gratis en compras superiores a" kind="subtitle")
             SrGrid(tag="ul")
-                li.sr-grid-col-1(class="sr-grid-col-1/4")
-                    ProductCard
+                li.sr-grid-col-1(class="sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
+                    ProductCard(:product="product")
 
 </template>
 
 <script lang="ts" setup>
 const { data: content } = await useFetch("/api/content?page=index");
+const { data: products } = await useFetch("/api/product");
+
+const route = useRoute();
+const { search } = route.query;
+
+if (search) {
+  console.log("filter prodcts by search");
+}
+
+watch(
+  () => route.query,
+  ({ search }) => {
+    console.log("New query:", search);
+  },
+);
 </script>
 
 <style lang="scss" scoped>

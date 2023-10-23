@@ -1,7 +1,8 @@
 <template lang="pug">
 Swiper.product-slider(
   :modules="[SwiperAutoplay, SwiperEffectCreative]"
-  :slides-per-view="options.perPage"
+  :slidesPerView="options.slidesPerView"
+  :spaceBetween="options.spaceBetween"
   :loop="options.loop"
   :effect="options.effect"
   :autoplay="options.autoplay"
@@ -23,9 +24,10 @@ const props = defineProps({
     required: true,
     default: () => ({
       creative: {},
-      autoplay: {},
+      autoplay: false,
       loop: false,
-      perPage: 3,
+      slidesPerView: 3,
+      spaceBetween: 20,
       effect: "creative",
     }),
   },
@@ -37,24 +39,9 @@ const { data: slides } = await useFetch(props.slidesEndpoint as string);
 <style lang="scss">
 .product-slider {
   width: 100%;
-  position: relative;
 
   &-slide {
     overflow: hidden;
-
-    .sr-container {
-      position: relative;
-      height: 100%;
-    }
-
-    .sr-text {
-      &.kind {
-        &-title {
-          font-size: unit(40);
-          margin-bottom: unit(40);
-        }
-      }
-    }
   }
 }
 </style>

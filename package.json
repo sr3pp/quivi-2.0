@@ -19,6 +19,8 @@
     "@nuxt/test-utils": "^3.7.4",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@types/jsonwebtoken": "^9.0.3",
+    "@vueuse/core": "^10.5.0",
+    "@vueuse/nuxt": "^10.5.0",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
@@ -39,6 +41,7 @@
     "mongoose-bcrypt": "^1.11.0",
     "nuxt-swiper": "^1.2.2",
     "pug": "^3.0.2",
+    "read-excel-file": "^5.7.1",
     "sass": "^1.69.3",
     "sr-content": "^0.0.191",
     "vue-eslint-parser": "^9.3.2"

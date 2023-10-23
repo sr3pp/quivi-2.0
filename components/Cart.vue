@@ -3,16 +3,37 @@
     .quivi-cart-content
         button.quivi-cart-close(:class="{ active }" @click="closeCart") X
         SrText(value="Carrito" kind="title")  
+        button(@click="emptyCart()") Vaciar carrito
+        ul.quivi-cart-products 
+          li.quivi-cart-product(v-for="(product, i) in cart.products" :key="i")
+            button(@click="removeProduct(product)")
+              SrIcon(value="trash-o")
+            SrImg(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
+            .quivi-cart-product-info
+              SrText(:value="product.name" kind="subtitle")
+              SrText(:value="product.brand.name")
+              SrText(:value="product.web")
+              SrText(:value="toPrice(product.price)" kind="price")
+
+        SrText(:value="`Total: ${toPrice(cart.total)}`" kind="title")
     .quivi-cart-backdrop(@click="closeCart")
 </template>
 
 <script lang="ts" setup>
+import { toPrice } from "~/assets/ts/utilities";
+
 const props = defineProps({
   active: {
     type: Boolean,
     default: false,
   },
 });
+
+const cart = useLocalStorage("cart", {
+  products: [],
+  total: 0,
+});
+
 const emit = defineEmits(["close"]);
 const activeDone = ref(false);
 const closeCart = () => {
@@ -21,6 +42,25 @@ const closeCart = () => {
     emit("close");
   }, 350);
 };
+
+const setTotal = () => {
+  let total = 0;
+  cart.value.products.forEach((product: any) => {
+    total += product.price;
+  });
+  cart.value.total = total;
+};
+
+const removeProduct = (idx: number) => {
+  cart.value.products.splice(idx, 1);
+  setTotal();
+};
+
+const emptyCart = () => {
+  cart.value.products = [];
+  setTotal();
+};
+
 watch(
   () => props.active,
   (value) => {
@@ -31,6 +71,15 @@ watch(
     }
   },
 );
+
+watch(
+  () => cart.value.products,
+  (value) => {
+    setTotal();
+  },
+);
+
+setTotal();
 </script>
 
 <style lang="scss" scoped>
@@ -86,7 +135,7 @@ watch(
     backdrop-filter: blur(unit(4));
     transition: opacity 0.3s ease-in-out;
   }
-  .quivi-cart-close {
+  &-close {
     position: absolute;
     top: unit(20);
     left: 0;
@@ -104,6 +153,17 @@ watch(
     height: unit(30);
     transform: translateX(0);
     transition: transform 0.35s ease;
+  }
+
+  &-product {
+    display: flex;
+    padding-top: unit(10);
+    padding-bottom: unit(10);
+    .sr-img {
+      width: unit(100);
+      height: unit(100);
+      margin-right: unit(20);
+    }
   }
 }
 </style>

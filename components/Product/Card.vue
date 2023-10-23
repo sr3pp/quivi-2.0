@@ -7,7 +7,7 @@
         SrText.sae(:value="`Clave: ${product.sae}`")
         SrText(:value="toPrice(product.price)" kind="title")
     .quivi-product-card-footer
-        Button(:href="`/producto/${product.sku}`" label="Ver Mas")
+        Button(:href="`/producto/${product.web}`" label="Ver Mas")
         Tooltip
             SrText(:value="product.extra")
                 
@@ -23,7 +23,7 @@ defineProps({
     type: Object as () => Product,
     default: (): Product => ({
       name: "Preview",
-      sku: "prev32394",
+      web: "prev32394",
       sae: "nononoSae",
       qty: 10,
       priority: 1,
@@ -36,8 +36,9 @@ defineProps({
       description: "Lorem simpsum",
       extra: "producto en promocion",
       meassure_unity: "kg",
-      hightlight: false,
       line: "",
+      discount: 0,
+      years: [],
       category: {},
       subcategory: {},
       car_brands: [],
