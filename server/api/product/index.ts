@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
     startIndex,
     endIndex,
     page,
-    pages: Math.ceil(total / limit),
+    pages: Math.ceil(total / perPage),
   };
   return {
     products,

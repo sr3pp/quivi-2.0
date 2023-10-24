@@ -8,7 +8,6 @@ export const searchHandler = async (
   perPage: number,
 ) => {
   const startIndex = getStartIndex(page, limit);
-  const endIndex = startIndex + limit - 1;
 
   const query = {
     $or: [
@@ -23,14 +22,20 @@ export const searchHandler = async (
     .limit(perPage);
 
   const total = await Product.countDocuments(query);
+  const pages = Math.ceil(Number(total) / perPage);
+
+  const _endIdx = startIndex + limit - 1;
+
+  const endIndex = _endIdx > pages ? pages - 1 : _endIdx;
 
   const pagination = {
     limit,
     startIndex,
     endIndex,
     page,
-    pages: Math.ceil(Number(total) / limit),
+    pages,
   };
+
   return {
     products,
     pagination,
