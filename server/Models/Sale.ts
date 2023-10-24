@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
+import Bill from "./Bill";
+import Product from "./Product";
 
 const schema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: Product }],
     order_no: { type: String, required: true, unique: true },
     sae_order: { type: String, required: true, unique: true },
     status: { type: Boolean, required: true, default: false },
@@ -26,7 +28,7 @@ const schema = new mongoose.Schema(
     total: { type: Number, required: true, default: 0 },
     bill: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Bill",
+      ref: Bill,
       default: null,
       required: false,
     },

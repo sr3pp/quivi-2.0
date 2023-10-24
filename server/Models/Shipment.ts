@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
+import Sale from "./Sale";
 
 const schema = new mongoose.Schema(
   {
-    sale: { type: mongoose.Schema.Types.ObjectId, ref: "Sale" },
+    sale: { type: mongoose.Schema.Types.ObjectId, ref: Sale },
     tracking: { type: String, required: true, unique: true },
     status: {
       type: String,
