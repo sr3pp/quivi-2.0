@@ -4,7 +4,7 @@ nav.quivi-navbar
   SrContainer
     NuxtLink.logo(to="/")
       SrImg(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
-    SearchBar(endpoint="/api/product/search")
+    SearchBar(endpoint="/api/product/search?perPage=5")
     ul.quivi-navbar-list
       li.quivi-navbar-list-item
         a(href="tel:5555555555") 5555555555

@@ -58,7 +58,7 @@ const runSearch = async () => {
       signal,
     });
 
-    results.value = _results.value;
+    results.value = _results.value.products;
 
     emit("search", _results);
   }
@@ -74,6 +74,14 @@ const route = useRoute();
 
 watch(
   () => route.path,
+  () => {
+    results.value = [];
+    search.value = "";
+  },
+);
+
+watch(
+  () => route.query,
   () => {
     results.value = [];
     search.value = "";
