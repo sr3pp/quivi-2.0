@@ -18,18 +18,40 @@ const route = useRoute();
 const { search, page = 1 } = route.query;
 
 const { data: content } = await useFetch("/api/content?page=index");
-const { data } = await useFetch("/api/product?page=" + page);
 
-const { products, pagination }: any = data.value;
+const products = ref([]);
+const pagination = ref({});
+
+const fetchProducts = async (goTo: string) => {
+  const { data }: any = await useFetch("/api/product?page=" + goTo);
+  products.value = data.value?.products;
+  pagination.value = data.value?.pagination;
+};
+
+const searchProducts = async (term: string, goTo: string) => {
+  const { data }: any = await useFetch("/api/product/search?page=" + goTo, {
+    method: "POST",
+    body: JSON.stringify({ search: term }),
+  });
+
+  products.value = data.value?.products;
+  pagination.value = data.value?.pagination;
+};
 
 if (search) {
-  console.log("filter prodcts by search");
+  searchProducts(search as string, page as string);
+} else {
+  fetchProducts(page as string);
 }
 
 watch(
   () => route.query,
-  ({ search }) => {
-    console.log("New query:", search);
+  async ({ search, page }) => {
+    if (page) {
+      fetchProducts(page as string);
+    } else if (search) {
+      searchProducts(search as string, page ? (page as string) : "1");
+    }
   },
 );
 </script>

@@ -47,6 +47,15 @@ const range = (start: number, stop: number, step: number = 1) =>
 
   &-item {
     display: flex;
+
+    &.current {
+      background-color: $color-quivi-red;
+      color: $color-white;
+      border-radius: unit(8);
+      a {
+        color: currentColor;
+      }
+    }
   }
 
   &-detail {
