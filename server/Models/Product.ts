@@ -1,5 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import { Product } from "~/types";
+import ProductBrand from "./ProductBrand";
+import Category from "./Category";
+import Subcategory from "./Subcategory";
+import CarBrand from "./CarBrand";
+import CarModel from "./CarModel";
+import Segment from "./Segment";
+import Motor from "./Motor";
 
 const schema: Schema<Product> = new mongoose.Schema(
   {
@@ -14,14 +21,14 @@ const schema: Schema<Product> = new mongoose.Schema(
     extra: { type: String, default: "" },
     meassure_unity: { type: String, default: "" },
     line: { type: String, default: "" },
-    category: { type: Schema.Types.ObjectId, ref: "Category" },
-    subcategory: { type: Schema.Types.ObjectId, ref: "Subcategory" },
+    category: { type: Schema.Types.ObjectId, ref: Category },
+    subcategory: { type: Schema.Types.ObjectId, ref: Subcategory },
     years: { type: [Number], default: [] },
-    car_brands: [{ type: Schema.Types.ObjectId, ref: "CarBrand" }],
-    brand: { type: Schema.Types.ObjectId, ref: "ProductBrand" },
-    models: [{ type: Schema.Types.ObjectId, ref: "CarModel" }],
-    segment: { type: Schema.Types.ObjectId, ref: "Segment" },
-    motors: [{ type: Schema.Types.ObjectId, ref: "Motor" }],
+    car_brands: [{ type: Schema.Types.ObjectId, ref: CarBrand }],
+    brand: { type: Schema.Types.ObjectId, ref: ProductBrand },
+    models: [{ type: Schema.Types.ObjectId, ref: CarModel }],
+    segment: { type: Schema.Types.ObjectId, ref: Segment },
+    motors: [{ type: Schema.Types.ObjectId, ref: Motor }],
   },
   { timestamps: true, strict: true, strictQuery: true },
 );

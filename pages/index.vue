@@ -2,56 +2,53 @@
 .store
     SrGrid
         .sr-grid-col-1(class="sr-grid-col-1/5 column store-filters")
-            SrText(value="Encuentra lo que necesitas." kind="subtitle")
-            ProductFilters
+          SrText(value="Encuentra lo que necesitas." kind="subtitle")
+          ProductFilters
         .sr-grid-col-1(class="sr-grid-col-4/5 column")
-            SrText(value="Envios gratis en compras superiores a" kind="subtitle")
-            SrGrid(tag="ul")
-                li.sr-grid-col-1(class="sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
-                    ProductCard(:product="product")
-            Pagination(:pagination="pagination")
+          SrText(value="Envios gratis en compras superiores a" kind="subtitle")
+          .search-label(v-if="search")
+              SrText(value="Resultados de la busqueda" kind="subtitle")
+              Button(href="/" label="Ver todos los productos")
+          SrGrid(tag="ul")
+              li.sr-grid-col-1(class="sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
+                ProductCard(:product="product")
+          Pagination(:pagination="pagination")
 
 </template>
 
 <script lang="ts" setup>
 const route = useRoute();
-const { search, page = 1 } = route.query;
+const { search: _search, page = 1 } = route.query;
+
+const search = ref(_search as string);
 
 const { data: content } = await useFetch("/api/content?page=index");
 
 const products = ref([]);
 const pagination = ref({});
 
-const fetchProducts = async (goTo: string) => {
-  const { data }: any = await useFetch("/api/product?page=" + goTo);
+const fetchProducts = async (goTo: string, search: string) => {
+  const query: any = {
+    page: goTo,
+    search,
+  };
+  const { data }: any = await useFetch(
+    `/api/product${Object.keys(query).length ? "?" : ""}${Object.keys(query)
+      .map((key: string) => (query[key] ? `${key}=${query[key]}` : ""))
+      .filter(Boolean)
+      .join("&")}`,
+  );
   products.value = data.value?.products;
   pagination.value = data.value?.pagination;
 };
 
-const searchProducts = async (term: string, goTo: string) => {
-  const { data }: any = await useFetch("/api/product/search?page=" + goTo, {
-    method: "POST",
-    body: JSON.stringify({ search: term }),
-  });
-
-  products.value = data.value?.products;
-  pagination.value = data.value?.pagination;
-};
-
-if (search) {
-  searchProducts(search as string, page as string);
-} else {
-  fetchProducts(page as string);
-}
+fetchProducts(page as string, search.value as string);
 
 watch(
   () => route.query,
-  async ({ search, page }) => {
-    if (page) {
-      fetchProducts(page as string);
-    } else if (search) {
-      searchProducts(search as string, page ? (page as string) : "1");
-    }
+  async ({ search: _search, page }) => {
+    fetchProducts(page as string, _search as string);
+    search.value = _search as string;
   },
 );
 </script>
@@ -63,6 +60,17 @@ watch(
     margin: 0;
     > * {
       padding-top: unit(40);
+    }
+  }
+
+  .search-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: unit(20);
+
+    .quivi-button {
+      margin-right: unit(20);
     }
   }
 
