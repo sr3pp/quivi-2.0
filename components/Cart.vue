@@ -1,21 +1,23 @@
 <template lang="pug">
 .quivi-cart(:class="{ active, 'active-done': activeDone }")
     .quivi-cart-content
+      .quivi-cart-header
         button.quivi-cart-close(:class="{ active }" @click="closeCart") X
         SrText(value="Carrito" kind="title")  
-        button(@click="emptyCart()") Vaciar carrito
-        ul.quivi-cart-products 
-          li.quivi-cart-product(v-for="(product, i) in cart.products" :key="i")
-            button(@click="removeProduct(product)")
-              SrIcon(value="trash-o")
-            SrImg(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
-            .quivi-cart-product-info
-              SrText(:value="product.name" kind="subtitle")
-              SrText(:value="product.brand.name")
-              SrText(:value="product.web")
-              SrText(:value="toPrice(product.price)" kind="price")
+        button.quivi-cart-empty(@click="emptyCart()") Vaciar carrito
+      ul.quivi-cart-products 
+        li.quivi-cart-product(v-for="(product, i) in cart.products" :key="i")
+          SrImg(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
+          .quivi-cart-product-info
+            SrText(:value="product.name" kind="subtitle")
+            SrText(:value="product.brand.name")
+            SrText(:value="product.web")
+            SrFormInput(:value="product.qty" type="number" @change="setTotal" @input="product.qty = $event.target.value" :min="1" :max="100")
+            SrText(:value="toPrice(product.price)" kind="price")
+          button(@click="removeProduct(product)")
+            SrIcon(value="trash-o")
 
-        SrText(:value="`Total: ${toPrice(cart.total)}`" kind="title")
+      SrText(:value="`Total: ${toPrice(cart.total)}`" kind="title")
     .quivi-cart-backdrop(@click="closeCart")
 </template>
 
@@ -46,7 +48,7 @@ const closeCart = () => {
 const setTotal = () => {
   let total = 0;
   cart.value.products.forEach((product: any) => {
-    total += product.price;
+    total += product.price * product.qty;
   });
   cart.value.total = total;
 };
@@ -157,12 +159,48 @@ setTotal();
 
   &-product {
     display: flex;
+    align-items: center;
     padding-top: unit(10);
     padding-bottom: unit(10);
+    > button {
+      width: unit(40);
+      height: unit(40);
+      background: none;
+      border: none;
+      padding: 0;
+      margin-bottom: auto;
+
+      .sr-icon {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .sr-input {
+      width: 100%;
+    }
     .sr-img {
       width: unit(100);
       height: unit(100);
+      flex-shrink: 0;
       margin-right: unit(20);
+    }
+
+    &-info {
+      width: 100%;
+    }
+  }
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: unit(20);
+
+    .quivi-cart-empty {
+      background: none;
+      color: $color-quivi-light-red;
+      border: none;
     }
   }
 }

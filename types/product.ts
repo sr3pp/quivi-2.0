@@ -5,7 +5,7 @@ export interface Product {
   name: string | { type: StringConstructor; required: true };
   web: string | { type: StringConstructor; required: true };
   sae: string | { type: StringConstructor; required: true };
-  qty: number | { type: NumberConstructor; required: true };
+  qty?: number | { type: NumberConstructor; required: true };
   priority: number | { type: NumberConstructor; required: true };
   price: number | { type: NumberConstructor; required: true };
   discount: number | { type: NumberConstructor; default: number };

@@ -18,6 +18,7 @@ main.default-layout
         Login
   ClientOnly
     Cart(:active="cartSwitch" @close="cartSwitch = false")
+    NotificationStack
   Footer
 </template>
 

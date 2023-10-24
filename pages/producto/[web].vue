@@ -37,7 +37,9 @@ import { toPrice } from "~/assets/ts/utilities";
 
 const { params } = useRoute();
 const { web } = params;
-const { data: product } = await useFetch(`/api/product/${web}`);
+const { data: product }: any = await useFetch(`/api/product/${web}`);
+
+const notifications: any = useState("notifications", () => []);
 
 const detailExcludes = [
   "discount",
@@ -59,7 +61,22 @@ const cart = useLocalStorage("cart", {
 } as any);
 
 const addToCart = () => {
-  cart.value.products.push(product.value);
+  const productExists = cart.value.products.find(
+    (p: any) => p.web === product.value.web,
+  );
+
+  if (productExists) {
+    productExists.qty++;
+  } else {
+    product.value.qty = 1;
+    cart.value.products.push(product.value);
+  }
+
+  notifications.value.push({
+    title: "Producto agregado",
+    description: `El producto <b>${product.value.name}</b> se ha agregado al carrito`,
+    status: true,
+  });
 };
 
 const sliderOptions = {

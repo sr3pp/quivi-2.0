@@ -14,6 +14,8 @@ nav.quivi-navbar
           span Contacto
       li.quivi-navbar-list-item
         button(@click="cartSwitch = true")
+          ClientOnly
+            span(v-if="productsLength") {{ productsLength }}
           SrIcon(value="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
@@ -34,6 +36,20 @@ const { data: navigation } = await useFetch("/api/content/navigation");
 const contactModal = useState("contactModal", () => false);
 const cartSwitch = useState("cartSwitch", () => false);
 const loginSw = useState("loginSw", () => false);
+
+const cart = useLocalStorage("cart", {
+  products: [],
+  total: 0,
+});
+
+const productsLength = computed(() => {
+  let total = 0;
+  cart.value.products.forEach((product: any) => {
+    total += Number(product.qty);
+  });
+
+  return total;
+});
 </script>
 
 <style lang="scss" scoped>
