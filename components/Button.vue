@@ -32,5 +32,14 @@ defineProps({
   a {
     color: currentColor;
   }
+
+  button {
+    cursor: pointer;
+    background: none;
+    color: currentColor;
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+  }
 }
 </style>
