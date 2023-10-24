@@ -9,15 +9,18 @@
             SrGrid(tag="ul")
                 li.sr-grid-col-1(class="sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
                     ProductCard(:product="product")
+            Pagination(:pagination="pagination")
 
 </template>
 
 <script lang="ts" setup>
-const { data: content } = await useFetch("/api/content?page=index");
-const { data: products } = await useFetch("/api/product");
-
 const route = useRoute();
-const { search } = route.query;
+const { search, page = 1 } = route.query;
+
+const { data: content } = await useFetch("/api/content?page=index");
+const { data } = await useFetch("/api/product?page=" + page);
+
+const { products, pagination }: any = data.value;
 
 if (search) {
   console.log("filter prodcts by search");
@@ -33,6 +36,7 @@ watch(
 
 <style lang="scss" scoped>
 .store {
+  overflow: hidden;
   > .sr-grid {
     margin: 0;
     > * {
@@ -42,6 +46,10 @@ watch(
 
   &-filters {
     background-color: $color-near-white;
+  }
+
+  .quivi-pagination {
+    margin: auto;
   }
 }
 </style>

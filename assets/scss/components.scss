@@ -14,3 +14,42 @@
     }
   }
 }
+
+.swiper {
+  &-button {
+    &-next,
+    &-prev {
+      width: unit(50) !important;
+      height: unit(50) !important;
+      flex-shrink: 0;
+      color: $color-quivi-light-red !important;
+      background-color: $color-white !important;
+      box-shadow: unit(0) unit(0) unit(10) rgba($color-black, 0.3) !important;
+      padding: unit(10);
+      border-radius: 100%;
+      border: {
+        style: solid;
+        color: $color-quivi-light-red;
+        width: unit(4);
+      }
+
+      &::after {
+        font-size: unit(30) !important;
+        font-weight: 900;
+      }
+    }
+  }
+
+  &-pagination {
+    &-bullet {
+      width: unit(13) !important;
+      height: unit(13) !important;
+      background-color: $color-quivi-light-gray !important;
+      border: {
+        style: solid;
+        color: $color-quivi-gray;
+        width: unit(2);
+      }
+    }
+  }
+}

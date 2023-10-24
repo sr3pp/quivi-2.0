@@ -1,11 +1,8 @@
 <template lang="pug">
 Swiper.main-slider(
-    :modules="[SwiperAutoplay, SwiperEffectCreative]"
-    :slides-per-view="options.perPage"
-    :loop="options.loop"
-    :effect="options.effect"
-    :autoplay="options.autoplay"
+    :modules="[SwiperAutoplay, SwiperEffectCreative, SwiperPagination, SwiperNavigation]"
     :creative-effect="options.creative"
+    v-bind="options"
 )
     SwiperSlide.main-slider-slide(v-for="slide in slides" :key="slide")
         SrBackground()
@@ -63,6 +60,15 @@ const { data: slides } = await useFetch(props.slidesEndpoint as string);
           font-size: unit(40);
           margin-bottom: unit(40);
         }
+      }
+    }
+  }
+
+  .swiper {
+    &-button {
+      &-next,
+      &-prev {
+        background-color: transparent !important;
       }
     }
   }

@@ -29,7 +29,7 @@
 
     SrContainer(:with_space="true")
         SrText(value="PRODUCTOS RELACIONADOS" kind="title")
-        SliderProducts(:options="sliderOptions" :slidesEndpoint="`/api/product/hightlights?brand=${product.brand._id}`")
+    SliderProducts(:options="sliderOptions" :slidesEndpoint="`/api/product/hightlights?brand=${product.brand._id}`")
 </template>
 
 <script lang="ts" setup>
@@ -63,8 +63,9 @@ const addToCart = () => {
 };
 
 const sliderOptions = {
-  slidesPerView: 3,
+  slidesPerView: 4,
   spaceBetween: 30,
+  centeredSlides: true,
   autoplay: true,
   loop: true,
   creative: {

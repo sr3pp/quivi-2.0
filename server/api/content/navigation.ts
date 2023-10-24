@@ -26,7 +26,7 @@ export default defineEventHandler((e) => {
     files.forEach((file) => {
       const newUrl = join(url, file);
 
-      if (fs.statSync(newUrl).isDirectory() && file[0] !== "_") {
+      if (fs.statSync(newUrl).isDirectory() && !["_", "."].includes(file[0])) {
         obj.push({
           ...getNav(join(newUrl, "index.json")),
           url: "/" + file,
@@ -41,7 +41,7 @@ export default defineEventHandler((e) => {
             .filter((el) => el.name !== file && el.name[0] !== "_"),
         });
         //getNames(newUrl, obj[file]);
-      } else if (file[0] !== "_") {
+      } else if (!["_", "."].includes(file[0])) {
         obj.push({
           ...getNav(newUrl),
           url: "/" + parseJsonName(file),

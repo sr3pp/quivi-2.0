@@ -82,6 +82,7 @@ const loginSw = useState("loginSw", () => false);
 
 <style lang="scss" scoped>
 .quivi-footer {
+  overflow: hidden;
   &-social,
   &-menu {
     display: flex;

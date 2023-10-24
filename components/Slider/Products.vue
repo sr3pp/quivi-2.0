@@ -1,15 +1,15 @@
 <template lang="pug">
 Swiper.product-slider(
-  :modules="[SwiperAutoplay, SwiperEffectCreative]"
-  :slidesPerView="options.slidesPerView"
-  :spaceBetween="options.spaceBetween"
-  :loop="options.loop"
-  :effect="options.effect"
-  :autoplay="options.autoplay"
+  :modules="[SwiperAutoplay, SwiperEffectCreative, SwiperPagination, SwiperNavigation]"
+  v-bind="options"
+  :navigation="true"
+  :spaceBetween="40"
   :creative-effect="options.creative"
 )
   SwiperSlide.product-slider-slide(v-for="slide in slides" :key="slide")
-    SrText(:value="slide.name" kind="subtitle" alignment="center")
+    ProductCard(:product="slide")
+  SwiperSlide.product-slider-slide(v-for="slide in slides" :key="slide")
+    ProductCard(:product="slide")
 
 </template>
 

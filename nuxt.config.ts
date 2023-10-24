@@ -14,6 +14,11 @@ export default defineNuxtConfig({
       mongo: {
         url: process.env.MONGO_URL,
       },
+      email: {
+        host: process.env.EMAIL_HOST,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     },
   },
   devtools: { enabled: true },
