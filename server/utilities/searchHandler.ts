@@ -1,5 +1,6 @@
 import { Product } from "../Models";
 import { getStartIndex } from "./getStartIndex";
+import { modelPagination } from "./modelPagination";
 
 export const searchHandler = async (
   search: string,
@@ -7,8 +8,6 @@ export const searchHandler = async (
   limit: number,
   perPage: number,
 ) => {
-  const startIndex = getStartIndex(page, limit);
-
   const query = {
     $or: [
       { name: { $regex: search, $options: "i" } },
@@ -16,28 +15,15 @@ export const searchHandler = async (
     ],
   };
 
-  const products = await Product.find(query)
-    .populate(["brand", "category", "subcategory"])
-    .skip((page - 1) * perPage)
-    .limit(perPage);
-
-  const total = await Product.countDocuments(query);
-  const pages = Math.ceil(Number(total) / perPage);
-
-  const _endIdx = startIndex + limit - 1;
-
-  const endIndex = _endIdx > pages ? pages - 1 : _endIdx;
-
-  const pagination = {
-    limit,
-    startIndex,
-    endIndex,
+  const response = await modelPagination(
+    Product,
+    query,
+    ["brand", "category", "subcategory"],
     page,
-    pages,
-  };
+    limit,
+    perPage,
+    "products",
+  );
 
-  return {
-    products,
-    pagination,
-  };
+  return response;
 };
