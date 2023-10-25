@@ -1,12 +1,13 @@
 import mongoose, { Schema } from "mongoose";
+import CarModel from "./CarModel";
 import Motor from "./Motor";
 
-const schema = new mongoose.Schema(
+const schema: Schema = new mongoose.Schema(
   {
     name: { type: String, required: true, unique: true },
     logo: { type: String, required: true },
     hightlight: { type: Boolean, default: false },
-    motors: [{ type: Schema.Types.ObjectId, ref: Motor }],
+    models: [{ type: Schema.Types.ObjectId, ref: CarModel }],
   },
   { timestamps: true, strict: true, strictQuery: true },
 );

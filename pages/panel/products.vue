@@ -6,12 +6,23 @@
       span.spinner(v-if="uploading")
       input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
     SrText(value="Panel Products" kind="title" alignment="center")
+
+    ul
+      li(v-for="product in products")
+        SrText(:value="product.name")
+
+    Pagination(:pagination="pagination")
 </template>
 
 <script lang="ts" setup>
 definePageMeta({
   layout: "panel",
 });
+
+const { data } = await useFetch("/api/product");
+const products = ref(data.value?.products);
+const pagination = ref(data.value?.pagination);
+
 const uploading: Ref<boolean> = ref(false);
 const handleFileUpload = async (e: Event) => {
   console.log("handleFileUpload");

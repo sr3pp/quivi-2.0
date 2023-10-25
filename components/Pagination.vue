@@ -2,11 +2,11 @@
 .quivi-pagination
     ul.quivi-pagination-list
         li.quivi-pagination-item(v-if="displayBefore")
-            NuxtLink(:to="`?${search ? `search=${search}&` : ''}page=${pagination.page-1}`")  Anterior
+            NuxtLink(:to="`?${filters ? `filters=${filters}&`: ''}${search ? `search=${search}&` : ''}page=${pagination.page-1}`")  Anterior
         li.quivi-pagination-item(v-for="page in range(pagination.startIndex, pagination.endIndex)" :class="{current: page + 1 == pagination.page}" :key="page")
-            NuxtLink(:to="`?${search ? `search=${search}&` : ''}page=${page + 1}`" :disabled="page + 1 == pagination.page") {{ page + 1}}
+            NuxtLink(:to="`?${filters ? `filters=${filters}&`: ''}${search ? `search=${search}&` : ''}page=${page + 1}`" :disabled="page + 1 == pagination.page") {{ page + 1}}
         li.quivi-pagination-item(v-if="displayAfter")
-            NuxtLink(:to="`?${search ? `search=${search}&` : ''}page=${Number(pagination.page)+1}`") Siguiente
+            NuxtLink(:to="`?${filters ? `filters=${filters}&`: ''}${search ? `search=${search}&` : ''}page=${Number(pagination.page)+1}`") Siguiente
     span.quivi-pagination-detail {{ pagination.pages }} páginas
 </template>
 
@@ -26,6 +26,7 @@ const props = defineProps({
 
 const route = useRoute();
 const search = ref(route.query.search as string);
+const filters = ref(route.query.filters as string);
 
 const displayBefore = computed(() => props.pagination.page > 1);
 const displayAfter = computed(
@@ -37,8 +38,9 @@ const range = (start: number, stop: number, step: number = 1) =>
 
 watch(
   () => route.query,
-  async ({ search: term, page }) => {
+  async ({ search: term, page, filters: filterQuery }) => {
     search.value = term as string;
+    filters.value = filterQuery as string;
   },
 );
 </script>
