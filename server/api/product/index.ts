@@ -3,6 +3,7 @@ import {
   getStartIndex,
   searchHandler,
   filterHandler,
+  modelPagination,
 } from "~/server/utilities";
 
 export default defineEventHandler(async (event) => {
@@ -13,8 +14,6 @@ export default defineEventHandler(async (event) => {
     limit = 10,
     perPage = 16,
   }: any = getQuery(event);
-
-  const startIndex = getStartIndex(page, limit);
 
   if (search) return searchHandler(search, page, limit, perPage);
 
@@ -27,24 +26,14 @@ export default defineEventHandler(async (event) => {
     return filterHandler(filterObj, page, limit, perPage);
   }
 
-  const products = await Product.find()
-    .skip((page - 1) * perPage)
-    .limit(perPage);
-
-  const total = await Product.countDocuments();
-  const pages = Math.ceil(Number(total) / perPage);
-  const _endIdx = startIndex + limit - 1;
-  const endIndex = _endIdx > pages ? pages - 1 : _endIdx;
-
-  const pagination = {
-    limit,
-    startIndex,
-    endIndex,
+  const response = await modelPagination(
+    Product,
+    {},
+    [],
     page,
-    pages,
-  };
-  return {
-    products,
-    pagination,
-  };
+    limit,
+    perPage,
+    "products",
+  );
+  return response;
 });
