@@ -53,6 +53,16 @@ export default defineNuxtConfig({
       },
     },
   },
+  io: {
+    // module options
+    sockets: [
+      {
+        name: "main",
+        url: "http://localhost:3000",
+        default: true,
+      },
+    ],
+  },
   build: {
     rollupOptions: {
       external: ["sr-content"],

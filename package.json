@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt dev --https --ssl-cert localhost.pem --ssl-key localhost-key.pem",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -42,6 +42,7 @@
     "mongoose": "^7.6.2",
     "mongoose-bcrypt": "^1.11.0",
     "nodemailer": "^6.9.7",
+    "nuxt-socket-io": "^3.0.13",
     "nuxt-swiper": "^1.2.2",
     "pug": "^3.0.2",
     "read-excel-file": "^5.7.1",
