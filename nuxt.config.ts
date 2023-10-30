@@ -31,6 +31,7 @@ export default defineNuxtConfig({
     "@nuxtjs/eslint-module",
     "nuxt-swiper",
     "@vueuse/nuxt",
+    "@productdevbook/chatwoot",
   ],
   css: [
     "@/assets/scss/main.scss",
@@ -57,5 +58,18 @@ export default defineNuxtConfig({
     rollupOptions: {
       external: ["sr-content"],
     },
+  },
+  chatwoot: {
+    init: {
+      websiteToken: process.env.CHATWOOT_WEBSITE_TOKEN,
+    },
+    settings: {
+      locale: "es",
+      position: "right",
+      launcherTitle: "Ayuda",
+      // ... and more settings
+    },
+    // If this is loaded you can make it true, https://github.com/nuxt-modules/partytown
+    partytown: false,
   },
 });
