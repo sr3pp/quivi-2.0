@@ -13,16 +13,20 @@
             SrText(:value="product.brand.name")
             SrText(:value="product.web")
             SrFormInput(:value="product.qty" type="number" @change="setTotal" @input="product.qty = $event.target.value" :min="1" :max="100")
-            SrText(:value="toPrice(product.price)" kind="price")
+            .price-container
+              SrText.discount(:value="toPrice(product.price)")
+              SrText.price(:value="processDiscount(product)" kind="subtitle" v-if="product.discount")
           button(@click="removeProduct(product)")
             SrIcon(value="trash-o")
-
-      SrText(:value="`Total: ${toPrice(cart.total)}`" kind="title")
+      .quivi-cart-total
+        SrText(value="Total:" kind="title")
+        SrText(:value="toPrice(cart.total)" kind="title")
     .quivi-cart-backdrop(@click="closeCart")
 </template>
 
 <script lang="ts" setup>
-import { toPrice } from "~/assets/ts/utilities";
+import { toPrice, processDiscount } from "~/assets/ts/utilities";
+import type { Product } from "~/types";
 
 const props = defineProps({
   active: {
@@ -45,10 +49,19 @@ const closeCart = () => {
   }, 350);
 };
 
+const realPrice = (product: Product): number => {
+  if (product.discount) {
+    const price = processDiscount(product);
+
+    return Number(price.replace(/[^0-9.-]+/g, ""));
+  }
+  return Number(product.price);
+};
+
 const setTotal = () => {
   let total = 0;
-  cart.value.products.forEach((product: any) => {
-    total += product.price * product.qty;
+  cart.value.products.forEach((product: Product) => {
+    total += realPrice(product) * Number(product.qty);
   });
   cart.value.total = total;
 };
@@ -96,6 +109,8 @@ setTotal();
   justify-content: flex-end;
 
   &-content {
+    display: flex;
+    flex-direction: column;
     background-color: $color-white;
     width: 30vw;
     min-width: unit(300);
@@ -106,7 +121,7 @@ setTotal();
     z-index: 2;
   }
   &.active {
-    z-index: 3;
+    z-index: 2147483001;
 
     &-done {
       .quivi-cart {
@@ -188,6 +203,20 @@ setTotal();
 
     &-info {
       width: 100%;
+
+      .price-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .discount {
+          color: $color-quivi-red;
+          text-decoration: line-through;
+        }
+        .price {
+          margin-left: auto;
+        }
+      }
     }
   }
 
@@ -202,6 +231,15 @@ setTotal();
       color: $color-quivi-light-red;
       border: none;
     }
+  }
+
+  &-total {
+    margin-top: auto;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 </style>
