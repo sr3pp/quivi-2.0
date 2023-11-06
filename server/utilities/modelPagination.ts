@@ -8,9 +8,11 @@ export const modelPagination = async (
   limit: number,
   perPage: number,
   key: string,
+  order?: string,
 ) => {
   const items = await model
     .find(query)
+    .sort(order ? { [order]: -1 } : {})
     .populate(populations)
     .skip((page - 1) * perPage)
     .limit(perPage);

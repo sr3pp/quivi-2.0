@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
     limit,
     perPage,
     "products",
+    "priority",
   );
   return response;
 });

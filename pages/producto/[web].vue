@@ -11,7 +11,9 @@
                     SrText(:value="product.extra")
 
                     .product-detail-price
-                        SrText(:value="toPrice(product.price)" kind="title")
+                        .price-container
+                          SrText(:value="processDiscount(product)" kind="title" v-if="product.discount")
+                          SrText.discount(:value="toPrice(product.price)" kind="subtitle")
                         SrText(value="Solicitar informacion")
                     .product-detail-actions
                         Button(@click="addToCart(product)" label="Agregar al carrito")
@@ -33,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { toPrice } from "~/assets/ts/utilities";
+import { toPrice, processDiscount } from "~/assets/ts/utilities";
 
 const { params } = useRoute();
 const { web } = params;
@@ -125,6 +127,15 @@ const printValue = (value: any) => {
   &-price {
     display: flex;
     justify-content: space-between;
+
+    .price-container {
+      width: 100%;
+    }
+
+    .discount {
+      color: $color-quivi-red;
+      text-decoration: line-through;
+    }
   }
 
   &-actions {

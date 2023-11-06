@@ -5,7 +5,8 @@
     .quivi-product-card-body
         SrText(:value="product.name" kind="title")
         SrText.sae(:value="`Clave: ${product.sae}`")
-        SrText(:value="toPrice(product.price)" kind="title")
+        SrText(:value="processDiscount(product)" kind="title")
+        SrText.discount(:value="toPrice(product.price)" kind="subtitle" v-if="product.discount")
     .quivi-product-card-footer
         Button(:href="`/producto/${product.web}`" label="Ver Mas")
         Tooltip
@@ -16,7 +17,7 @@
 
 <script lang="ts" setup>
 import type { Product } from "~/types";
-import { toPrice } from "~/assets/ts/utilities/index";
+import { processDiscount, toPrice } from "~/assets/ts/utilities/index";
 
 defineProps({
   product: {
@@ -101,6 +102,11 @@ defineProps({
     .sr-text,
     .sae {
       margin-bottom: unit(10);
+    }
+
+    .discount {
+      color: $color-quivi-red;
+      text-decoration: line-through;
     }
   }
 
