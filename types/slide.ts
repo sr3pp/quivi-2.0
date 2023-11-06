@@ -5,4 +5,7 @@ export interface Slide {
   description: string;
   link: string;
   background: BreakpointObject;
+  video?: {
+    url: string;
+  };
 }
