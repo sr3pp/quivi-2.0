@@ -36,7 +36,7 @@ nav.quivi-navbar
             stop(offset="100%" :stop-color="btnColor2")
         use(href="/icon/botonmenu-o.svg#s")
       ol.quivi-navbar-submenu(v-if="item.items && item.items.length" role="list")
-        li.quivi-navbar-submenu-item(v-for="(el, e) in [...item.items, ...item.items]" :key="e")
+        li.quivi-navbar-submenu-item(v-for="(el, e) in item.items" :key="e")
           NuxtLink(:to="el.url") {{ el.name }}
 </template>
 
