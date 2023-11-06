@@ -93,6 +93,12 @@ watch(
 .quivi-searchbar {
   display: flex;
   position: relative;
+  border: {
+    style: solid;
+    color: $color-quivi-gray;
+    width: unit(1);
+    radius: unit(8);
+  }
 
   height: unit(50);
 
@@ -118,6 +124,10 @@ watch(
     right: 0;
     top: 0;
     height: 100%;
+    width: unit(40);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     .sr-icon {
       flex-shrink: 0;
