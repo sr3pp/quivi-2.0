@@ -6,7 +6,7 @@ Swiper.main-slider(
 )
     SwiperSlide.main-slider-slide(v-for="slide in slides" :key="slide")
         SrBackground()
-            SrImg(:src="slide.background.mobile" :alt="slide.title")
+            SrImg(:src="slide.background.mobile" :alt="slide.title" v-if="slide.background")
         SrContainer(:with_space="true")
             SrText(:value="slide.title" kind="title" alignment="center")
             SrText(:value="slide.description" alignment="center")
