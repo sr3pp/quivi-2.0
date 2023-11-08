@@ -20,9 +20,9 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
           SrIcon(value="contacto-o")
           span Contacto
       li.quivi-navbar-list-item
-        button(@click="cartSwitch = true")
+        button.cart-btn(@click="cartSwitch = true")
           ClientOnly
-            span(v-if="productsLength") {{ productsLength }}
+            span.cart-counter(v-if="productsLength") {{ productsLength }}
           SrIcon(value="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
@@ -261,6 +261,28 @@ const productsLength = computed(() => {
           width: unit(30);
           height: unit(40);
           color: $color-quivi-light-red;
+        }
+      }
+
+      .cart {
+        &-btn {
+          position: relative;
+          display: flex;
+        }
+        &-counter {
+          position: absolute;
+          z-index: 2;
+          top: 0;
+          right: 0;
+          width: unit(20);
+          height: unit(20);
+          background-color: $color-quivi-red;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: unit(12);
+          color: $color-white;
         }
       }
 
