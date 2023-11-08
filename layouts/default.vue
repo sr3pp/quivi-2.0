@@ -1,7 +1,8 @@
 <template lang="pug">
 main.default-layout
   Navigation
-  Loading(v-if="loading")
+  Transition(name="page", mode="out-in")
+    Loading(v-if="loading")
   NuxtPage
   SrModal(:active="contactModal" @close="contactModal = false")
     template(#header)
@@ -35,7 +36,7 @@ const { hook } = useNuxtApp();
 hook("page:start", () => {
   loading.value = true;
 });
-hook("page:finish", () => {
+hook("page:transition:finish", () => {
   loading.value = false;
 });
 </script>
