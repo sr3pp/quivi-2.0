@@ -1,16 +1,16 @@
 <template lang="pug">
 .store
     SrGrid
-        .sr-grid-col-1(class="sr-grid-col-1/5 column store-filters")
+        .sr-grid-col-1(class="sm:sr-grid-col-1/5 column store-filters")
           SrText(value="Encuentra lo que necesitas." kind="subtitle")
           ProductFilters(@filter="filterProducts")
-        .sr-grid-col-1(class="sr-grid-col-4/5 column")
+        .sr-grid-col-1(class="sm:sr-grid-col-4/5 column")
           SrText(value="Envios gratis en compras superiores a" kind="subtitle")
           .search-label(v-if="search || filters")
               SrText(value="Resultados de la busqueda" kind="subtitle")
               Button(href="/" label="Ver todos los productos")
           SrGrid(tag="ul")
-              li.sr-grid-col-1(class="sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
+              li.sr-grid-col-1(class="sm:sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
           Pagination(:pagination="pagination")
 
