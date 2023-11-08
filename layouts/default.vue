@@ -1,6 +1,7 @@
 <template lang="pug">
 main.default-layout
   Navigation
+  Loading(v-if="loading")
   NuxtPage
   SrModal(:active="contactModal" @close="contactModal = false")
     template(#header)
@@ -26,6 +27,17 @@ main.default-layout
 const contactModal = useState("contactModal", () => false);
 const cartSwitch = useState("cartSwitch", () => false);
 const loginSw = useState("loginSw", () => false);
+
+const loading = ref(false);
+
+const { hook } = useNuxtApp();
+
+hook("page:start", () => {
+  loading.value = true;
+});
+hook("page:finish", () => {
+  loading.value = false;
+});
 </script>
 
 <style lang="scss">
