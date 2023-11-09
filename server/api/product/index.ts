@@ -6,16 +6,11 @@ import {
   modelPagination,
 } from "~/server/utilities";
 
-export default defineEventHandler(async (event) => {
-  const {
-    search,
-    filters,
-    page = 1,
-    limit = 10,
-    perPage = 16,
-  }: any = getQuery(event);
+export default defineEventHandler(async (event: any) => {
+  const query = getQuery(event);
+  const { search, filters, limit = 10, perPage = 16 }: any = query;
 
-  if (search) return searchHandler(search, page, limit, perPage);
+  if (search) return searchHandler(search, limit, perPage, query);
 
   if (filters) {
     const filterObj: any = {};
@@ -23,17 +18,17 @@ export default defineEventHandler(async (event) => {
       const [key, value] = filter.split(".");
       filterObj[key] = value;
     });
-    return filterHandler(filterObj, page, limit, perPage);
+    return filterHandler(filterObj, limit, perPage, query);
   }
 
   const response = await modelPagination(
     Product,
     {},
     [],
-    page,
     limit,
     perPage,
     "products",
+    query,
     "priority",
   );
   return response;

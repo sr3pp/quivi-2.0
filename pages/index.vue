@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+import { fetchProducts } from "@/assets/ts/utilities";
 const route = useRoute();
 const { search: _search, page = 1, filters: _filters } = route.query;
 
@@ -28,34 +29,30 @@ const { data: content } = await useFetch("/api/content?page=index");
 const products = ref([]);
 const pagination = ref({});
 
-const fetchProducts = async (goTo: string, search: string, filters?: any) => {
-  const query: any = {
-    page: goTo,
-    search,
-  };
+const { products: _products, pagination: _pagination } = await fetchProducts(
+  route.path,
+  page as string,
+  search.value as string,
+  filters.value as string,
+);
 
-  if (filters) {
-    query.filters = filters;
-  }
-
-  const { data }: any = await useFetch(
-    `/api/product${Object.keys(query).length ? "?" : ""}${Object.keys(query)
-      .map((key: string) => (query[key] ? `${key}=${query[key]}` : ""))
-      .filter(Boolean)
-      .join("&")}`,
-  );
-  products.value = data.value?.products;
-  pagination.value = data.value?.pagination;
-};
-
-fetchProducts(page as string, search.value as string, filters.value as string);
+products.value = _products;
+pagination.value = _pagination;
 
 watch(
   () => route.query,
   async ({ search: _search, page, filters: _filters }) => {
-    fetchProducts(page as string, _search as string, _filters);
+    const { products: _products, pagination: _pagination } =
+      await fetchProducts(
+        route.path,
+        page as string,
+        _search as string,
+        _filters,
+      );
     search.value = _search as string;
     filters.value = _filters as string;
+    products.value = _products;
+    pagination.value = _pagination;
   },
 );
 
@@ -65,7 +62,6 @@ const filterProducts = async (filters: any) => {
     .join("|")}`;
   useRouter().push({
     query: {
-      ...route.query,
       filters: urlFilters,
     },
   });
