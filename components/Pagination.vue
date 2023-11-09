@@ -2,11 +2,11 @@
 .quivi-pagination
     ul.quivi-pagination-list
         li.quivi-pagination-item(v-if="displayBefore")
-            NuxtLink(:to="`?${filters ? `filters=${filters}&`: ''}${search ? `search=${search}&` : ''}page=${pagination.page-1}`")  Anterior
+            NuxtLink(:to="pagination.prevPage")  Anterior
         li.quivi-pagination-item(v-for="page in range(pagination.startIndex, pagination.endIndex)" :class="{current: page + 1 == pagination.page}" :key="page")
             NuxtLink(:to="`?${filters ? `filters=${filters}&`: ''}${search ? `search=${search}&` : ''}page=${page + 1}`" :disabled="page + 1 == pagination.page") {{ page + 1}}
         li.quivi-pagination-item(v-if="displayAfter")
-            NuxtLink(:to="`?${filters ? `filters=${filters}&`: ''}${search ? `search=${search}&` : ''}page=${Number(pagination.page)+1}`") Siguiente
+            NuxtLink(:to="pagination.nextPage") Siguiente
     span.quivi-pagination-detail {{ pagination.pages }} páginas
 </template>
 

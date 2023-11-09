@@ -4,9 +4,9 @@ import { modelPagination } from "./modelPagination";
 
 export const searchHandler = async (
   search: string,
-  page: number,
   limit: number,
   perPage: number,
+  queryObj: any,
 ) => {
   const query = {
     $or: [
@@ -19,10 +19,11 @@ export const searchHandler = async (
     Product,
     query,
     ["brand", "category", "subcategory"],
-    page,
     limit,
     perPage,
     "products",
+    queryObj,
+    "priority",
   );
 
   return response;

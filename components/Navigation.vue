@@ -6,7 +6,7 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
       SrIcon(value="hamburguesa-o")
     NuxtLink.logo(to="/")
       SrImg(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
-    SearchBar(endpoint="/api/product/search?perPage=5")
+    SearchBar(endpoint="/api/product/search?path=/&perPage=5")
     ul.quivi-navbar-list
       li.quivi-navbar-list-item(class="sm:hidden")
         button(@click="searchActive = !searchActive")
