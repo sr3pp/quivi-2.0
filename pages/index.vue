@@ -8,7 +8,7 @@
           SrText(value="Envios gratis en compras superiores a" kind="subtitle")
           .search-label(v-if="search || filters")
               SrText(value="Resultados de la busqueda" kind="subtitle")
-              Button(href="/" label="Ver todos los productos")
+              Button(href="/" label="Ver todos los productos" disabled)
           SrGrid(tag="ul")
               li.sr-grid-col-1(class="sm:sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")

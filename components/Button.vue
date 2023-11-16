@@ -1,7 +1,7 @@
 <template lang="pug">
 .quivi-button(:href="href")
     NuxtLink(:to="href" v-if="href" :aria-label="label" :title="label") {{ label }}
-    button(v-else) {{ label }}
+    button(v-else v-bind="$attrs") {{ label }}
 
 </template>
 
@@ -25,18 +25,28 @@ defineProps({
   color: $color-white;
   font-family: Bebas;
   font-size: unit(26);
-  padding: unit(10);
   border-radius: unit(10);
   min-width: unit(150);
   text-align: center;
-  a {
+
+  &[disabled] {
+    background-color: $color-quivi-gray;
+    color: $color-white;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  a,
+  button {
+    padding: unit(10);
     color: currentColor;
+    width: 100%;
+    height: 100%;
   }
 
   button {
     cursor: pointer;
     background: none;
-    color: currentColor;
     border: none;
     font-family: inherit;
     font-size: inherit;
