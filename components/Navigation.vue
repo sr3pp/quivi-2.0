@@ -47,7 +47,7 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
             linearGradient(id="stateMenuBtn" x1="0%" y1="0%" x2="0%" y2="100%")
               stop(offset="0%" :stop-color="btnColor1")
               stop(offset="100%" :stop-color="btnColor2")
-          use(href="/icon/botonmenu-o.svg#s")
+          use(href="/icons/botonmenu-o.svg#s")
       ol.quivi-navbar-submenu(v-if="item.items && item.items.length" role="list")
         li.quivi-navbar-submenu-item(v-for="(el, e) in item.items" :key="e")
           NuxtLink(:to="el.url") {{ el.name }}
