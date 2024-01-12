@@ -3,41 +3,41 @@ import { colorDarkGray } from '~/assets/ts/tokens';
 nav.quivi-navbar(:class="{'active-search': searchActive}")
   SrContainer
     button.quivi-navbar-burguer(@click="menuActive = !menuActive")
-      SrIcon(value="hamburguesa-o")
+      SrIcon(name="hamburguesa-o")
     NuxtLink.logo(to="/")
-      SrImg(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
+      SrPicture(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
     SearchBar(endpoint="/api/product/search?path=/&perPage=5")
     ul.quivi-navbar-list
       li.quivi-navbar-list-item(class="sm:hidden")
         button(@click="searchActive = !searchActive")
-          SrIcon(value="lupa-o" v-if="!searchActive")
-          SrIcon(value="x-o" v-else)
+          SrIcon(name="lupa-o" v-if="!searchActive")
+          SrIcon(name="x-o" v-else)
           span Busqueda
       li.quivi-navbar-list-item.hidden(class="sm:flex")
         a(href="tel:5555555555") 5555555555
       li.quivi-navbar-list-item
         button(@click="contactModal = true")
-          SrIcon(value="contacto-o")
+          SrIcon(name="contacto-o")
           span Contacto
       li.quivi-navbar-list-item
         button.cart-btn(@click="cartSwitch = true")
           ClientOnly
             span.cart-counter(v-if="productsLength") {{ productsLength }}
-          SrIcon(value="carrito-o")
+          SrIcon(name="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
         button.variant-red(@click="loginSw = true")
             .icon-container
-              SrIcon(value="registrarsecaja-o")
+              SrIcon(name="registrarsecaja-o")
             span Ingresar
   ul.quivi-navbar-menu(:class="{active: menuActive}")
     li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active}" :key="i")
       .link-container  
         NuxtLink(:to="item.url")
           span {{ item.name }}
-          SrIcon(value="ir-o" v-if="!item.items || (item.items && !item.items.length)")
+          SrIcon(name="ir-o" v-if="!item.items || (item.items && !item.items.length)")
         button.collapse(@click="item.active = !Boolean(item.active)" v-if="item.items && item.items.length")
-          SrIcon(value="desplazamientoabajo-o")
+          SrIcon(name="desplazamientoabajo-o")
       
         svg.bg
           defs
@@ -85,17 +85,17 @@ const productsLength = computed(() => {
 
 <style lang="scss" scoped>
 .quivi-navbar {
-  padding-top: unit(10);
-  padding-bottom: unit(10);
+  padding-top: pxToRem(10);
+  padding-bottom: pxToRem(10);
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 unit(4) unit(20) rgba($color-quivi-dark-gray, 0.3);
+  box-shadow: 0 pxToRem(4) pxToRem(20) rgba($color-quivi-dark-gray, 0.3);
   transition: padding-top 0.35s ease;
 
   &.active-search {
     @media (max-width: $breakpoint-sm) {
-      padding-top: unit(60);
+      padding-top: pxToRem(60);
 
       .quivi-searchbar {
         top: 0;
@@ -107,7 +107,7 @@ const productsLength = computed(() => {
     align-items: center;
     > * {
       &:not(:last-child) {
-        margin-right: unit(20);
+        margin-right: pxToRem(20);
       }
     }
   }
@@ -116,8 +116,8 @@ const productsLength = computed(() => {
     background: none;
     border: none;
     padding: 0;
-    width: unit(30);
-    height: unit(30);
+    width: pxToRem(30);
+    height: pxToRem(30);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,8 +125,8 @@ const productsLength = computed(() => {
     z-index: 2;
 
     .sr-icon {
-      width: unit(30);
-      height: unit(30);
+      width: pxToRem(30);
+      height: pxToRem(30);
       color: $color-quivi-gray;
     }
 
@@ -137,12 +137,12 @@ const productsLength = computed(() => {
 
   .logo {
     width: 20%;
-    min-width: unit(100);
+    min-width: pxToRem(100);
 
     @media (min-width: $breakpoint-sm) {
-      min-width: unit(180);
+      min-width: pxToRem(180);
       margin: 0 !important;
-      padding-right: unit(20);
+      padding-right: pxToRem(20);
     }
   }
 
@@ -153,13 +153,13 @@ const productsLength = computed(() => {
     top: -100%;
     left: 50%;
     z-index: 2;
-    width: calc(100% - unit(40));
+    width: calc(100% - pxToRem(40));
     transform: translateX(-50%);
     transition: top 0.35s ease;
 
     @media (min-width: $breakpoint-sm) {
       position: relative;
-      min-width: unit(300);
+      min-width: pxToRem(300);
       width: 40%;
       transform: none;
       left: inherit;
@@ -174,14 +174,14 @@ const productsLength = computed(() => {
     z-index: 10;
     max-height: 0;
     overflow: hidden;
-    border-bottom-left-radius: unit(8);
-    border-bottom-right-radius: unit(8);
+    border-bottom-left-radius: pxToRem(8);
+    border-bottom-right-radius: pxToRem(8);
     background: linear-gradient(
       to right,
       $color-quivi-gray,
       $color-quivi-darkest-gray
     );
-    box-shadow: 0 unit(10) unit(10) rgba($color-black, 0.3);
+    box-shadow: 0 pxToRem(10) pxToRem(10) rgba($color-black, 0.3);
     transition: max-height 0.35s ease;
 
     &.active {
@@ -201,9 +201,9 @@ const productsLength = computed(() => {
       display: flex;
       align-items: center;
       margin-left: auto;
-      margin-bottom: unit(-50);
-      padding-left: unit(20);
-      padding-right: unit(20);
+      margin-bottom: pxToRem(-50);
+      padding-left: pxToRem(20);
+      padding-right: pxToRem(20);
     }
   }
 
@@ -213,7 +213,7 @@ const productsLength = computed(() => {
     align-items: center;
     justify-content: flex-end;
     &-item {
-      width: unit(30);
+      width: pxToRem(30);
       button {
         cursor: pointer;
         padding: 0;
@@ -224,13 +224,13 @@ const productsLength = computed(() => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        border-radius: unit(8);
+        border-radius: pxToRem(8);
         overflow: hidden;
 
         span {
           display: none;
           color: $color-text-color;
-          font-size: unit(12);
+          font-size: pxToRem(12);
           font-family: Inria;
         }
 
@@ -252,14 +252,14 @@ const productsLength = computed(() => {
           }
           span {
             width: 100%;
-            padding: unit(4);
+            padding: pxToRem(4);
             color: $color-text-color;
           }
         }
 
         .sr-icon {
-          width: unit(30);
-          height: unit(40);
+          width: pxToRem(30);
+          height: pxToRem(40);
           color: $color-quivi-light-red;
         }
       }
@@ -274,14 +274,14 @@ const productsLength = computed(() => {
           z-index: 2;
           top: 0;
           right: 0;
-          width: unit(20);
-          height: unit(20);
+          width: pxToRem(20);
+          height: pxToRem(20);
           background-color: $color-quivi-red;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: unit(12);
+          font-size: pxToRem(12);
           color: $color-white;
         }
       }
@@ -291,20 +291,20 @@ const productsLength = computed(() => {
       }
 
       &:not(:last-child) {
-        margin-right: unit(20);
+        margin-right: pxToRem(20);
       }
 
       @media (min-width: $breakpoint-sm) {
-        width: unit(80);
+        width: pxToRem(80);
         button {
           span {
             display: inline-block;
-            font-size: unit(16);
+            font-size: pxToRem(16);
           }
 
           .sr-icon {
-            width: unit(40);
-            height: unit(50);
+            width: pxToRem(40);
+            height: pxToRem(50);
           }
         }
         &.sm\:hidden {
@@ -315,7 +315,7 @@ const productsLength = computed(() => {
         }
 
         &:not(:last-child) {
-          margin-right: unit(10);
+          margin-right: pxToRem(10);
         }
       }
     }
@@ -335,7 +335,7 @@ const productsLength = computed(() => {
         transform: translateX(-50%);
         content: "";
         width: 95%;
-        height: unit(2);
+        height: pxToRem(2);
         border-radius: 100%;
         background: linear-gradient(
           to right,
@@ -360,11 +360,11 @@ const productsLength = computed(() => {
       background: none;
       border: none;
       margin-left: auto;
-      padding: unit(16);
+      padding: pxToRem(16);
 
       .sr-icon {
-        width: unit(25);
-        height: unit(25);
+        width: pxToRem(25);
+        height: pxToRem(25);
         color: $color-white;
         transition: transform 0.35s ease;
       }
@@ -378,11 +378,11 @@ const productsLength = computed(() => {
       display: flex;
       width: 100%;
       color: $color-white;
-      padding: unit(16);
+      padding: pxToRem(16);
 
       .sr-icon {
-        width: unit(25);
-        height: unit(25);
+        width: pxToRem(25);
+        height: pxToRem(25);
         margin-left: auto;
       }
 
@@ -413,7 +413,7 @@ const productsLength = computed(() => {
 
     @media (min-width: $breakpoint-sm) {
       &:not(:last-child) {
-        margin-right: unit(20);
+        margin-right: pxToRem(20);
       }
 
       &:hover {
@@ -424,22 +424,26 @@ const productsLength = computed(() => {
 
         .quivi-navbar-submenu {
           max-height: 100vh;
-          padding-top: unit(28);
+          padding-top: pxToRem(28);
         }
       }
 
       a {
-        padding: unit(10);
+        padding: pxToRem(10);
         text-align: center;
-        height: unit(55);
+        height: pxToRem(55);
         color: $color-white;
-        min-width: unit(130);
+        min-width: pxToRem(130);
         position: relative;
         z-index: 2;
         font-family: Bebas;
-        font-size: unit(26);
+        font-size: pxToRem(26);
         line-height: 1.4;
         justify-content: center;
+
+        span {
+          font-family: inherit;
+        }
 
         &.router-link-active {
           + svg {
@@ -473,16 +477,16 @@ const productsLength = computed(() => {
       z-index: 0;
       left: 0;
       position: absolute;
-      top: unit(14);
-      min-width: unit(250);
-      box-shadow: 0 unit(10) unit(10) rgba($color-black, 0.3);
+      top: pxToRem(14);
+      min-width: pxToRem(250);
+      box-shadow: 0 pxToRem(10) pxToRem(10) rgba($color-black, 0.3);
       background: linear-gradient(
         to right,
         $color-quivi-gray,
         $color-quivi-darkest-gray
       );
-      border-bottom-left-radius: unit(18);
-      border-bottom-right-radius: unit(18);
+      border-bottom-left-radius: pxToRem(18);
+      border-bottom-right-radius: pxToRem(18);
     }
 
     transition:
@@ -498,13 +502,13 @@ const productsLength = computed(() => {
       a {
         width: 100%;
         font-family: Inria;
-        font-size: unit(18);
+        font-size: pxToRem(18);
         height: auto;
         line-height: 1.8;
         text-transform: capitalize;
         text-align: left;
-        padding-right: unit(20);
-        padding-left: unit(20);
+        padding-right: pxToRem(20);
+        padding-left: pxToRem(20);
       }
 
       &:not(:last-child) {
@@ -515,7 +519,7 @@ const productsLength = computed(() => {
           transform: translateX(-50%);
           content: "";
           width: 95%;
-          height: unit(2);
+          height: pxToRem(2);
           border-radius: 100%;
           background: linear-gradient(
             to right,
@@ -534,8 +538,8 @@ const productsLength = computed(() => {
 
       @media (min-width: $breakpoint-sm) {
         a {
-          padding-left: unit(16);
-          padding-right: unit(16);
+          padding-left: pxToRem(16);
+          padding-right: pxToRem(16);
           justify-content: flex-start;
         }
       }

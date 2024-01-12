@@ -1,16 +1,16 @@
 <template lang="pug">
 .store
     SrGrid
-        .sr-grid-col-1(class="sm:sr-grid-col-1/5 column store-filters")
-          SrText(value="Encuentra lo que necesitas." kind="subtitle")
+        SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column store-filters")
+          SrText(text="Encuentra lo que necesitas." kind="subtitle")
           ProductFilters(@filter="filterProducts")
-        .sr-grid-col-1(class="sm:sr-grid-col-4/5 column")
-          SrText(value="Envios gratis en compras superiores a" kind="subtitle")
+        SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column")
+          SrText(text="Envios gratis en compras superiores a" kind="subtitle")
           .search-label(v-if="search || filters")
-              SrText(value="Resultados de la busqueda" kind="subtitle")
+              SrText(text="Resultados de la busqueda" kind="subtitle")
               Button(href="/" label="Ver todos los productos")
           SrGrid(tag="ul")
-              li.sr-grid-col-1(class="sm:sr-grid-col-1/4" v-for="(product, i) in products" :key="i")
+              SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
           Pagination(:pagination="pagination")
 
@@ -74,7 +74,7 @@ const filterProducts = async (filters: any) => {
   > .sr-grid {
     margin: 0;
     > * {
-      padding-top: unit(40);
+      padding-top: pxToRem(40);
     }
   }
 
@@ -82,10 +82,10 @@ const filterProducts = async (filters: any) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: unit(20);
+    margin-bottom: pxToRem(20);
 
     .quivi-button {
-      margin-right: unit(20);
+      margin-right: pxToRem(20);
     }
   }
 

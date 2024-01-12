@@ -161,14 +161,14 @@ watch(
     }
     input {
       appearance: none;
-      height: unit(40);
-      padding: unit(10);
-      border: solid unit(2) $color-quivi-light-gray;
-      border-radius: unit(8);
+      height: pxToRem(40);
+      padding: pxToRem(10);
+      border: solid pxToRem(2) $color-quivi-light-gray;
+      border-radius: pxToRem(8);
     }
 
     &:not(:last-child) {
-      margin-bottom: unit(20);
+      margin-bottom: pxToRem(20);
     }
   }
 }

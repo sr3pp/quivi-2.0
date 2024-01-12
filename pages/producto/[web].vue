@@ -1,36 +1,36 @@
 <template lang="pug">
 .product-detail
-    SrContainer(:with_space="true")
+    SrContainer(:with-padding="true")
         SrGrid
-            .sr-grid-col-1(class="sr-grid-col-1/2")
-                SrImg(:src="`/products/${product .web}/${product .thumbs[0]}`" :alt="product.name" width="100%" height="100%")
-            .sr-grid-col-1(class="sr-grid-col-1/2")
+            SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+                SrPicture(:src="`/products/${product .web}/${product .thumbs[0]}`" :alt="product.name" width="100%" height="100%")
+            SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
                 .product-detail-info(v-if="product")
-                    SrText(:value="product.name" kind="title")
-                    SrText(:value="`Refaccion: ${product.web}`")
-                    SrText(:value="product.extra")
+                    SrText(:text="product.name" class="title")
+                    SrText(:text="`Refaccion: ${product.web}`")
+                    SrText(:text="product.extra")
 
                     .product-detail-price
                         .price-container
-                          SrText(:value="processDiscount(product)" kind="title" v-if="product.discount")
-                          SrText.discount(:value="toPrice(product.price)" kind="subtitle")
-                        SrText(value="Solicitar informacion")
+                          SrText(:text="processDiscount(product)" kind="title" v-if="product.discount")
+                          SrText.discount(:text="toPrice(product.price)" class="subtitle")
+                        SrText(text="Solicitar informacion")
                     .product-detail-actions
                         Button(@click="addToCart(product)" label="Agregar al carrito")
                         Button(href="/" label="Ir a la tienda")
-            .sr-grid-col-1(class="sr-grid-col-1/2 column")
-                SrText(value="ESPECIFICACIONES DEL PRODUCTO" kind="title")
+            SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
+                SrText(text="ESPECIFICACIONES DEL PRODUCTO" class="title")
                 ul.product-detail-details
                     template(v-for="([key, value], i) in Object.entries(product)")
                         li.product-detail-detail(v-if="!detailExcludes.includes(key)" :key="i")
-                            SrText.label(:value="`${key}:`")
-                            SrText(:value="printValue(value)")
-            .sr-grid-col-1(class="sr-grid-col-1/2 column")
-                SrText(value="DESCRIPCION DEL PRODUCTO" kind="title")
-                SrText(:value="product.description")
+                            SrText.label(:text="`${key}:`")
+                            SrText(:text="printValue(value)")
+            SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
+                SrText(text="DESCRIPCION DEL PRODUCTO" class="title")
+                SrText(:text="product.description")
 
-    SrContainer(:with_space="true")
-        SrText(value="PRODUCTOS RELACIONADOS" kind="title")
+    SrContainer(:with-padding="true")
+        SrText(value="PRODUCTOS RELACIONADOS" class="title")
     SliderProducts(:options="sliderOptions" :slidesEndpoint="`/api/product/hightlights?brand=${product.brand._id}`")
 </template>
 
@@ -117,9 +117,13 @@ const printValue = (value: any) => {
 .product-detail {
   &-info {
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
     > * {
       &:not(:last-child) {
-        margin-bottom: unit(20);
+        margin-bottom: pxToRem(20);
       }
     }
   }
@@ -146,11 +150,11 @@ const printValue = (value: any) => {
     display: flex;
 
     &:not(:last-child) {
-      margin-bottom: unit(10);
+      margin-bottom: pxToRem(10);
     }
 
     .label {
-      margin-right: unit(6);
+      margin-right: pxToRem(6);
       font-weight: bold;
       text-transform: capitalize;
     }

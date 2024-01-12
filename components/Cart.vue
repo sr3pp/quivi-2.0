@@ -7,20 +7,20 @@
         button.quivi-cart-empty(@click="emptyCart()") Vaciar carrito
       ul.quivi-cart-products 
         li.quivi-cart-product(v-for="(product, i) in cart.products" :key="i")
-          SrImg(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
+          SrPicture(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
           .quivi-cart-product-info
-            SrText(:value="product.name" kind="subtitle")
-            SrText(:value="product.brand.name")
-            SrText(:value="product.web")
+            SrText(:text="product.name" kind="subtitle")
+            SrText(:text="product.brand.name")
+            SrText(:text="product.web")
             SrFormInput(:value="product.qty" type="number" @change="setTotal" @input="product.qty = $event.target.value" :min="1" :max="100")
             .price-container
-              SrText.discount(:value="toPrice(product.price)")
-              SrText.price(:value="processDiscount(product)" kind="subtitle" v-if="product.discount")
+              SrText.discount(:text="toPrice(product.price)")
+              SrText.price(:text="processDiscount(product)" kind="subtitle" v-if="product.discount")
           button(@click="removeProduct(product)")
-            SrIcon(value="trash-o")
+            SrIcon(name="trash-o")
       .quivi-cart-total
-        SrText(value="Total:" kind="title")
-        SrText(:value="toPrice(cart.total)" kind="title")
+        SrText(text="Total:" kind="title")
+        SrText(:text="toPrice(cart.total)" kind="title")
     .quivi-cart-backdrop(@click="closeCart")
 </template>
 
@@ -113,8 +113,8 @@ setTotal();
     flex-direction: column;
     background-color: $color-white;
     width: 30vw;
-    min-width: unit(300);
-    padding: unit(20);
+    min-width: pxToRem(300);
+    padding: pxToRem(20);
     transform: translateX(100%);
     position: relative;
     transition: transform 0.3s ease-in-out;
@@ -149,25 +149,25 @@ setTotal();
     background-color: rgba($color-black, 0.6);
     opacity: 0;
     z-index: 0;
-    backdrop-filter: blur(unit(4));
+    backdrop-filter: blur(pxToRem(4));
     transition: opacity 0.3s ease-in-out;
   }
   &-close {
     position: absolute;
-    top: unit(20);
+    top: pxToRem(20);
     left: 0;
     background-color: $color-quivi-red;
     color: $color-white;
     font-family: Bebas;
     border: none;
-    font-size: unit(20);
+    font-size: pxToRem(20);
     cursor: pointer;
     border-radius: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: unit(30);
-    height: unit(30);
+    width: pxToRem(30);
+    height: pxToRem(30);
     transform: translateX(0);
     transition: transform 0.35s ease;
   }
@@ -175,11 +175,11 @@ setTotal();
   &-product {
     display: flex;
     align-items: center;
-    padding-top: unit(10);
-    padding-bottom: unit(10);
+    padding-top: pxToRem(10);
+    padding-bottom: pxToRem(10);
     > button {
-      width: unit(40);
-      height: unit(40);
+      width: pxToRem(40);
+      height: pxToRem(40);
       background: none;
       border: none;
       padding: 0;
@@ -195,10 +195,10 @@ setTotal();
       width: 100%;
     }
     .sr-img {
-      width: unit(100);
-      height: unit(100);
+      width: pxToRem(100);
+      height: pxToRem(100);
       flex-shrink: 0;
-      margin-right: unit(20);
+      margin-right: pxToRem(20);
     }
 
     &-info {
@@ -224,7 +224,7 @@ setTotal();
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: unit(20);
+    margin-bottom: pxToRem(20);
 
     .quivi-cart-empty {
       background: none;

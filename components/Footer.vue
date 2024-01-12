@@ -89,7 +89,7 @@ const loginSw = useState("loginSw", () => false);
     flex-direction: column;
 
     &-item {
-      padding: unit(2);
+      padding: pxToRem(2);
       color: $color-quivi-light-red;
 
       a {
@@ -107,8 +107,8 @@ const loginSw = useState("loginSw", () => false);
   }
 
   .sr-container {
-    padding-top: unit(20);
-    padding-bottom: unit(20);
+    padding-top: pxToRem(20);
+    padding-bottom: pxToRem(20);
   }
 
   &-social {
@@ -119,8 +119,8 @@ const loginSw = useState("loginSw", () => false);
       align-items: flex-end;
       a {
         .sr-icon {
-          width: unit(30);
-          height: unit(30);
+          width: pxToRem(30);
+          height: pxToRem(30);
         }
       }
     }

@@ -15,21 +15,21 @@ const { data: content } = await useFetch("/api/content?page=index");
   }
 
   .products-section {
-    padding-top: unit(40);
-    padding-bottom: unit(40);
+    padding-top: pxToRem(40);
+    padding-bottom: pxToRem(40);
   }
 
   .sr-text {
     &.kind {
       &-title {
-        margin-bottom: unit(40) !important;
+        margin-bottom: pxToRem(40) !important;
       }
     }
   }
 
   .logo {
     width: 50vw;
-    min-width: unit(300);
+    min-width: pxToRem(300);
     margin: auto;
   }
 }

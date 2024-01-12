@@ -5,6 +5,8 @@
 .nitro
 .cache
 dist
+public
+content
 
 # Node dependencies
 node_modules
@@ -22,6 +24,3 @@ logs
 .env
 .env.*
 !.env.example
-
-public
-/content

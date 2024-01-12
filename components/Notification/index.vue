@@ -47,17 +47,17 @@ const setCloseTimeout = () => {
 <style lang="scss" scoped>
 .quivi-notification {
   background-color: rgba($color-system-success, 0.3);
-  backdrop-filter: blur(unit(6));
+  backdrop-filter: blur(pxToRem(6));
   width: 20vw;
-  min-width: unit(200);
+  min-width: pxToRem(200);
   border: {
     style: solid;
     color: $color-system-success;
-    width: unit(2);
-    radius: unit(8);
+    width: pxToRem(2);
+    radius: pxToRem(8);
   }
 
-  padding: unit(10);
+  padding: pxToRem(10);
 
   transform: translateY(100%);
   opacity: 0;
@@ -72,16 +72,16 @@ const setCloseTimeout = () => {
 
   &-close {
     position: absolute;
-    top: unit(-10);
-    right: unit(-10);
+    top: pxToRem(-10);
+    right: pxToRem(-10);
     width: uniy(40);
     height: uniy(40);
     flex-shrink: 0;
-    border-radius: unit(20);
+    border-radius: pxToRem(20);
     background: $color-quivi-red;
     border: none;
     cursor: pointer;
-    font-size: unit(18);
+    font-size: pxToRem(18);
     font-family: Bebas;
     color: $color-white;
   }

@@ -24,13 +24,14 @@ defineProps({
   background-color: $color-quivi-green;
   color: $color-white;
   font-family: Bebas;
-  font-size: unit(26);
-  padding: unit(10);
-  border-radius: unit(10);
-  min-width: unit(150);
+  font-size: pxToRem(26);
+  padding: pxToRem(10);
+  border-radius: pxToRem(10);
+  min-width: pxToRem(150);
   text-align: center;
   a {
     color: currentColor;
+    font-family: inherit;
   }
 
   button {

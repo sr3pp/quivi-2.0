@@ -27,10 +27,10 @@ export default defineNuxtConfig({
     dirs: ["~/components"],
   },
   modules: [
-    "sr-content",
-    "@nuxtjs/eslint-module",
-    "nuxt-swiper",
+    "sr-content-2",
     "@vueuse/nuxt",
+    "nuxt-swiper",
+    "@nuxtjs/eslint-module",
     "@productdevbook/chatwoot",
   ],
   css: [
@@ -45,18 +45,12 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `
-            @import "sr-content/assets/scss/utilities/index.scss";
+          additionalData: `@import "sr-content-2/assets/scss/utilities/index.scss"; 
+            @import "sr-content-2/assets/scss/main.scss";
             @import "@/assets/fonts/index.scss";
-            @import "@/assets/scss/tokens.scss";
-          `,
+            @import "@/assets/scss/tokens.scss";`,
         },
       },
-    },
-  },
-  build: {
-    rollupOptions: {
-      external: ["sr-content"],
     },
   },
   chatwoot: {

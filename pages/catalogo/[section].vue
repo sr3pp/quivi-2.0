@@ -2,7 +2,7 @@
 .catalogo-detail
     component(v-for="(component, i) in content" :is="component.component" :key="i" v-bind="component.props")
 
-    SrContainer(:with_space="true")
+    SrContainer(:with-padding="true")
         DownloadsList(:downloads="downloads" :path="path")
 </template>
 

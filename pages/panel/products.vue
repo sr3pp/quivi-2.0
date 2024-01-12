@@ -89,11 +89,11 @@ const handleFileUpload = async (e: Event) => {
     }
 
     .spinner {
-      margin-left: unit(10);
-      width: unit(20);
-      height: unit(20);
+      margin-left: pxToRem(10);
+      width: pxToRem(20);
+      height: pxToRem(20);
       background-color: red;
-      border-radius: unit(50);
+      border-radius: pxToRem(50);
     }
   }
 }

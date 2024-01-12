@@ -2,17 +2,17 @@
 .catalogo
     component(v-for="(component, i) in catalogoContent" :is="component.component" :key="i" v-bind="component.props")
 
-    SrContainer(:with_space="true")
+    SrContainer(:with-padding="true")
         SrGrid
-            .sr-grid-col-1(class="sr-grid-col-1/2 catalogo-item" v-for="(item, i) in catalogo" :key="i")
-                NuxtLink(:to="`/catalogo/${item.slug}`")
-                  SrImg(:src="item.thumb" :alt="item.label" class="catalogo-banner")
-                  div.catalogo-item-description
-                      SrText(:value="item.label" kind="title")
-                      ol.catalogo-item-description-list
-                          li.catalogo-item-description-list-item(v-for="(el, i) in item.list" :key="i")
-                              SrIcon(value="quivi-check-o")
-                              SrText(:value="el")
+          SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="catalogo-item" v-for="(item, i) in catalogo" :key="i")
+            NuxtLink(:to="`/catalogo/${item.slug}`")
+              SrPicture(:src="item.thumb" :alt="item.label" class="catalogo-banner")
+              div.catalogo-item-description
+                SrText(:text="item.label" kind="title")
+                ol.catalogo-item-description-list
+                  li.catalogo-item-description-list-item(v-for="(el, i) in item.list" :key="i")
+                    SrIcon(name="quivi-check-o")
+                    SrText(:text="el")
     
 </template>
 
@@ -38,7 +38,7 @@ const { data: catalogoContent } = await useFetch(
     }
 
     &-description {
-      padding: unit(10);
+      padding: pxToRem(10);
 
       &-list {
         &-item {
@@ -47,8 +47,8 @@ const { data: catalogoContent } = await useFetch(
           align-items: center;
 
           .sr-icon {
-            width: unit(25);
-            height: unit(25);
+            width: pxToRem(25);
+            height: pxToRem(25);
           }
         }
       }
@@ -56,7 +56,7 @@ const { data: catalogoContent } = await useFetch(
   }
 
   > .sr-img {
-    min-height: unit(400);
+    min-height: pxToRem(400);
   }
 }
 </style>
