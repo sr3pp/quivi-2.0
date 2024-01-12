@@ -32,8 +32,6 @@ const toggle = () => {
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    padding-top: unit(10);
-    padding-bottom: unit(10);
     border-bottom: 1px solid $color-quivi-gray;
     .sr-icon {
       width: unit(20);
@@ -41,13 +39,16 @@ const toggle = () => {
     }
   }
   &-content {
-    padding-top: unit(10);
-    padding-bottom: unit(10);
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
+    transition:
+      max-height 0.3s ease-in-out,
+      padding 0.3s ease-in-out;
 
     &.active {
+      padding-top: unit(10);
+      padding-bottom: unit(10);
+      overflow: auto;
       max-height: 100vh;
     }
   }

@@ -8,6 +8,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
+      sae: {
+        url: process.env.SAE_URL,
+      },
       jwt: {
         secret: process.env.JWT_SECRET,
       },
@@ -18,6 +21,25 @@ export default defineNuxtConfig({
         host: process.env.EMAIL_HOST,
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
+      },
+      openpay: {
+        url:
+          process.env.OPENPAY_PRODUCTION === "true"
+            ? process.env.OPENPAY_URL
+            : process.env.OPENPAY_DEV_URL,
+        barcode_url:
+          process.env.OPENPAY_PRODUCTION === "true"
+            ? process.env.OPENPAY_BARCODE_URL
+            : process.env.OPENPAY_BARCODE_DEV_URL,
+        key:
+          process.env.OPENPAY_PRODUCTION === "true"
+            ? process.env.OPENPAY_KEY
+            : process.env.OPENPAY_DEV_KEY,
+        merchantId:
+          process.env.OPENPAY_PRODUCTION === "true"
+            ? process.env.OPENPAY_MERCHANT_ID
+            : process.env.OPENPAY_DEV_MERCHANT_ID,
+        production: process.env.OPENPAY_PRODUCTION === "true",
       },
     },
   },

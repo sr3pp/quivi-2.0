@@ -12,6 +12,7 @@
 </template>
 
 <script lang="ts" setup>
+import { lockBody } from "sr-content/assets/ts/utilities";
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
 import type { Product } from "~/types";
 
@@ -33,6 +34,7 @@ const closeCart = () => {
   activeDone.value = false;
   setTimeout(() => {
     emit("close");
+    lockBody(false);
   }, 350);
 };
 
@@ -67,6 +69,7 @@ watch(
   () => props.active,
   (value) => {
     if (value) {
+      lockBody(true);
       setTimeout(() => {
         activeDone.value = true;
       }, 100);

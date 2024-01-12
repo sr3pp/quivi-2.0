@@ -1,0 +1,34 @@
+export interface saeOrder {
+  numOrdenCompraPortal: string;
+  elaboraFactura: string;
+  calle: string;
+  codigoPostal: string;
+  colonia: string;
+  correo: string;
+  cveCliente: string;
+  estado: string;
+  municipio: string;
+  nombreCliente: string;
+  numExterior: string;
+  numInterior: string;
+  pais: string;
+  rfcCliente: string;
+  telefono: string;
+  calleEnvio: string;
+  codigoPostalEnvio: string;
+  coloniaEnvio: string;
+  estadoEnvio: string;
+  importeTotal: string;
+  impuestoTotal: string;
+  municipioEnvio: string;
+  nombreEnvio: string;
+  numExteriorEnvio: string;
+  numInteriorEnvio: string;
+  paisEnvio: string;
+  telefonoEnvio: string;
+  referenciaPago: string;
+  registrado: string;
+  formaPago: string;
+  metodoPago: string;
+  usoCFDI: string;
+}

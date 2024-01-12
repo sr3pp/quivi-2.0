@@ -47,7 +47,8 @@
     "pug": "^3.0.2",
     "read-excel-file": "^5.7.1",
     "sass": "^1.69.3",
-    "sr-content": "^0.0.191",
+    "soap": "^1.0.0",
+    "sr-content": "^0.0.193",
     "vue-eslint-parser": "^9.3.2"
   }
 }

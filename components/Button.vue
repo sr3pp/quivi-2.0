@@ -1,7 +1,7 @@
 <template lang="pug">
 .quivi-button(:href="href")
     NuxtLink(:to="href" v-if="href" :aria-label="label" :title="label") {{ label }}
-    button(v-else v-bind="$attrs") {{ label }}
+    button(v-else @click="$emit('buttonclick')") {{ label }}
 
 </template>
 

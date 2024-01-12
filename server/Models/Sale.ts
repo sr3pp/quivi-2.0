@@ -5,15 +5,18 @@ import Product from "./Product";
 const schema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
-    products: [{ type: mongoose.Schema.Types.ObjectId, ref: Product }],
+    products: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: Product },
+        quantity: { type: Number, required: true, default: 1 },
+        price: { type: Number, required: true, default: 0 },
+        discount: { type: Number, required: true, default: 0 },
+      },
+    ],
     order_no: { type: String, required: true, unique: true },
     sae_order: { type: String, required: true, unique: true },
     status: { type: Boolean, required: true, default: false },
-    customer: {
-      name: { type: String, required: true },
-      phone: { type: String, required: true },
-      email: { type: String, required: true },
-    },
+    shipment: { type: mongoose.Schema.Types.ObjectId, ref: "Shipment" },
     payment: {
       transaction: { type: String, required: true, unique: true },
       method: {
