@@ -1,18 +1,18 @@
 <template lang="pug">
 ul.quivi-cart-products 
     li.quivi-cart-product(v-for="(product, i) in products" :key="i")
-        SrImg(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
+        SrPicture(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
         .quivi-cart-product-info
-            SrText(:value="product.name" kind="subtitle")
-            SrText(:value="product.brand.name")
-            SrText(:value="product.web")
+            SrText(:text="product.name" class="subtitle")
+            SrText(:text="product.brand.name")
+            SrText(:text="product.web")
             SrFormInput(v-if="editable" :value="product.qty" type="number" @change="setTotal" @input="product.qty = $event.target.value" :min="1" :max="100")
-            SrText(v-else :value="product.qty")
+            SrText(v-else :text="product.qty")
             .price-container
-                SrText.discount(:value="toPrice(product.price)")
-                SrText.price(:value="processDiscount(product)" kind="subtitle" v-if="product.discount")
+                SrText.discount(:text="toPrice(product.price)")
+                SrText.price(:text="processDiscount(product)" class="subtitle" v-if="product.discount")
         button(@click="removeProduct(product)" v-if="editable")
-            SrIcon(value="trash-o")
+            SrIcon(name="trash-o")
 </template>
 
 <script lang="ts" setup>

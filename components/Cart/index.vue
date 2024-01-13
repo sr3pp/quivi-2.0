@@ -3,7 +3,7 @@
     .quivi-cart-content
       .quivi-cart-header
         button.quivi-cart-close(:class="{ active }" @click="closeCart") X
-        SrText(value="Carrito" kind="title")  
+        SrText(text="Carrito" class="title")  
         button.quivi-cart-empty(@click="emptyCart()") Vaciar carrito
       CartList(:products="cart.products" :editable="true" @remove="removeProduct" @setTotal="setTotal")
       CartTotal(:total="cart.total")
