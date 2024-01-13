@@ -1,7 +1,7 @@
 <template lang="pug">
 .catalogo
     SrContainer(:with_space="true")
-        SrText(value="Checkout" kind="title" alignment="center")
+        SrText(value="Checkout" class="title" alignment="center")
 </template>
 
 <script lang="ts" setup></script>

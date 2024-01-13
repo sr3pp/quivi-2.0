@@ -1,7 +1,7 @@
 <template lang="pug">
 .quivi-loader
     SrContainer
-        SrText(text="Cargando..." kind="title" alignment="center")
+        SrText(text="Cargando..." class="title" alignment="center")
 </template>
 
 <script setup></script>

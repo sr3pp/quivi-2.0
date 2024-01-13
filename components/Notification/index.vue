@@ -1,7 +1,7 @@
 <template lang="pug">
 article.quivi-notification(:class="{active: status}" @mouseover="cancelTimeout" @mouseleave="setCloseTimeout")
   button.quivi-notification-close(@click="$emit('close')") X
-  SrText.quivi-notification-title(:value="title" kind="subtitle")
+  SrText.quivi-notification-title(:value="title" class="subtitle")
   .quivi-notification-content
     slot
     .quivi-notification-description(v-if="description")

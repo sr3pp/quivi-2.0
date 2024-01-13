@@ -2,12 +2,12 @@
 .store
     SrGrid
         SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column store-filters")
-          SrText(text="Encuentra lo que necesitas." kind="subtitle")
+          SrText(text="Encuentra lo que necesitas." class="subtitle")
           ProductFilters(@filter="filterProducts")
         SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column")
-          SrText(text="Envios gratis en compras superiores a" kind="subtitle")
+          SrText(text="Envios gratis en compras superiores a" class="subtitle")
           .search-label(v-if="search || filters")
-              SrText(text="Resultados de la busqueda" kind="subtitle")
+              SrText(text="Resultados de la busqueda" class="subtitle")
               Button(href="/" label="Ver todos los productos")
           SrGrid(tag="ul")
               SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")

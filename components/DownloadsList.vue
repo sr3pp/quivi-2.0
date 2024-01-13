@@ -1,9 +1,9 @@
 <template lang="pug">
 .downloads-list
-    SrText(text="Descargas" kind="title")
+    SrText(text="Descargas" class="title")
     ul.downloads-list-element
         li.downloads-list-element-list(v-for="([key, value], i) in Object.entries(downloads)" :key="i")
-            SrText(:text="key" kind="subtitle")
+            SrText(:text="key" class="subtitle")
             ol.downloads-list-submenu
                 li.downloads-list-submenu-item(v-for="(item, i) in value" :key="i")
                     a(:href="`/downloads${path}/${key}/${item}`" target="_blank") {{ item }}

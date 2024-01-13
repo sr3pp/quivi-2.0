@@ -11,7 +11,7 @@
           NuxtLink(:to="result.url" :prefetch="false")
             SrPicture(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
             .quivi-searchbar-result-description
-              SrText(:text="result.name" kind="subtitle")
+              SrText(:text="result.name" class="subtitle")
               SrText(:text="result.brand.name")
               SrText.small(:text="result.web")
       .quivi-searchbar-result.full

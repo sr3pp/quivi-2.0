@@ -1,7 +1,7 @@
 <template lang="pug">
 .panel
   SrContainer(:with_space="true")
-    SrText(value="Panel Envios" kind="title" alignment="center")
+    SrText(value="Panel Envios" class="title" alignment="center")
 </template>
 
 <script lang="ts" setup>

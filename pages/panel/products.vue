@@ -5,7 +5,7 @@
       span Carga Massiva
       span.spinner(v-if="uploading")
       input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
-    SrText(value="Panel Products" kind="title" alignment="center")
+    SrText(value="Panel Products" class="title" alignment="center")
 
     ul
       li(v-for="product in products")

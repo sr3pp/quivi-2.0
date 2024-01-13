@@ -1,7 +1,7 @@
 <template lang="pug">
 .panel
   SrContainer(:with_space="true")
-    SrText(value="Panel ventas" kind="title" alignment="center")
+    SrText(value="Panel ventas" class="title" alignment="center")
     button(@click="salesModal = true") Create venta
     table
       tbody

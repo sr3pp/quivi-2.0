@@ -1,7 +1,7 @@
 <template lang="pug">
 .blog
-    SrContainer(:with_space="true")
-        SrText(value="Blog" kind="title")
+    SrContainer(:with-padding="true")
+        SrText(text="Blog" class="title")
 
         ul.blog-entry-list
             li.blog-entry-item 

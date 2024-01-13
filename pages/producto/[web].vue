@@ -12,7 +12,7 @@
 
                     .product-detail-price
                         .price-container
-                          SrText(:text="processDiscount(product)" kind="title" v-if="product.discount")
+                          SrText(:text="processDiscount(product)" class="title" v-if="product.discount")
                           SrText.discount(:text="toPrice(product.price)" class="subtitle")
                         SrText(text="Solicitar informacion")
                     .product-detail-actions

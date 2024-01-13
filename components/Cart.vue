@@ -3,24 +3,24 @@
     .quivi-cart-content
       .quivi-cart-header
         button.quivi-cart-close(:class="{ active }" @click="closeCart") X
-        SrText(value="Carrito" kind="title")  
+        SrText(text="Carrito" class="title")  
         button.quivi-cart-empty(@click="emptyCart()") Vaciar carrito
       ul.quivi-cart-products 
         li.quivi-cart-product(v-for="(product, i) in cart.products" :key="i")
           SrPicture(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
           .quivi-cart-product-info
-            SrText(:text="product.name" kind="subtitle")
+            SrText(:text="product.name" class="subtitle")
             SrText(:text="product.brand.name")
             SrText(:text="product.web")
             SrFormInput(:value="product.qty" type="number" @change="setTotal" @input="product.qty = $event.target.value" :min="1" :max="100")
             .price-container
               SrText.discount(:text="toPrice(product.price)")
-              SrText.price(:text="processDiscount(product)" kind="subtitle" v-if="product.discount")
+              SrText.price(:text="processDiscount(product)" class="subtitle" v-if="product.discount")
           button(@click="removeProduct(product)")
             SrIcon(name="trash-o")
       .quivi-cart-total
-        SrText(text="Total:" kind="title")
-        SrText(:text="toPrice(cart.total)" kind="title")
+        SrText(text="Total:" class="title")
+        SrText(:text="toPrice(cart.total)" class="title")
     .quivi-cart-backdrop(@click="closeCart")
 </template>
 

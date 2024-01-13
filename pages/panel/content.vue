@@ -6,7 +6,7 @@
     button(@click="testContent") testContent
     button(@click="componentModal = true") component list
   SrContainer(:with-padding="true")
-    SrText(text="Panel content" kind="title" alignment="center")
+    SrText(text="Panel content" class="title" alignment="center")
     component(v-for="(component, i) in content" :is="component.component" :key="i" v-bind="component.props")
     .fill
   SrModal(:active="contentModal" @close="contentModal = false")

@@ -8,7 +8,7 @@
             NuxtLink(:to="`/catalogo/${item.slug}`")
               SrPicture(:src="item.thumb" :alt="item.label" class="catalogo-banner")
               div.catalogo-item-description
-                SrText(:text="item.label" kind="title")
+                SrText(:text="item.label" class="title")
                 ol.catalogo-item-description-list
                   li.catalogo-item-description-list-item(v-for="(el, i) in item.list" :key="i")
                     SrIcon(name="quivi-check-o")

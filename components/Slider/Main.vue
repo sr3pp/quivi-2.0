@@ -8,7 +8,7 @@ Swiper.main-slider(
         .main-slider-slide-background
             SrPicture(:src="slide.background.mobile" :alt="slide.title" v-if="slide.background")
         SrContainer(:with-padding="true")
-            SrText(:text="slide.title" kind="title" alignment="center")
+            SrText(:text="slide.title" class="title" alignment="center")
             SrText(:text="slide.description" alignment="center")
             NuxtLink(v-if="slide.link" :to="slide.link.url") {{ slide.link.label }}
 
