@@ -33,7 +33,7 @@ const props = defineProps({
   },
 });
 
-const { data: slides } = await useFetch(props.slidesEndpoint as string);
+const slides = await $fetch(props.slidesEndpoint as string);
 </script>
 
 <style lang="scss">
