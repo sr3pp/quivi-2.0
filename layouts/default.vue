@@ -3,18 +3,20 @@ main.default-layout
   Navigation
   Transition(name="page", mode="out-in")
     Loading(v-if="loading")
+    
   NuxtPage
+
   SrModal(:active="contactModal" @close="contactModal = false")
     template(#header)
       .sr-modal-header
-        SrText(value="Contacto" kind="title")
+        SrText(value="Contacto" class="title")
     template(#body)
       .sr-modal-body
         ContactForm
   SrModal(:active="loginSw" @close="loginSw = false")
     template(#header)
       .sr-modal-header
-        SrText(value="Login" kind="title")
+        SrText(value="Login" class="title")
     template(#body)
       .sr-modal-body
         Login

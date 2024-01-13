@@ -5,8 +5,8 @@
     button(@click="contentModal = true") Edit Seo
     button(@click="testContent") testContent
     button(@click="componentModal = true") component list
-  SrContainer(:with_space="true")
-    SrText(value="Panel content" kind="title" alignment="center")
+  SrContainer(:with-padding="true")
+    SrText(text="Panel content" class="title" alignment="center")
     component(v-for="(component, i) in content" :is="component.component" :key="i" v-bind="component.props")
     .fill
   SrModal(:active="contentModal" @close="contentModal = false")
@@ -52,7 +52,7 @@ const testContent = () => {
 .quivi-content {
   .top-bar {
     background-color: blue;
-    padding: unit(8);
+    padding: pxToRem(8);
     display: flex;
     align-items: center;
     position: sticky;
@@ -60,7 +60,7 @@ const testContent = () => {
     top: 0;
 
     .sr-form-select {
-      width: unit(200);
+      width: pxToRem(200);
     }
   }
 

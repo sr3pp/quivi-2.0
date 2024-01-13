@@ -18,13 +18,13 @@ const removeNotification = (el: any, idx: number) => {
 <style lang="scss" scoped>
 .quivi-notification-stack {
   position: fixed;
-  bottom: unit(20);
-  right: unit(20);
+  bottom: pxToRem(20);
+  right: pxToRem(20);
   z-index: 22;
 
   &-item {
     &:not(:last-child) {
-      margin-bottom: unit(20);
+      margin-bottom: pxToRem(20);
     }
   }
 }

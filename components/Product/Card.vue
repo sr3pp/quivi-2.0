@@ -3,14 +3,14 @@
     figure.quivi-product-card-img
         img(:src="product.thumbs[0]" :alt="product.name")
     .quivi-product-card-body
-        SrText(:value="product.name" kind="title")
-        SrText.sae(:value="`Clave: ${product.sae}`")
-        SrText(:value="processDiscount(product)" kind="title")
-        SrText.discount(:value="toPrice(product.price)" kind="subtitle" v-if="product.discount")
+        SrText(:text="product.name" class="title")
+        SrText.sae(:text="`Clave: ${product.sae}`")
+        SrText(:text="processDiscount(product)" class="title")
+        SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
     .quivi-product-card-footer
         Button(:href="`/producto/${product.web}`" label="Ver Mas")
         Tooltip
-            SrText(:value="product.extra")
+            SrText(:text="product.extra")
                 
 
 </template>
@@ -61,19 +61,19 @@ defineProps({
   justify-content: center;
   width: 100%;
   border: {
-    width: unit(2);
+    width: pxToRem(2);
     color: $color-quivi-light-red;
     style: solid;
   }
-  border-radius: unit(10);
-  margin-bottom: unit(20);
+  border-radius: pxToRem(10);
+  margin-bottom: pxToRem(20);
   &-img {
     width: 100%;
-    height: unit(200);
-    margin-bottom: unit(20);
+    height: pxToRem(200);
+    margin-bottom: pxToRem(20);
     margin-top: 0;
     overflow: hidden;
-    box-shadow: unit(10) unit(10) unit(0) rgba(0, 0, 0, 0);
+    box-shadow: pxToRem(10) pxToRem(10) pxToRem(0) rgba(0, 0, 0, 0);
     transition: box-shadow 0.35s ease;
     img {
       width: 100%;
@@ -86,7 +86,7 @@ defineProps({
   &:hover {
     .quivi-product-card {
       &-img {
-        box-shadow: unit(10) unit(10) unit(20) rgba(0, 0, 0, 0.25);
+        box-shadow: pxToRem(10) pxToRem(10) pxToRem(20) rgba(0, 0, 0, 0.25);
         img {
           transform: scale(1.1);
         }
@@ -95,13 +95,13 @@ defineProps({
   }
 
   &-body {
-    padding-right: unit(20);
-    padding-left: unit(20);
+    padding-right: pxToRem(20);
+    padding-left: pxToRem(20);
     width: 100%;
 
     .sr-text,
     .sae {
-      margin-bottom: unit(10);
+      margin-bottom: pxToRem(10);
     }
 
     .discount {
@@ -119,7 +119,7 @@ defineProps({
     display: flex;
     position: relative;
     justify-content: center;
-    padding: unit(20);
+    padding: pxToRem(20);
   }
 }
 </style>

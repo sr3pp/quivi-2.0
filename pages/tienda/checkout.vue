@@ -4,7 +4,7 @@
         SrContainer
             SrText(value="Verificando Pago..." kind="title" alignment="center")
     SrContainer(:with_space="true")
-        SrText(value="Checkout" kind="title" alignment="center")
+        SrText(value="Checkout" class="title" alignment="center")
         SrGrid
             .sr-grid-col-1(class="sm:sr-grid-col-3/4 column")
                 Accordion(label="Información de envío" :active="currentStep == 1" @toogle="currentStep == 1 ? currentStep = 0 : currentStep = 1")

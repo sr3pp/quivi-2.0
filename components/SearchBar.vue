@@ -4,16 +4,16 @@
     button.quivi-searchbar-clearbtn(v-if="results.length" @click="results = []")
       span x
     button(@click="goToSearch")
-        SrIcon(value="lupa-o")
+        SrIcon(name="lupa-o")
     .quivi-searchbar-results-container(:class="{ active: results.length > 0 }")
       ul.quivi-searchbar-results
         li.quivi-searchbar-result(v-for="(result, i) in results" :key="i")
           NuxtLink(:to="result.url" :prefetch="false")
-            SrImg(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
+            SrPicture(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
             .quivi-searchbar-result-description
-              SrText(:value="result.name" kind="subtitle")
-              SrText(:value="result.brand.name")
-              SrText.small(:value="result.web")
+              SrText(:text="result.name" class="subtitle")
+              SrText(:text="result.brand.name")
+              SrText.small(:text="result.web")
       .quivi-searchbar-result.full
           NuxtLink(:to="`/?search=${search}`") Ver todos los resultados
 </template>
@@ -96,43 +96,43 @@ watch(
   border: {
     style: solid;
     color: $color-quivi-gray;
-    width: unit(1);
-    radius: unit(8);
+    width: pxToRem(1);
+    radius: pxToRem(8);
   }
 
-  height: unit(50);
+  height: pxToRem(50);
 
   input {
     width: 100%;
     border: none;
-    border-radius: unit(8);
+    border-radius: pxToRem(8);
     background-color: $color-white;
-    padding: unit(8);
-    padding-right: unit(60);
-    font-size: unit(16);
+    padding: pxToRem(8);
+    padding-right: pxToRem(60);
+    font-size: pxToRem(16);
   }
 
   button {
     cursor: pointer;
-    padding: unit(4);
+    padding: pxToRem(4);
     background-color: $color-quivi-red;
     color: $color-white;
     border: none;
-    border-top-right-radius: unit(8);
-    border-bottom-right-radius: unit(8);
+    border-top-right-radius: pxToRem(8);
+    border-bottom-right-radius: pxToRem(8);
     position: absolute;
     right: 0;
     top: 0;
     height: 100%;
-    width: unit(40);
+    width: pxToRem(40);
     display: flex;
     align-items: center;
     justify-content: center;
 
     .sr-icon {
       flex-shrink: 0;
-      width: unit(25);
-      height: unit(25);
+      width: pxToRem(25);
+      height: pxToRem(25);
     }
   }
 
@@ -146,23 +146,24 @@ watch(
     top: 100%;
     left: 0;
     width: 100%;
-    border-bottom-left-radius: unit(8);
-    border-bottom-right-radius: unit(8);
+    border-bottom-left-radius: pxToRem(8);
+    border-bottom-right-radius: pxToRem(8);
     overflow: hidden;
     border: {
       style: solid;
       color: rgba($color-quivi-dark-gray, 0.3);
-      width: unit(1);
+      width: pxToRem(1);
     }
     border-top: none;
     background-color: $color-white;
-    box-shadow: unit(0) unit(4) unit(20) rgba($color-quivi-dark-gray, 0.3);
+    box-shadow: pxToRem(0) pxToRem(4) pxToRem(20)
+      rgba($color-quivi-dark-gray, 0.3);
     transition:
       max-height 0.35s ease-in-out,
       opacity 0.35s ease;
 
     &.active {
-      max-height: unit(300);
+      max-height: pxToRem(300);
       opacity: 1;
     }
   }
@@ -170,18 +171,18 @@ watch(
   &-results {
     height: 100%;
     overflow: auto;
-    padding-bottom: unit(50);
+    padding-bottom: pxToRem(50);
   }
 
   &-result {
     a {
       display: flex;
-      padding: unit(8);
+      padding: pxToRem(8);
       color: $color-text-color;
 
       .sr-img {
         width: 25%;
-        margin-right: unit(20);
+        margin-right: pxToRem(20);
       }
     }
 
@@ -197,8 +198,9 @@ watch(
       bottom: 0;
       left: 0;
       width: 100%;
-      height: unit(40);
-      box-shadow: unit(0) unit(-4) unit(10) rgba($color-quivi-dark-gray, 0.1);
+      height: pxToRem(40);
+      box-shadow: pxToRem(0) pxToRem(-4) pxToRem(10)
+        rgba($color-quivi-dark-gray, 0.1);
       a {
         width: 100%;
         justify-content: center;
@@ -209,11 +211,11 @@ watch(
 
   &-clearbtn {
     position: absolute;
-    right: unit(40) !important;
+    right: pxToRem(40) !important;
     top: 0;
     background: none !important;
     color: $color-quivi-gray !important;
-    font-size: unit(18);
+    font-size: pxToRem(18);
     font-family: Bebas;
   }
 }

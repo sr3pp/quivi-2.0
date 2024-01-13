@@ -21,7 +21,7 @@ defineProps({
 .sidebar {
   position: relative;
   height: 100vh;
-  width: unit(50);
+  width: pxToRem(50);
   display: flex;
   align-items: center;
 
@@ -50,14 +50,14 @@ defineProps({
 
       .sr-icon {
         flex-shrink: 0;
-        width: unit(25);
-        height: unit(25);
-        margin-right: unit(4);
+        width: pxToRem(25);
+        height: pxToRem(25);
+        margin-right: pxToRem(4);
       }
 
       &:hover {
         span {
-          max-width: unit(200);
+          max-width: pxToRem(200);
         }
       }
     }

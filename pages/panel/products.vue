@@ -5,7 +5,7 @@
       span Carga Massiva
       span.spinner(v-if="uploading")
       input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
-    SrText(value="Panel Products" kind="title" alignment="center")
+    SrText(value="Panel Products" class="title" alignment="center")
 
     ul
       li(v-for="product in products")
@@ -89,11 +89,11 @@ const handleFileUpload = async (e: Event) => {
     }
 
     .spinner {
-      margin-left: unit(10);
-      width: unit(20);
-      height: unit(20);
+      margin-left: pxToRem(10);
+      width: pxToRem(20);
+      height: pxToRem(20);
       background-color: red;
-      border-radius: unit(50);
+      border-radius: pxToRem(50);
     }
   }
 }

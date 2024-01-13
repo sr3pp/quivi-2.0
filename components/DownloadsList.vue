@@ -1,9 +1,9 @@
 <template lang="pug">
 .downloads-list
-    SrText(value="Descargas" kind="title")
+    SrText(text="Descargas" class="title")
     ul.downloads-list-element
         li.downloads-list-element-list(v-for="([key, value], i) in Object.entries(downloads)" :key="i")
-            SrText(:value="key" kind="subtitle")
+            SrText(:text="key" class="subtitle")
             ol.downloads-list-submenu
                 li.downloads-list-submenu-item(v-for="(item, i) in value" :key="i")
                     a(:href="`/downloads${path}/${key}/${item}`" target="_blank") {{ item }}
@@ -34,15 +34,15 @@ defineProps({
 
       max-width: 25%;
       flex-shrink: 0;
-      padding: unit(20);
+      padding: pxToRem(20);
 
       > .sr-text {
-        margin-bottom: unit(10);
+        margin-bottom: pxToRem(10);
       }
 
       &:not(:last-child) {
         border-right: {
-          width: unit(2);
+          width: pxToRem(2);
           color: $color-quivi-light-red;
           style: solid;
         }

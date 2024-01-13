@@ -2,17 +2,17 @@
 footer.quivi-footer
     SrContainer
         SrGrid
-            .sr-grid-col-1(class="sm:sr-grid-col-1/5 column")
-                SrText(value="NAVEGACIÓN" kind="subtitle")
+            SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column")
+                SrText(text="NAVEGACIÓN" class="subtitle")
                 ul.quivi-footer-menu
                     li.quivi-footer-menu-item(v-for="(item, i) in footer.navegacion" :key="i")
                         NuxtLink(:to="item.url" :aria-label="item.label" :title="item.label") {{ item.label }}
                 ul.quivi-footer-social
                     li.quivi-footer-social-item(v-for="(item, i) in footer.social" :key="i")
                         a(:href="item.url" target="_blank" :aria-label="item.label" :title="item.label")
-                            SrIcon(:value="item.icon")
-            .sr-grid-col-1(class="sm:sr-grid-col-1/5 column")
-                SrText(value="Cliente" kind="subtitle")
+                            SrIcon(:name="item.icon")
+            SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column")
+                SrText(value="Cliente" class="subtitle")
                 ul.quivi-footer-menu
                     li.quivi-footer-menu-item
                         button(@click="cartSwitch = true") Carrito
@@ -20,15 +20,15 @@ footer.quivi-footer
                         NuxtLink(to="/") Tienda
                     li.quivi-footer-menu-item
                         button(@click="loginSw = true") Registro
-            .sr-grid-col-1(class="sm:sr-grid-col-3/5 column")
-                SrText(value="Distribuidor Autorizado" kind="subtitle")
+            SrGridColumn(:size="{mobile: '1', sm: '3/5'}" class="column")
+                SrText(text="Distribuidor Autorizado" class="subtitle")
     SrGrid.quivi-footer-bottom
-        .sr-grid-col-1(class="sm:sr-grid-col-1/3 column")
-            SrText(value="© 2021 Quivi" alignment="center")
-        .sr-grid-col-1(class="sm:sr-grid-col-1/3 column")
-            SrText(value="© 2021 Quivi" alignment="center")
-        .sr-grid-col-1(class="sm:sr-grid-col-1/3 column")
-            SrText(value="© 2021 Quivi" alignment="center")
+        SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
+            SrText(text="© 2021 Quivi" alignment="center")
+        SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
+            SrText(text="© 2021 Quivi" alignment="center")
+        SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
+            SrText(text="© 2021 Quivi" alignment="center")
 </template>
 
 <script lang="ts" setup>
@@ -89,7 +89,7 @@ const loginSw = useState("loginSw", () => false);
     flex-direction: column;
 
     &-item {
-      padding: unit(2);
+      padding: pxToRem(2);
       color: $color-quivi-light-red;
 
       a {
@@ -107,8 +107,8 @@ const loginSw = useState("loginSw", () => false);
   }
 
   .sr-container {
-    padding-top: unit(20);
-    padding-bottom: unit(20);
+    padding-top: pxToRem(20);
+    padding-bottom: pxToRem(20);
   }
 
   &-social {
@@ -119,8 +119,8 @@ const loginSw = useState("loginSw", () => false);
       align-items: flex-end;
       a {
         .sr-icon {
-          width: unit(30);
-          height: unit(30);
+          width: pxToRem(30);
+          height: pxToRem(30);
         }
       }
     }

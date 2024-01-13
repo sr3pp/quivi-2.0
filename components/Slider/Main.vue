@@ -5,11 +5,11 @@ Swiper.main-slider(
     v-bind="options"
 )
     SwiperSlide.main-slider-slide(v-for="slide in slides" :key="slide")
-        SrBackground()
-            SrImg(:src="slide.background.mobile" :alt="slide.title" v-if="slide.background")
-        SrContainer(:with_space="true")
-            SrText(:value="slide.title" kind="title" alignment="center")
-            SrText(:value="slide.description" alignment="center")
+        .main-slider-slide-background
+            SrPicture(:src="slide.background.mobile" :alt="slide.title" v-if="slide.background")
+        SrContainer(:with-padding="true")
+            SrText(:text="slide.title" class="title" alignment="center")
+            SrText(:text="slide.description" alignment="center")
             NuxtLink(v-if="slide.link" :to="slide.link.url") {{ slide.link.label }}
 
 </template>
@@ -45,7 +45,7 @@ const { data: slides } = await useFetch(props.slidesEndpoint as string);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: unit(400);
+    min-height: pxToRem(400);
     overflow: hidden;
 
     .sr-container {
@@ -57,9 +57,24 @@ const { data: slides } = await useFetch(props.slidesEndpoint as string);
     .sr-text {
       &.kind {
         &-title {
-          font-size: unit(40);
-          margin-bottom: unit(40);
+          font-size: pxToRem(40);
+          margin-bottom: pxToRem(40);
         }
+      }
+    }
+
+    &-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+
+      .sr-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
     }
   }

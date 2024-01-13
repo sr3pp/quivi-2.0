@@ -53,7 +53,7 @@ watch(
   &-list {
     display: flex;
     a {
-      padding: unit(8);
+      padding: pxToRem(8);
     }
   }
 
@@ -63,7 +63,7 @@ watch(
     &.current {
       background-color: $color-quivi-red;
       color: $color-white;
-      border-radius: unit(8);
+      border-radius: pxToRem(8);
       a {
         color: currentColor;
       }
@@ -71,7 +71,7 @@ watch(
   }
 
   &-detail {
-    font-size: unit(14);
+    font-size: pxToRem(14);
     color: $color-quivi-light-gray;
   }
 }

@@ -1,7 +1,7 @@
 <template lang="pug">
 .users
   SrContainer(:with_space="true")
-    SrText(value="Panel users" kind="title" alignment="center")
+    SrText(value="Panel users" class="title" alignment="center")
 
     button(@click="userModal = true") Create user
 
@@ -20,7 +20,7 @@
 
     SrModal(:active="userModal" @close="userModal = false")
       template(#body)
-        SrText(value="Create user" kind="title" alignment="center")
+        SrText(value="Create user" class="title" alignment="center")
         SrForm(:form="userForm" @submit="saveUser")
 
     SrModal(:active="passwordModal" @close="passwordModal = false")

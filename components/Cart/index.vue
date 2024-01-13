@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts" setup>
-import { lockBody } from "sr-content/assets/ts/utilities";
+import { lockBody } from "sr-content-2/assets/ts/utilities";
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
 import type { Product } from "~/types";
 
