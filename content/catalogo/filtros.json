@@ -1,0 +1,197 @@
+{
+  "card": {
+    "order": 2,
+    "label": "Filtros Sakura",
+    "slug": "filtros_sakura",
+    "thumb": "/img/filtros_sakura.png",
+    "list": [
+      "Filtros Automotriz",
+      "Filtros Cabina (Aire ACOND.)",
+      "Filtros Servicio Pesado",
+      "Filtros Maquinaria Agricola",
+      "Filtros Servicio Maritimo",
+      "Filtros Especiales"
+    ]
+  },
+  "content": {
+    "brand": "sakura",
+    "slides": [
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/filtros_sakura.jpg"
+        }
+      },
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/productos_sakura.jpg"
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "SrContainer",
+        "props": {
+          "contained": false,
+          "css": {
+            "class": "catalog-detail-description",
+            "style": {
+              "background": "radial-gradient(circle, rgba(238,238,238,1) 0%, rgba(196,196,196,1) 100%)",
+              "background-size": "cover",
+              "background-position": "center",
+              "background-repeat": "no-repeat"
+            }
+          },
+          "content": [
+            {
+              "component": "SrContainer",
+              "props": {
+                "with-padding": true,
+                "css": {
+                  "class": "catalog-detail-description"
+                },
+                "content": [
+                  {
+                    "component": "SrText",
+                    "props": {
+                      "css": {
+                        "class": "text-quivi-light-red title",
+                        "style": {
+                          "--text-align": "center"
+                        }
+                      },
+                      "text": "LOS FILTROS SAKURA SON TU MEJOR OPCIÓN"
+                    }
+                  },
+                  {
+                    "component": "SrGrid",
+                    "props": {
+                      "content": [
+                        {
+                          "component": "SrGridColumn",
+                          "props": {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "1/2"
+                            },
+                            "content": [
+                              {
+                                "component": "SrPicture",
+                                "props": {
+                                  "src": "/img/catalogo/sakura/filtros.png"
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "component": "SrGridColumn",
+                          "props": {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "1/2"
+                            },
+                            "content": [
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "class": "text-quivi-light-red subtitle",
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "Alta Eficiencia"
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "Diseñado y probado de acuerdo a las normas JIS, ISO Y SAE; Fabricados con materiales de alta calidad y fuerte construcción para proporcionar un óptimo rendimiento."
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "class": "text-quivi-light-red subtitle",
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "PROTECCIÓN DEL MOTOR"
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "Filtración de alto rendimiento para proteger los componentes y maximizar la vida útil de motor reduciendo así el costo de mantenimiento."
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "class": "text-quivi-light-red subtitle",
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "Cobertura"
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "Más de 6,000 números entre aplicaciones americanas, europeas y asiáticas del sector automotriz, comercial, servicio pesado, marino y agrícola."
+                                }
+                              },
+                              {
+                                "component": "QuiviButton",
+                                "props": {
+                                  "label": "Ver Catálogo",
+                                  "url": "/",
+                                  "size": "lg"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

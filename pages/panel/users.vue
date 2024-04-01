@@ -1,34 +1,44 @@
 <template lang="pug">
 .users
-  SrContainer(:with_space="true")
+  SrContainer(:with-padding="true")
     SrText(value="Panel users" class="title" alignment="center")
 
-    button(@click="userModal = true") Create user
+    button(@click="newUser") Create user
 
     table
       tbody
         tr(v-for="(user, i) in users" :key="i")
           td {{ user.profile.name }}
           td {{ user.email }}
-          td {{ user.admin_level }}
+          td {{ user.admin_level == 0 ? "Usuario" : user.admin_level == 1 ? "Editor" : "Administrador" }}
           td {{ user.created_at }}
           td {{ user.updated_at }}
           td
-            button(@click="changePassword(user._id)") Change password
+            button(@click="changePassword(user)") Change password
             button(@click="editUser(user)") edit
             button(@click="deleteUser(user._id, i)") Delete
 
     SrModal(:active="userModal" @close="userModal = false")
       template(#body)
-        SrText(value="Create user" class="title" alignment="center")
-        SrForm(:form="userForm" @submit="saveUser")
+        .sr-modal-body
+          SrText(text="Create user" class="title" alignment="center")
+          ul(v-if="formErrors.length")
+            li(v-for="error in formErrors" :key="error")
+              SrText(:text="`${error.field}: ${error.message}`" class="error")
+          SrForm(:fieldsets="userForm" @submit="saveUser")
 
     SrModal(:active="passwordModal" @close="passwordModal = false")
       template(#body)
-        SrForm(:form="passwordForm" @submit="savePassword") 
+        .sr-modal-body
+          ul(v-if="formErrors.length")
+            li(v-for="error in formErrors" :key="error")
+              SrText(:text="`${error.field}: ${error.message}`" class="error")
+          SrForm(:fieldsets="passwordForm" @submit="savePassword") 
 </template>
 
 <script lang="ts" setup>
+import { validateForm } from "sr-content-2/assets/ts/utilities";
+import type { Component } from "sr-content-2/types";
 import type { User } from "~/types";
 
 definePageMeta({
@@ -40,43 +50,149 @@ const { data: users } = await useFetch<User[]>("/api/users");
 const userModal: Ref<boolean> = ref(false);
 const passwordModal: Ref<boolean> = ref(false);
 
-const currentUser: Ref<string> = ref("");
+const currentUser: Ref<Object | null> = ref(null);
 
-const userForm: any = {
-  email: "",
-  password: "",
-  password_confirm: "",
-  admin_level_select: {
-    value: 0,
-    options: [
-      { value: "0", name: "User" },
-      { value: "1", name: "Manager" },
-      { value: "2", name: "Sales Manager" },
-      { value: "3", name: "Admin" },
+const userForm: any = ref([
+  {
+    fields: [
+      {
+        component: "SrFormInput",
+        props: {
+          label: "E-mail",
+          type: "email",
+          required: true,
+          name: "email",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Password",
+          type: "password",
+          required: true,
+          name: "password",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Password Confirm",
+          type: "password",
+          required: true,
+          name: "password_confirmation",
+          confirmation: "password",
+        },
+      },
+      {
+        component: "SrFormSelect",
+        props: {
+          label: "Admin Level",
+          required: true,
+          name: "admin_level",
+          value: "0",
+          options: [
+            { name: "Usuario", value: "0" },
+            { name: "Editor", value: "1" },
+            { name: "Administrador", value: "3" },
+          ],
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Nombre",
+          type: "text",
+          required: true,
+          name: "profile.name",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Apellido",
+          type: "text",
+          required: true,
+          name: "profile.lastname",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Tel:",
+          type: "phone",
+          required: true,
+          name: "profile.phone",
+        },
+      },
     ],
   },
-  profile: {
-    name: "",
-    lastname: "",
-    phone: "",
+]);
+
+const formErrors = ref([]);
+
+const passwordForm: any = ref([
+  {
+    fields: [
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Password",
+          name: "password",
+          type: "password",
+          required: true,
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Confirm password",
+          name: "password_confirmation",
+          confirmation: "password",
+          type: "password",
+          required: true,
+        },
+      },
+    ],
   },
+]);
+
+const newUser = () => {
+  userForm.value.forEach((fieldset: any) => {
+    fieldset.fields.forEach((field: Component) => {
+      if (field.props.name?.includes("password")) {
+        field.props.required = true;
+        field.props.disabled = false;
+        if (!field.props.css) field.props.css = { class: "", style: {} };
+        (field.props.css as any).class = "";
+      }
+    });
+  });
+  userModal.value = true;
 };
 
-const passwordForm: any = {
-  password: "",
-  password_confirm: "",
-};
+const saveUser = async () => {
+  formErrors.value = [];
+  let _user: User | null = null;
+  validateForm(userForm.value, (event: any) => {
+    if ("errors" in event) {
+      formErrors.value = event.errors;
+      return;
+    }
 
-const saveUser = async (_user: User) => {
-  if (currentUser) return updateUser(_user);
+    _user = event;
+  });
+
+  if (currentUser.value) return updateUser(_user);
+
+  if (!_user) return;
 
   try {
-    const { data: user } = await useFetch<User>("/api/auth/register", {
+    const user = await $fetch<User>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(_user),
     });
 
-    users.value?.push(user.value as User);
+    users.value?.push(user as User);
 
     userModal.value = false;
   } catch (error) {
@@ -98,65 +214,91 @@ const deleteUser = (id: string, idx: number) => {
 };
 
 const editUser = (user: User) => {
-  currentUser.value = user._id as string;
-  Object.keys(userForm).forEach((key: string) => {
-    if (key === "profile") {
-      Object.keys(userForm.profile).forEach((k: string) => {
-        userForm.profile[k] = user.profile[k];
-      });
-    } else if (key === "admin_level_select") {
-      userForm.admin_level_select = {
-        value: user.admin_level,
-        options: [
-          { value: "0", name: "User" },
-          { value: "1", name: "Manager" },
-          { value: "2", name: "Sales Manager" },
-          { value: "3", name: "Admin" },
-        ],
-      };
-    } else {
-      userForm[key] = user[key];
-    }
+  currentUser.value = user;
+
+  userForm.value.forEach((fieldset: any) => {
+    fieldset.fields.forEach((field: any) => {
+      if (field.props.name.includes(".")) {
+        const [key, subkey]: [string, string] = field.props.name.split(".");
+        field.props.value = (user as any)[key][subkey];
+      } else if (field.props.name.includes("password")) {
+        field.props.required = false;
+        field.props.disabled = true;
+
+        if (!field.props.css) field.props.css = { class: "", style: {} };
+
+        field.props.css.class = "hidden";
+      } else {
+        field.props.value = user[field.props.name];
+      }
+    });
   });
 
   userModal.value = true;
 };
 
 const updateUser = async (_user: any) => {
+  formErrors.value = [];
+  validateForm(userForm.value, (event: any) => {
+    if ("errors" in event) {
+      formErrors.value = event.errors;
+      return;
+    }
+
+    _user = event;
+  });
+
+  if (formErrors.value.length) return;
+
   try {
-    const { data: user } = await useFetch<User>(`/api/users`, {
+    const user: User = await $fetch<User>(`/api/users`, {
       method: "PUT",
-      body: JSON.stringify({
-        _id: currentUser.value,
+      body: {
+        _id: (currentUser.value as User)._id,
         ..._user,
-        admin_level: _user.admin,
-      }),
+      },
     });
 
-    userModal.value = false;
     users.value?.splice(
-      users.value.findIndex((u: User) => u._id === currentUser.value),
+      users.value.findIndex(
+        (u: User) => u._id === (currentUser.value as User)._id,
+      ),
       1,
-      user.value as User,
+      user,
     );
+    userModal.value = false;
   } catch (error) {
     console.error(error);
   }
 };
 
-const changePassword = (id: string) => {
-  currentUser.value = id;
+const changePassword = (user: User) => {
+  currentUser.value = user;
   passwordModal.value = true;
 };
 
 const savePassword = async (_password: any) => {
+  formErrors.value = [];
+  let _user: User | null = null;
+
+  validateForm(passwordForm.value, (event: any) => {
+    if ("errors" in event) {
+      formErrors.value = event.errors;
+      return;
+    }
+
+    _user = event;
+  });
+
+  if (formErrors.value.length) return;
+
   try {
-    await useFetch(`/api/users/password`, {
+    await $fetch(`/api/users/password`, {
       method: "PUT",
-      body: JSON.stringify({
-        _id: currentUser.value,
+      body: {
+        _id: (currentUser.value as User)._id,
         ..._password,
-      }),
+      },
     });
 
     passwordModal.value = false;
@@ -169,25 +311,15 @@ watch(
   () => userModal.value,
   (value) => {
     if (!value) {
-      currentUser.value = "";
-      Object.keys(userForm).forEach((key: string) => {
-        if (key === "profile") {
-          Object.keys(userForm.profile).forEach((k: string) => {
-            userForm.profile[k] = "";
-          });
-        } else if (key === "admin_level_select") {
-          userForm.admin_level_select = {
-            value: 0,
-            options: [
-              { value: "0", name: "User" },
-              { value: "1", name: "Manager" },
-              { value: "2", name: "Sales Manager" },
-              { value: "3", name: "Admin" },
-            ],
-          };
-        } else {
-          userForm[key] = "";
-        }
+      currentUser.value = null;
+      userForm.value.forEach((fieldset: any) => {
+        fieldset.fields.forEach((field: any) => {
+          if (field.props.type === "select") {
+            field.props.value = "0";
+          } else {
+            field.value = "";
+          }
+        });
       });
     }
   },

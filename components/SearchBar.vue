@@ -180,7 +180,7 @@ watch(
       padding: pxToRem(8);
       color: $color-text-color;
 
-      .sr-img {
+      .sr-picture {
         width: 25%;
         margin-right: pxToRem(20);
       }

@@ -1,0 +1,142 @@
+{
+  "card": {
+    "order": 4,
+    "label": "Productos Luk",
+    "slug": "luk",
+    "thumb": "/img/productos_luk.png",
+    "list": [
+      "Collarines",
+      "Embragues Automotriz",
+      "Embragues Vehiculos Comerciales",
+      "Embragues Servicio Pesados",
+      "Embragues Pasaje",
+      "Controles Hidraulicos"
+    ]
+  },
+  "content": {
+    "brand": "luk",
+    "slides": [
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/cobertura_luk.jpg"
+        }
+      },
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/luk.jpg"
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "SrContainer",
+        "props": {
+          "contained": false,
+          "css": {
+            "style": {
+              "background": "rgba(247, 250, 251)"
+            }
+          },
+          "content": [
+            {
+              "component": "SrContainer",
+              "props": {
+                "with-padding": true,
+                "css": {
+                  "class": "catalog-detail-description"
+                },
+                "content": [
+                  {
+                    "component": "SrGrid",
+                    "props": {
+                      "content": [
+                        {
+                          "component": "SrGridColumn",
+                          "props": {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "2/3"
+                            },
+                            "content": [
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "text": "EMBRAGUES PARA CARGA Y PASAJE",
+                                  "css": {
+                                    "class": "title"
+                                  }
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "text": "Soluciones Alemanas en calidad de EO.",
+                                  "css": {
+                                    "class": "subtitle"
+                                  }
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "text": "Los embragues para vehículos comerciales están expuestos a cargas de trabajo extremadamente altas y a un uso altamente rudo. Gracias al diseño de embrague de diafragma de LuK se obtiene mayor confort al conducir."
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "text": "Su innovador diseño de carcasa ventilada incrementa el flujo de aire al interior de la campana, lo cual reduce la temperatura de operación e incrementa la vida útil del embrague. Por último, el collarín es libre de mantenimiento durante toda su vida útil."
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "component": "SrGridColumn",
+                          "props": {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "1/3"
+                            },
+                            "content": [
+                              {
+                                "component": "SrPicture",
+                                "props": {
+                                  "src": "/img/catalogo/luk/embragues.png"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component": "QuiviButton",
+                    "props": {
+                      "label": "Encuentra tu producto",
+                      "url": "/catalogo/luk",
+                      "size": "lg"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

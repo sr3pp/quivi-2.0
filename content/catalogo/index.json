@@ -1,0 +1,15 @@
+{
+  "navigation": {
+    "order": 2,
+    "label": "Catalogo"
+  },
+  "content": [
+    {
+      "component": "SrPicture",
+      "props": {
+        "src": "/img/header_catalogo.jpeg",
+        "alt": "Catalogo"
+      }
+    }
+  ]
+}

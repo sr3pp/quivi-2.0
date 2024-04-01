@@ -1,8 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
-const schema = new mongoose.Schema(
+const billSchema = new mongoose.Schema(
   {
-    sale: { type: Schema.Types.ObjectId, ref: "Sale" },
     name: { type: String, required: true },
     address: {
       street: { type: String, required: true },
@@ -23,4 +22,5 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Bill", schema, "bill");
+export default mongoose.models.Bill ||
+  mongoose.model("Bill", billSchema, "bill");

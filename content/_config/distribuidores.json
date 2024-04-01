@@ -1,0 +1,31 @@
+{
+  "content": {
+    "distribuidores": [
+      {
+        "id": 1,
+        "nombre": "Luk",
+        "logo": "/img/logos/luk.svg"
+      },
+      {
+        "id": 1,
+        "nombre": "Sakura",
+        "logo": "/img/logos/sakura.svg"
+      },
+      {
+        "id": 1,
+        "nombre": "INA",
+        "logo": "/img/logos/ina.svg"
+      },
+      {
+        "id": 1,
+        "nombre": "FAG",
+        "logo": "/img/logos/fag.svg"
+      },
+      {
+        "id": 1,
+        "nombre": "Gonher",
+        "logo": "/img/logos/gonher.svg"
+      }
+    ]
+  }
+}

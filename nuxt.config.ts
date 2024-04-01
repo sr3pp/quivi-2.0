@@ -27,7 +27,7 @@ export default defineNuxtConfig({
           process.env.OPENPAY_PRODUCTION === "true"
             ? process.env.OPENPAY_URL
             : process.env.OPENPAY_DEV_URL,
-        barcode_url:
+        barcodeUrl:
           process.env.OPENPAY_PRODUCTION === "true"
             ? process.env.OPENPAY_BARCODE_URL
             : process.env.OPENPAY_BARCODE_DEV_URL,
@@ -40,6 +40,20 @@ export default defineNuxtConfig({
             ? process.env.OPENPAY_MERCHANT_ID
             : process.env.OPENPAY_DEV_MERCHANT_ID,
         production: process.env.OPENPAY_PRODUCTION === "true",
+      },
+      paypal: {
+        url:
+          process.env.NODE_ENV === "production"
+            ? process.env.PAYPAL_URL
+            : process.env.PAYPAL_DEV_URL,
+        client:
+          process.env.NODE_ENV === "production"
+            ? process.env.PAYPAL_CLIENT
+            : process.env.PAYPAL_DEV_CLIENT,
+        secret:
+          process.env.NODE_ENV === "production"
+            ? process.env.PAYPAL_SECRET
+            : process.env.PAYPAL_DEV_SECRET,
       },
     },
   },
@@ -63,14 +77,18 @@ export default defineNuxtConfig({
   nitro: {
     plugins: ["@/server/DB.ts"],
   },
+  css: ["normalize.css/normalize.css"],
   vite: {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@import "sr-content-2/assets/scss/utilities/index.scss"; 
+          additionalData: ` 
+            @import "sr-content-2/assets/scss/utilities/index.scss";
             @import "sr-content-2/assets/scss/main.scss";
             @import "@/assets/fonts/index.scss";
-            @import "@/assets/scss/tokens.scss";`,
+            @import "@/assets/scss/tokens.scss";
+            @import "@/assets/scss/main.scss";
+            @import "@/assets/scss/components.scss";`,
         },
       },
     },

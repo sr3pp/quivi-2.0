@@ -7,7 +7,7 @@ ul.quivi-product-filters
             datalist(:id="item.label")
                 option(v-for="(opt, j) in item.options" :key="j" :id="opt.value" :value="opt.label")
     li.quivi-product-filters-item
-      Button(@click="filter" label="Filtrar")
+      QuiviButton(@click="filter" label="Filtrar")
 </template>
 
 <script lang="ts" setup>
@@ -161,7 +161,6 @@ watch(
     }
     input {
       appearance: none;
-      height: pxToRem(40);
       padding: pxToRem(10);
       border: solid pxToRem(2) $color-quivi-light-gray;
       border-radius: pxToRem(8);

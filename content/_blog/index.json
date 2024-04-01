@@ -1,0 +1,21 @@
+{
+  "navigation": {
+    "order": 4,
+    "label": "Blog"
+  },
+  "content": [
+    {
+      "component": "SrContainer",
+      "props": {
+        "content": [
+          {
+            "component": "SrText",
+            "props": {
+              "text": "Blog"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

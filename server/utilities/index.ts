@@ -5,4 +5,5 @@ export { searchHandler } from "./searchHandler";
 export { filterHandler } from "./filterHandler";
 export { modelPagination } from "./modelPagination";
 export { Openpay } from "./openpay";
+export { Paypal } from "./paypal";
 export { saeHelper } from "./sae";

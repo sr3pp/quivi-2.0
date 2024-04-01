@@ -6,4 +6,5 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Category", schema, "category");
+export default mongoose.models.Category ||
+  mongoose.model("Category", schema, "category");

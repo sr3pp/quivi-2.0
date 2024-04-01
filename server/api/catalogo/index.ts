@@ -15,7 +15,8 @@ export default defineEventHandler(() => {
         return card;
       }
     })
-    .filter((file) => file);
+    .filter((file) => file)
+    .sort((a, b) => a.order - b.order);
 
   return catalogo;
 });

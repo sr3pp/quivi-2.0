@@ -8,4 +8,5 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Subcategory", schema, "subcategory");
+export default mongoose.models.Subcategory ||
+  mongoose.model("Subcategory", schema, "subcategory");

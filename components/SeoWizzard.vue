@@ -1,23 +1,47 @@
 <template lang="pug">
 .seo-wizzard
-    SrForm(:form="seoForm" @updated="updateHandler" @submit="saveSeo")
+    SrForm(:fieldsets="seoForm" @submit="saveSeo" submit="Save")
 </template>
 
 <script lang="ts" setup>
-const seoForm = {
-  title: "",
-  description: "",
-  keyword: "",
-};
+const seoForm = ref([
+  {
+    fields: [
+      {
+        component: "SrFormInput",
+        props: {
+          name: "title",
+          label: "Title",
+          required: true,
+          value: "",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          name: "description",
+          label: "Description",
+          required: true,
+          value: "",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          name: "keyword",
+          label: "Keyword",
+          required: true,
+          value: "",
+        },
+      },
+    ],
+  },
+]);
 
 const keywords = ref([]);
 
-const updateHandler = ({ input, value, list }) => {
-  console.log("updated", input, value);
-};
-
-const saveSeo = () => {
-  console.log("saveSeo", seoForm);
+const saveSeo = (data: any) => {
+  console.log("saveSeo", data);
 };
 </script>
 

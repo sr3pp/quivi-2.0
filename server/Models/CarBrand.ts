@@ -11,4 +11,5 @@ const schema: Schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("CarBrand", schema, "car_brand");
+export default mongoose.models.CarBrand ||
+  mongoose.model("CarBrand", schema, "car_brand");

@@ -1,0 +1,206 @@
+{
+  "navigation": {
+    "order": 1,
+    "name": "Home"
+  },
+  "content": [
+    {
+      "component": "SliderMain",
+      "props": {
+        "slidesEndpoint": "/api/content/slides",
+        "options": {
+          "creative": {
+            "prev": {
+              "shadow": false,
+              "translate": ["-20%", 0, -1]
+            },
+            "next": {
+              "translate": ["100%", 0, 0]
+            }
+          }
+        }
+      }
+    },
+    {
+      "component": "SrContainer",
+      "props": {
+        "with_space": true,
+        "content": [
+          {
+            "component": "SrGrid",
+            "props": {
+              "columns": [
+                {
+                  "size": {
+                    "mobile": "1",
+                    "sm": "1/2",
+                    "md": "1/3"
+                  },
+                  "content": [
+                    {
+                      "component": "SrText",
+                      "props": {
+                        "value": "Empresa Mexicana",
+                        "kind": "title"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "size": {
+                    "mobile": "1",
+                    "sm": "1/2",
+                    "md": "2/3"
+                  },
+                  "content": [
+                    {
+                      "component": "SrText",
+                      "props": {
+                        "value": "lorem ipsum dolor sit ammet"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "component": "SrSection",
+      "props": {
+        "css": {
+          "class": "products-section"
+        },
+        "background": {
+          "content": [
+            {
+              "component": "SrGradient",
+              "props": {
+                "gradient": {
+                  "kind": "radial",
+                  "shape": "circle",
+                  "segments": [
+                    {
+                      "color": "#fff",
+                      "position": "0"
+                    },
+                    {
+                      "color": "#000",
+                      "position": "100"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "content": [
+          {
+            "component": "SrText",
+            "props": {
+              "value": "Niestros Productos",
+              "alignment": "center",
+              "kind": "title"
+            }
+          },
+          {
+            "component": "SliderProducts",
+            "props": {
+              "slidesEndpoint": "/api/product/hightlights",
+              "options": {
+                "perPage": 3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "component": "SrContainer",
+      "props": {
+        "with_space": true,
+        "content": [
+          {
+            "component": "SrGrid",
+            "props": {
+              "columns": [
+                {
+                  "size": {
+                    "mobile": "1",
+                    "sm": "1/2",
+                    "md": "2/3"
+                  },
+                  "css": {
+                    "class": "column"
+                  },
+                  "content": [
+                    {
+                      "component": "SrText",
+                      "props": {
+                        "value": "Las mejores marcas",
+                        "kind": "subtitle"
+                      }
+                    },
+                    {
+                      "component": "SrGrid",
+                      "props": {
+                        "columns": [
+                          {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "3/5"
+                            },
+                            "content": [
+                              {
+                                "component": "SrGrid",
+                                "props": {
+                                  "columns": [
+                                    {
+                                      "size": {
+                                        "mobile": "1/2",
+                                        "sm": "1/3",
+                                        "md": "1/5"
+                                      },
+                                      "content": [
+                                        {
+                                          "component": "SrPicture",
+                                          "props": {
+                                            "src": "https://picsum.photos/300?random=1"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "size": {
+                    "mobile": "1",
+                    "sm": "1/3"
+                  },
+                  "content": [
+                    {
+                      "component": "SrPicture",
+                      "props": {
+                        "src": "https://picsum.photos/350/200?random=1"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -3,20 +3,18 @@ import { mailHandler } from "~/server/utilities/mailHandler";
 
 const templateDir = "assets/templates/email/";
 
-export default defineEventHandler(async () => {
-  const info = renderTemplate(`${templateDir}/test.hbs`, {
-    name: "si que si",
-    description: "esto es una prueba",
-  });
+export default defineEventHandler(async (event) => {
+  const { context, template, to, subject } = await readBody(event);
+  const info = renderTemplate(`${templateDir}/${template}.hbs`, context);
 
   const mailOptions = {
     from: "no_reply@quivi.mx",
-    to: "martin.ru@outlook.com",
-    subject: "test",
+    to,
+    subject,
     html: info,
   };
 
-  mailHandler.sendMail(mailOptions, (error, info) => {
+  mailHandler.sendMail(mailOptions, (error: any, info: any) => {
     if (error) {
       console.log("Error occurred:", error.message);
     } else {

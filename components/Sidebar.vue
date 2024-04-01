@@ -4,7 +4,7 @@ aside.sidebar
         ul.sidebar-menu
             li.sidebar-menu-item(v-for="(item, i) in items" :key="i")
                 NuxtLink(:to="item.url")
-                    SrIcon(:value="item.icon")
+                    SrIcon(:name="item.icon")
                     span {{ item.label }}
 </template>
 
@@ -24,6 +24,8 @@ defineProps({
   width: pxToRem(50);
   display: flex;
   align-items: center;
+  background-color: $color-quivi-darkest-red;
+  color: $color-white;
 
   &-nav {
     position: absolute;
@@ -37,15 +39,39 @@ defineProps({
     flex-direction: column;
 
     &-item {
+      height: pxToRem(50);
+      display: flex;
+      align-items: center;
       a {
         display: flex;
         align-items: center;
+        color: currentColor;
       }
 
       span {
+        position: relative;
+        margin-left: pxToRem(10);
+        color: $color-white;
+        background-color: $color-quivi-light-red;
+        border-radius: pxToRem(5);
         max-width: 0;
         overflow: hidden;
-        transition: max-width 0.3s ease-in-out;
+        transition:
+          max-width 0.3s ease-in-out,
+          padding 0.3s ease-in-out;
+
+        &::before {
+          opacity: 0;
+          content: "";
+          position: absolute;
+          top: 50%;
+          right: 100%;
+          transform: translate(50%, -50%) rotate(45deg);
+          background-color: $color-quivi-light-red;
+          width: pxToRem(10);
+          height: pxToRem(10);
+          transition: opacity 0.3s ease-in-out;
+        }
       }
 
       .sr-icon {
@@ -57,7 +83,12 @@ defineProps({
 
       &:hover {
         span {
+          overflow: visible;
+          padding: pxToRem(10);
           max-width: pxToRem(200);
+          &:before {
+            opacity: 1;
+          }
         }
       }
     }

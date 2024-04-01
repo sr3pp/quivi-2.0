@@ -5,10 +5,10 @@
           SrText(text="Encuentra lo que necesitas." class="subtitle")
           ProductFilters(@filter="filterProducts")
         SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column")
-          SrText(text="Envios gratis en compras superiores a" class="subtitle")
+          SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.limite} MXN`")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
-              Button(href="/" label="Ver todos los productos" disabled)
+              QuiviButton(href="/" label="Ver todos los productos" disabled)
           SrGrid(tag="ul")
               SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
@@ -24,7 +24,20 @@ const { search: _search, page = 1, filters: _filters } = route.query;
 const search = ref(_search as string);
 const filters = ref(_filters as string);
 
-const { data: content } = await useFetch("/api/content?page=index");
+const promises: any = await Promise.all([
+  $fetch("/api/content?page=index"),
+  $fetch("/api/content?page=_config/shipping"),
+]);
+
+const content = promises[0];
+const { shipment } = promises[1];
+
+const cart = useLocalStorage("cart", {
+  products: [],
+  total: 0,
+  subtotal: 0,
+  shipping: shipment,
+});
 
 const products = ref([]);
 const pagination = ref({});
@@ -71,6 +84,28 @@ const filterProducts = async (filters: any) => {
 <style lang="scss" scoped>
 .store {
   overflow: hidden;
+
+  &-shipping {
+    align-self: start;
+    width: auto;
+    padding: pxToRem(10) pxToRem(20);
+    background-color: $color-quivi-red;
+    color: $color-white;
+    margin-bottom: pxToRem(20);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: pxToRem(-10);
+      width: pxToRem(20);
+      height: 100%;
+      background-color: $color-quivi-red;
+      z-index: 1;
+    }
+  }
+
   > .sr-grid {
     margin: 0;
     > * {

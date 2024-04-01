@@ -2,12 +2,13 @@
 .quivi-cart(:class="{ active, 'active-done': activeDone }")
     .quivi-cart-content
       .quivi-cart-header
-        button.quivi-cart-close(:class="{ active }" @click="closeCart") X
-        SrText(text="Carrito" class="title")  
-        button.quivi-cart-empty(@click="emptyCart()") Vaciar carrito
-      CartList(:products="cart.products" :editable="true" @remove="removeProduct" @setTotal="setTotal")
-      CartTotal(:total="cart.total")
-      NuxtLink(to="/tienda/checkout") Checkout
+        button.quivi-cart-close(:class="{ active }" @click="closeCart") X 
+        button.quivi-cart-empty(@click="emptyCart()" v-if="cart.products.length") Vaciar carrito
+      template(v-if="cart.products.length")
+        CartList(:products="cart.products" :editable="true" @remove="removeProduct" @setTotal="setTotal")
+        CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping")
+      template(v-else)
+        SrText.quivi-cart-empty(text="Tu carrito está vacío" class="title text-center")
     .quivi-cart-backdrop(@click="closeCart")
 </template>
 
@@ -26,6 +27,11 @@ const props = defineProps({
 const cart = useLocalStorage("cart", {
   products: [],
   total: 0,
+  subtotal: 0,
+  shipping: {
+    costo: 0,
+    limite: 0,
+  },
 });
 
 const emit = defineEmits(["close"]);
@@ -52,7 +58,14 @@ const setTotal = () => {
   cart.value.products.forEach((product: Product) => {
     total += realPrice(product) * Number(product.qty);
   });
-  cart.value.total = total;
+
+  const shipping =
+    total > Number(cart.value.shipping.limite)
+      ? 0
+      : Number(cart.value.shipping.costo);
+
+  cart.value.subtotal = total;
+  cart.value.total = total + shipping;
 };
 
 const removeProduct = (idx: number) => {
@@ -80,11 +93,15 @@ watch(
 watch(
   () => cart.value.products,
   (value) => {
-    setTotal();
+    setTimeout(() => {
+      setTotal();
+    }, 100);
   },
 );
 
-setTotal();
+onMounted(() => {
+  setTotal();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -98,13 +115,16 @@ setTotal();
   display: flex;
   justify-content: flex-end;
 
+  &-empty {
+    margin: auto;
+  }
+
   &-content {
     display: flex;
     flex-direction: column;
     background-color: $color-white;
     width: 30vw;
-    min-width: unit(300);
-    padding: unit(20);
+    min-width: pxToRem(300);
     transform: translateX(100%);
     position: relative;
     transition: transform 0.3s ease-in-out;
@@ -130,6 +150,21 @@ setTotal();
     }
   }
 
+  &-pay-button {
+    margin-top: auto;
+    margin-bottom: 0;
+  }
+
+  &-total {
+    margin-top: auto;
+    margin-bottom: 0;
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   &-backdrop {
     position: fixed;
     top: 0;
@@ -139,38 +174,47 @@ setTotal();
     background-color: rgba($color-black, 0.6);
     opacity: 0;
     z-index: 0;
-    backdrop-filter: blur(unit(4));
+    backdrop-filter: blur(pxToRem(4));
     transition: opacity 0.3s ease-in-out;
   }
+
   &-close {
     position: absolute;
-    top: unit(20);
+    top: pxToRem(20);
     left: 0;
     background-color: $color-quivi-red;
     color: $color-white;
     font-family: Bebas;
     border: none;
-    font-size: unit(20);
+    font-size: pxToRem(20);
     cursor: pointer;
     border-radius: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: unit(30);
-    height: unit(30);
+    width: pxToRem(30);
+    height: pxToRem(30);
     transform: translateX(0);
     transition: transform 0.35s ease;
   }
 
   &-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: unit(20);
+    padding: pxToRem(20);
+    border-bottom: {
+      style: solid;
+      color: $color-quivi-gray;
+      width: pxToRem(1);
+    }
 
     .quivi-cart-empty {
+      font-family: Inria;
       background: none;
-      color: $color-quivi-light-red;
+      font-size: pxToRem(16);
+      font-weight: bold;
+      color: $color-quivi-green;
       border: none;
     }
   }

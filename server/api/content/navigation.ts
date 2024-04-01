@@ -18,6 +18,25 @@ const getNav = (url: string) => {
   return nav;
 };
 
+const getData = (file: any, url: string) => {
+  const stats = fs.statSync(url);
+  if (!stats.isDirectory() && file !== "index.json") {
+    const read = fs.readFileSync(url, "utf-8");
+    const data = JSON.parse(read);
+    return {
+      label: data.card?.label || data.navigation?.label || data.label,
+      url: url.replace(dir, "").replace("/content", "").replace(".json", ""),
+      order: data.card?.order || data.order,
+    };
+  }
+
+  return {
+    label: "",
+    url: "",
+    order: 0,
+  };
+};
+
 export default defineEventHandler((e) => {
   const navigation: any = [];
 
@@ -32,13 +51,11 @@ export default defineEventHandler((e) => {
           url: "/" + file,
           items: fs
             .readdirSync(newUrl)
-            .map((f: string) => ({
-              name: f.includes("index")
-                ? buildName(file)
-                : f.replace(".json", ""),
-              url: "/" + join(file, parseJsonName(f)),
-            }))
-            .filter((el) => el.name !== file && el.name[0] !== "_"),
+            .map((f: string) => getData(f, join(newUrl, f)))
+            .filter(
+              (el: any) => el.label !== file && el.label && el.label[0] !== "_",
+            )
+            .sort((a: any, b: any) => a.order - b.order),
         });
         //getNames(newUrl, obj[file]);
       } else if (!["_", "."].includes(file[0])) {

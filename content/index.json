@@ -1,0 +1,21 @@
+{
+  "navigation": {
+    "order": 0,
+    "label": "Tienda"
+  },
+  "content": [
+    {
+      "component": "SrContainer",
+      "props": {
+        "content": [
+          {
+            "component": "SrText",
+            "props": {
+              "value": "Tienda"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

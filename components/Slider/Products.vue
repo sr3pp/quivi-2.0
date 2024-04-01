@@ -6,18 +6,18 @@ Swiper.product-slider(
   :spaceBetween="40"
   :creative-effect="options.creative"
 )
-  SwiperSlide.product-slider-slide(v-for="slide in slides" :key="slide")
+  SwiperSlide.product-slider-slide(v-for="slide in products" :key="slide")
     ProductCard(:product="slide")
-  SwiperSlide.product-slider-slide(v-for="slide in slides" :key="slide")
+  SwiperSlide.product-slider-slide(v-for="slide in products" :key="slide")
     ProductCard(:product="slide")
 
 </template>
 
 <script lang="ts" setup>
 const props = defineProps({
-  slidesEndpoint: {
-    type: String,
-    default: "/api/product/hightlights",
+  products: {
+    type: Array,
+    default: () => [],
   },
   options: {
     type: Object,
@@ -32,8 +32,6 @@ const props = defineProps({
     }),
   },
 });
-
-const slides = await $fetch(props.slidesEndpoint as string);
 </script>
 
 <style lang="scss">
@@ -42,6 +40,11 @@ const slides = await $fetch(props.slidesEndpoint as string);
 
   &-slide {
     overflow: hidden;
+    height: auto;
+
+    .quivi-product-card {
+      height: 100%;
+    }
   }
 }
 </style>

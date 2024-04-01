@@ -9,4 +9,5 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("ProductBrand", schema, "product_brand");
+export default mongoose.models.ProductBrand ||
+  mongoose.model("ProductBrand", schema, "product_brand");

@@ -1,0 +1,117 @@
+{
+  "card": {
+    "order": 3,
+    "label": "Plafones Record",
+    "slug": "plafones",
+    "thumb": "/img/plafones_record.png",
+    "list": [
+      "Plafones LED Embutido",
+      "Plafones LED Remache",
+      "Plafones LED Navegación",
+      "Plafones LED",
+      "PLAFONES LED Panoramicos",
+      "PLAFONES LED Interiores"
+    ]
+  },
+  "content": {
+    "brand": "record",
+    "slides": [
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/descuento_plafones.jpg"
+        }
+      },
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/plafones_record.jpg"
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "SrContainer",
+        "props": {
+          "contained": false,
+          "css": {
+            "style": {
+              "background": "rgba(249, 125, 13)"
+            }
+          },
+          "content": [
+            {
+              "component": "SrContainer",
+              "props": {
+                "with-padding": true,
+                "css": {
+                  "class": "catalog-detail-description"
+                },
+                "content": [
+                  {
+                    "component": "SrPicture",
+                    "props": {
+                      "src": "/img/catalogo/record/camiones.png",
+                      "alt": "camiones formados Record"
+                    }
+                  },
+                  {
+                    "component": "SrText",
+                    "props": {
+                      "css": {
+                        "style": {
+                          "--text-align": "center"
+                        }
+                      },
+                      "text": "Los Plafones LED proporcionan una iluminación a su automóvil con seguridad encondiciones de baja visibilidad, aumentando la claridad del vehículo."
+                    }
+                  },
+                  {
+                    "component": "SrText",
+                    "props": {
+                      "css": {
+                        "style": {
+                          "--text-align": "center"
+                        }
+                      },
+                      "text": "La industria de los vehículos comerciales ha adoptado rápidamente a los leds para todas las funciones de iluminación en camiones y autobuses, ya que además de la rapidez de encendido y el consecuente aumento de la seguridad, la larga vida útil de los leds hace que se reduzca el tiempo de mantenimiento de estos vehículos."
+                    }
+                  },
+                  {
+                    "component": "SrText",
+                    "props": {
+                      "css": {
+                        "style": {
+                          "--text-align": "center"
+                        }
+                      },
+                      "text": "El sistema de iluminación de un vehículo consiste en dispositivos lumínicos en su parte frontal, lateral y trasera."
+                    }
+                  },
+                  {
+                    "component": "QuiviButton",
+                    "props": {
+                      "label": "Encuentra tu Plafón Record",
+                      "url": "/catalogo",
+                      "size": "lg"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

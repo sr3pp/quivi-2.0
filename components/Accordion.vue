@@ -1,9 +1,9 @@
 <template lang="pug">
 .quivi-accordion
     button.quivi-accordion-label(@click="toggle")
-        SrText(:value="label" kind="subtitle")
+        SrText(:text="label" kind="subtitle")
         .quivi-accordion-label-icon
-            SrIcon(value="chevron-down-o")
+            SrIcon(name="chevron-down-o")
     .quivi-accordion-content(:class="{ active }")
         slot(name="content")
 </template>

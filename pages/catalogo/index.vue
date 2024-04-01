@@ -13,14 +13,26 @@
                   li.catalogo-item-description-list-item(v-for="(el, i) in item.list" :key="i")
                     SrIcon(name="quivi-check-o")
                     SrText(:text="el")
+    SrContainer(:with-padding="true")
+      SrGrid.catalogo-brands(tag="ul" style="--justify-content: center;")
+        SrGridColumn(:size="{mobile: '1'}")
+          SrText(:html="ourBrandsLabel" class="subtitle")
+        SrGridColumn.catalogo-brands-item(v-for="(brand, i) in productBrands" tag="li" :size="{mobile: '1', sm: '1/6'}" :key="i")
+          SrPicture(:src="brand.logo" :alt="brand.nombre")
+        
+      SrText.and-more(text="Y muchos más..." style="--text-align: center;")
     
 </template>
 
 <script lang="ts" setup>
-const { data: catalogo } = await useFetch("/api/catalogo");
-const { data: catalogoContent } = await useFetch(
-  "/api/content?page=catalogo/index",
-);
+const [catalogo, catalogoContent, { brands: productBrands }] =
+  await Promise.all([
+    $fetch("/api/catalogo"),
+    $fetch("/api/content?page=catalogo/index"),
+    $fetch("/api/content?page=catalogo/_brands"),
+  ]);
+const ourBrandsLabel =
+  "Conoce Todas <span class='text-quivi-light-red font-bold'>Nuestras Marcas</span>";
 </script>
 
 <style lang="scss" scoped>
@@ -31,10 +43,6 @@ const { data: catalogoContent } = await useFetch(
     a {
       display: flex;
       color: $color-text-color;
-    }
-
-    .sr-img {
-      width: 30%;
     }
 
     &-description {
@@ -55,8 +63,35 @@ const { data: catalogoContent } = await useFetch(
     }
   }
 
-  > .sr-img {
-    min-height: pxToRem(400);
+  &-banner {
+    width: 40%;
+    border-radius: pxToRem(20);
+    margin-right: pxToRem(10);
+  }
+
+  &-brands {
+    margin-bottom: pxToRem(20);
+
+    [class*="sr-grid-col"] {
+      display: flex;
+      justify-content: center;
+      padding: pxToRem(20);
+
+      &:first-child {
+        padding: 0;
+      }
+
+      .sr-text {
+        &.subtitle {
+          font-family: inria !important;
+        }
+      }
+    }
+  }
+
+  .and-more {
+    color: $color-quivi-green;
+    font-size: pxToRem(20);
   }
 }
 </style>

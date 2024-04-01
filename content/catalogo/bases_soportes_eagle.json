@@ -1,0 +1,45 @@
+{
+  "card": {
+    "order": 8,
+    "label": "Bases y Soportes Eagle",
+    "slug": "bases_soportes_eagle",
+    "thumb": "/img/bases_soportes_eagle.png",
+    "list": ["Bases Eagle", "Soportes Eagle"]
+  },
+  "content": {
+    "brand": "eagle",
+    "slides": [
+      {
+        "title": "The 5th Wave",
+        "description": "Lorem ipsum dolor sit ammet",
+        "link": {
+          "label": "Watch Now",
+          "url": "/"
+        },
+        "background": {
+          "mobile": "/img/slides/eagle.png"
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "SrContainer",
+        "props": {
+          "contained": false,
+          "css": {
+            "class": "catalog-detail-description"
+          },
+          "content": [
+            {
+              "component": "SrPicture",
+              "props": {
+                "src": "/img/catalogo/bases_y_soportes_eagle/bases_soportes_eagle.png",
+                "alt": "Bases y Soportes Eagle"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

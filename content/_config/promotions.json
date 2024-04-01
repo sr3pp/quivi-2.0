@@ -1,0 +1,16 @@
+{
+  "code1": {
+    "kind": "discount",
+    "percent": 50,
+    "status": false
+  },
+  "code2": {
+    "kind": "2x1",
+    "status": false
+  },
+  "code3": {
+    "kind": "MSI",
+    "options": [3, 6, 12, 18],
+    "status": false
+  }
+}

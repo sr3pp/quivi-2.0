@@ -33,4 +33,5 @@ const schema: Schema<Product> = new mongoose.Schema(
   { timestamps: true, strict: true, strictQuery: true },
 );
 
-export default mongoose.model("Product", schema, "product");
+export default mongoose.models.Product ||
+  mongoose.model("Product", schema, "product");

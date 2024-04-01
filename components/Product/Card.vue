@@ -1,14 +1,14 @@
 <template lang="pug">
 .quivi-product-card
     figure.quivi-product-card-img
-        img(:src="product.thumbs[0]" :alt="product.name")
+        img(:src="`/products/${product._id}/${product.thumbs[0]}`" :alt="product.name")
     .quivi-product-card-body
         SrText(:text="product.name" class="title")
         SrText.sae(:text="`Clave: ${product.sae}`")
         SrText(:text="processDiscount(product)" class="title")
         SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
     .quivi-product-card-footer
-        Button(:href="`/producto/${product.web}`" label="Ver Mas")
+        QuiviButton(:href="`/producto/${product._id}`" label="Ver Mas")
         Tooltip
             SrText(:text="product.extra")
                 

@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
-import Sale from "./Sale";
 
 const schema = new mongoose.Schema(
   {
-    sale: { type: mongoose.Schema.Types.ObjectId, ref: Sale },
-    tracking: { type: String, required: true, unique: true },
+    name: { type: String, required: true },
+    last_name: { type: String, required: true },
+    phone: { type: String, required: true },
+    email: { type: String, required: true },
+    tracking: { type: String, required: false },
     status: {
       type: String,
       required: true,
@@ -21,13 +23,9 @@ const schema = new mongoose.Schema(
       state: { type: String, required: true },
       country: { type: String, required: true },
     },
-    deliver_to: {
-      name: { type: String, required: true },
-      phone: { type: String, required: true },
-      email: { type: String, required: true },
-    },
     cost: { type: Number, required: true, default: 0 },
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Shipment", schema, "shipment");
+export default mongoose.models.Shipment ||
+  mongoose.model("Shipment", schema, "shipment");

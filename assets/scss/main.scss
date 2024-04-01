@@ -1,12 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   overflow-x: hidden;
   margin: 0;
   font-family: Inria, sans-serif;
   color: $color-text-color;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 h1,
@@ -15,7 +15,9 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: Bebas, sans-serif;
   text-wrap: balance;
+  margin: 0;
 }
 
 ul,
@@ -37,4 +39,18 @@ fieldset {
 p {
   margin: 0;
   text-wrap: pretty;
+}
+
+.highlight {
+  color: $color-quivi-light-red;
+}
+
+.text-quivi-light-red {
+  color: $color-quivi-light-red;
+}
+.font-bold {
+  font-weight: bold;
+}
+.hidden {
+  display: none !important;
 }

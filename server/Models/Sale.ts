@@ -18,11 +18,11 @@ const schema = new mongoose.Schema(
     status: { type: Boolean, required: true, default: false },
     shipment: { type: mongoose.Schema.Types.ObjectId, ref: "Shipment" },
     payment: {
-      transaction: { type: String, required: true, unique: true },
+      transaction: { type: String },
       method: {
         type: String,
         required: true,
-        enum: ["card", "cash", "transfer"],
+        enum: ["TRC", "TRD", "TRN", "PYP", "EFE"],
       },
       status: { type: Boolean, required: true, default: false },
       installments: { type: Number, required: true, default: 1 },
@@ -38,4 +38,4 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Sale", schema, "sale");
+export default mongoose.models.Sale || mongoose.model("Sale", schema, "sale");

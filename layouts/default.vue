@@ -6,24 +6,12 @@ main.default-layout
     
   NuxtPage
 
-  SrModal(:active="contactModal" @close="contactModal = false")
-    template(#header)
-      .sr-modal-header
-        SrText(value="Contacto" class="title")
-    template(#body)
-      .sr-modal-body
-        ContactForm
-  SrModal(:active="loginSw" @close="loginSw = false")
-    template(#header)
-      .sr-modal-header
-        SrText(value="Login" class="title")
-    template(#body)
-      .sr-modal-body
-        Login
+  ContactModal(:contactModal="contactModal" @close="contactModal = false" :social="social")
+  LoginModal(:loginSw="loginSw" @close="loginSw = false")
   ClientOnly
     Cart(:active="cartSwitch" @close="cartSwitch = false")
     NotificationStack
-  Footer
+  Footer(:social="social" :distribuidores="distribuidores")
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +20,14 @@ const cartSwitch = useState("cartSwitch", () => false);
 const loginSw = useState("loginSw", () => false);
 
 const loading = ref(false);
+
+const [business, _distribuidores] = await Promise.all([
+  $fetch("/api/content?page=_config/business"),
+  $fetch("/api/content?page=_config/distribuidores"),
+]);
+
+const { social } = business;
+const { distribuidores } = _distribuidores;
 
 const { hook } = useNuxtApp();
 
@@ -45,6 +41,7 @@ hook("page:transition:finish", () => {
 
 <style lang="scss">
 .default-layout {
-  background-color: white;
+  background-color: $color-white;
+  overflow: hidden;
 }
 </style>

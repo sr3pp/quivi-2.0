@@ -6,4 +6,5 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Segment", schema, "segment");
+export default mongoose.models.Segment ||
+  mongoose.model("Segment", schema, "segment");

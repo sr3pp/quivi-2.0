@@ -15,6 +15,7 @@ export const colorQuiviDarkGray = "#5B5B5F";
 export const colorQuiviDarkestGray = "#444242";
 export const colorQuiviRed = "#C54643";
 export const colorQuiviLightRed = "#F22435";
+export const colorQuiviLightBlue = "#d8dde6";
 export const colorQuiviDarkRed = "#921F1D";
 export const colorQuiviDarkestRed = "#38060E";
 export const colorQuiviGreen = "#1C8741";

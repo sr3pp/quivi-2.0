@@ -34,7 +34,7 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
     li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active}" :key="i")
       .link-container  
         NuxtLink(:to="item.url")
-          span {{ item.name }}
+          span {{ item.label }}
           SrIcon(name="ir-o" v-if="!item.items || (item.items && !item.items.length)")
         button.collapse(@click="item.active = !Boolean(item.active)" v-if="item.items && item.items.length")
           SrIcon(name="desplazamientoabajo-o")
@@ -50,13 +50,15 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
           use(href="/icons/botonmenu-o.svg#s")
       ol.quivi-navbar-submenu(v-if="item.items && item.items.length" role="list")
         li.quivi-navbar-submenu-item(v-for="(el, e) in item.items" :key="e")
-          NuxtLink(:to="el.url") {{ el.name }}
+          NuxtLink(:to="el.url") {{ el.label }}
 </template>
 
 <script lang="ts" setup>
 import { colorQuiviDarkestGray, colorQuiviGray } from "~/assets/ts/tokens";
 
 const { data: navigation } = await useFetch("/api/content/navigation");
+
+console.log(navigation);
 
 const searchActive = ref(false);
 const menuActive = ref(false);
@@ -71,6 +73,11 @@ const btnColor2: string = colorQuiviDarkestGray;
 const cart = useLocalStorage("cart", {
   products: [],
   total: 0,
+  subtotal: 0,
+  shipping: {
+    costo: 0,
+    limite: 0,
+  },
 });
 
 const productsLength = computed(() => {
@@ -431,7 +438,7 @@ const productsLength = computed(() => {
       a {
         padding: pxToRem(10);
         text-align: center;
-        height: pxToRem(55);
+        height: auto;
         color: $color-white;
         min-width: pxToRem(130);
         position: relative;

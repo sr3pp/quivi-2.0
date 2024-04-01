@@ -8,4 +8,5 @@ const schema: mongoose.Schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.model("Motor", schema, "motor");
+export default mongoose.models.Motor ||
+  mongoose.model("Motor", schema, "motor");

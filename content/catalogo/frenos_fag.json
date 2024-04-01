@@ -1,0 +1,158 @@
+{
+  "card": {
+    "order": 7,
+    "label": "Frenos FAG",
+    "slug": "frenos_fag",
+    "thumb": "/img/frenos_fag.jpeg",
+    "list": [
+      "Balatas De Disco FAG",
+      "Block",
+      "Cilindros De Rueda",
+      "Discos De Rueda y Tambores",
+      "Juntas Homocineticas",
+      "Zapatas Traseras"
+    ]
+  },
+  "content": {
+    "brand": "fag",
+    "slides": [
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/frenos_fag.jpg"
+        }
+      },
+      {
+        "title": "",
+        "description": "",
+        "link": {
+          "label": "",
+          "url": ""
+        },
+        "background": {
+          "mobile": "/img/slides/productos_fag.jpg"
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "SrContainer",
+        "props": {
+          "contained": false,
+          "css": {
+            "style": {
+              "background-image": "url('/img/catalogo/fag/camiones_bg.jpg')",
+              "background-size": "cover",
+              "background-position": "center",
+              "background-repeat": "no-repeat"
+            }
+          },
+          "content": [
+            {
+              "component": "SrContainer",
+              "props": {
+                "with-padding": true,
+                "css": {
+                  "class": "catalog-detail-description"
+                },
+                "content": [
+                  {
+                    "component": "SrGrid",
+                    "props": {
+                      "content": [
+                        {
+                          "component": "SrGridColumn",
+                          "props": {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "1/2"
+                            }
+                          }
+                        },
+                        {
+                          "component": "SrGridColumn",
+                          "props": {
+                            "size": {
+                              "mobile": "1",
+                              "sm": "1/2"
+                            },
+                            "content": [
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "text": "Blocks para frenos de aire",
+                                  "css": {
+                                    "class": "subtitle",
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "text": "Servicio Pesado",
+                                  "css": {
+                                    "class": "title",
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  }
+                                }
+                              },
+                              {
+                                "component": "SrText",
+                                "props": {
+                                  "css": {
+                                    "style": {
+                                      "--text-align": "center"
+                                    }
+                                  },
+                                  "text": "Gracias a la calidad de sus productos, Fag Partes para Freno ha logrado posicionarse como una de las marcas preferidas en el mercado de repuestos nacional, ofreciendo una excelente cobertura para todas las marcas de vehículos."
+                                }
+                              },
+                              {
+                                "component": "QuiviList",
+                                "props": {
+                                  "title": "Ventajas Competitivas",
+                                  "alignment": "center",
+                                  "items": [
+                                    "Desempeño comparable a Equipo Original",
+                                    "Formulaciones específicas para el mercado de México",
+                                    "Exceden los estándares de la norma FMVSS 121",
+                                    "Ecológicos, formulaciones 100% libres de: Asbesto, Cobre y metales pesados",
+                                    "Pruebas de campo",
+                                    "Mínimo desgaste de tambores",
+                                    "Soporte técnico capacitado"
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "component": "QuiviButton",
+                    "props": {
+                      "label": "Encuentra tu refacción",
+                      "url": "/",
+                      "size": "lg"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

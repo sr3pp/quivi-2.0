@@ -1,0 +1,124 @@
+{
+  "card": {
+    "order": 1,
+    "label": "Acumuladores",
+    "slug": "acumuladores",
+    "thumb": "/img/acumuladores_gonher.png",
+    "list": [
+      "Gonher Automotriz",
+      "Gonher Servicio Pesado",
+      "LTH Automotriz",
+      "LTH Servicio Pesado",
+      "Silver Gonher Automotriz"
+    ]
+  },
+  "content": {
+    "brand": "gonher",
+    "slides": [
+      {
+        "title": "The 5th Wave",
+        "description": "Lorem ipsum dolor sit ammet",
+        "link": {
+          "label": "Watch Now",
+          "url": "/"
+        },
+        "background": {
+          "mobile": "/img/slides/mejores_acumuladores.jpg"
+        }
+      },
+      {
+        "title": "The 5th Wave",
+        "description": "Lorem ipsum dolor sit ammet",
+        "link": {
+          "label": "Watch Now",
+          "url": "/"
+        },
+        "background": {
+          "mobile": "/img/slides/maximo_poder.jpg"
+        }
+      },
+      {
+        "title": "The 5th Wave",
+        "description": "Lorem ipsum dolor sit ammet",
+        "link": {
+          "label": "Watch Now",
+          "url": "/"
+        },
+        "background": {
+          "mobile": "/img/slides/energia_adecuada.jpg"
+        }
+      }
+    ],
+    "content": [
+      {
+        "component": "SrContainer",
+        "props": {
+          "contained": false,
+          "css": {
+            "style": {
+              "background-image": "url('/img/catalogo/acumuladores/acumuladores_bg.jpeg')",
+              "background-size": "cover",
+              "background-position": "center",
+              "background-repeat": "no-repeat"
+            }
+          },
+          "content": [
+            {
+              "component": "SrContainer",
+              "props": {
+                "with-padding": true,
+                "css": {
+                  "class": "catalog-detail-description"
+                },
+                "content": [
+                  {
+                    "component": "SrPicture",
+                    "props": {
+                      "css": {
+                        "class": "limit-height"
+                      },
+                      "src": "/img/catalogo/acumuladores/foto_acumuladores.png"
+                    }
+                  },
+                  {
+                    "component": "SrText",
+                    "props": {
+                      "css": {
+                        "class": "title",
+                        "style": {
+                          "--text-align": "center",
+                          "--text-color": "#fff"
+                        }
+                      },
+                      "text": "LTH ® SERVICIO PESADO"
+                    }
+                  },
+                  {
+                    "component": "SrText",
+                    "props": {
+                      "css": {
+                        "style": {
+                          "--text-align": "center",
+                          "--text-color": "#fff"
+                        }
+                      },
+                      "text": "Sólida construcción y alta resistencia de materiales. Rejillas Rounded Corner, las cuales reducen el riesgo de corto circuito y prolongan la vida de la batería. Postes reforzados que evitan el desgaste de las terminales."
+                    }
+                  },
+                  {
+                    "component": "QuiviButton",
+                    "props": {
+                      "label": "Encuentra tu producto",
+                      "url": "/",
+                      "size": "lg"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

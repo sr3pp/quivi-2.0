@@ -3,16 +3,18 @@
   position: relative;
 
   &.title {
-    font-family: Bebas;
-    font-size: pxToRem(36) !important;
-    * {
-      font-family: inherit;
+    --text-size: #{pxToRem(36)};
+    .sr-text-container {
+      font-family: Bebas;
+      * {
+        font-family: inherit;
+      }
     }
   }
 
   &.subtitle {
     font-family: Bebas;
-    font-size: pxToRem(22);
+    --text-size: #{pxToRem(22)};
     * {
       font-family: inherit;
     }

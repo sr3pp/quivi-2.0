@@ -20,9 +20,9 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-vue": "^9.20.0",
-    "pug": "^3.0.2",
-    "nuxt": "3.8.2",
+    "nuxt": "^3.10.2",
     "prettier": "^3.2.1",
+    "pug": "^3.0.2",
     "vue": "^3.4.6",
     "vue-router": "^4.2.5"
   },
@@ -38,11 +38,12 @@
     "mongoose": "^8.0.4",
     "mongoose-bcrypt": "^1.11.0",
     "nodemailer": "^6.9.8",
+    "normalize.css": "^8.0.1",
     "nuxt-swiper": "^1.2.2",
     "read-excel-file": "^5.7.1",
     "sass": "^1.69.7",
     "soap": "^0.45.0",
-    "sr-content-2": "^0.0.7",
+    "sr-content-2": "0.0.23",
     "vitest": "^1.2.0",
     "vue-eslint-parser": "^9.4.0"
   }

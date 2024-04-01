@@ -1,0 +1,49 @@
+{
+  "content": {
+    "address": "",
+    "bank_accounts": [
+      {
+        "account_number": "00443096394",
+        "CLABE": "012 180 00443096394 8",
+        "bank_name": "BBVA Bancomer"
+      },
+      {
+        "account_number": "92-00079666-2",
+        "CLABE": "014 180 92000796662 5",
+        "bank_name": "Santander"
+      },
+      {
+        "account_number": "8447185",
+        "CLABE": "002 180 70148447185 4",
+        "bank_name": "Banamex"
+      }
+    ],
+    "social": [
+      {
+        "label": "Youtube",
+        "url": "/",
+        "icon": "youtube-f"
+      },
+      {
+        "label": "Facebook",
+        "url": "/",
+        "icon": "facebook-f"
+      },
+      {
+        "label": "Instagram",
+        "url": "/",
+        "icon": "instagram-f"
+      },
+      {
+        "label": "Linkedin",
+        "url": "/",
+        "icon": "linkedin-f"
+      },
+      {
+        "label": "Whatsapp",
+        "url": "/",
+        "icon": "whatsapp-o"
+      }
+    ]
+  }
+}

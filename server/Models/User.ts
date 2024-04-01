@@ -16,4 +16,4 @@ const schema: Schema<User> = new mongoose.Schema(
   { timestamps: true, strict: true, strictQuery: true },
 );
 schema.plugin(bcrypt);
-export default mongoose.model("User", schema, "user");
+export default mongoose.models.User || mongoose.model("User", schema, "user");

@@ -1,0 +1,58 @@
+{
+  "content": {
+    "brands": [
+      {
+        "name": "Autopar",
+        "logo": "/img/logos/autopar.png"
+      },
+      {
+        "name": "Champion",
+        "logo": "/img/logos/champion.png"
+      },
+      {
+        "name": "Depo",
+        "logo": "/img/logos/depo.png"
+      },
+      {
+        "name": "Timken",
+        "logo": "/img/logos/timken.png"
+      },
+      {
+        "name": "Dai",
+        "logo": "/img/logos/dai.png"
+      },
+      {
+        "name": "Hella",
+        "logo": "/img/logos/hella.png"
+      },
+      {
+        "name": "Roshfrans",
+        "logo": "/img/logos/roshfrans.png"
+      },
+      {
+        "name": "Fritec",
+        "logo": "/img/logos/fritec.png"
+      },
+      {
+        "name": "NGK",
+        "logo": "/img/logos/ngk.png"
+      },
+      {
+        "name": "Lusac",
+        "logo": "/img/logos/lusac.png"
+      },
+      {
+        "name": "Gates",
+        "logo": "/img/logos/gates.png"
+      },
+      {
+        "name": "Bosch",
+        "logo": "/img/logos/bosch.png"
+      },
+      {
+        "name": "Delco Remy",
+        "logo": "/img/logos/delco_remy.png"
+      }
+    ]
+  }
+}

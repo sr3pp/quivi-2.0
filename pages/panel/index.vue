@@ -1,5 +1,5 @@
 <template lang="pug">
-.panel
+SrContainer.panel(:with-padding="true")
   ul
     li(v-for="(item, i) in items" :key="i")
       NuxtLink(:to="item.to") {{ item.label }}
