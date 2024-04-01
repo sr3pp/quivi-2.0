@@ -5,6 +5,7 @@
     "active-color": { "value": "#F6C6EA" },
     "text-color": { "value": "#332F2E" },
     "white": { "value": "#F9F9F9" },
+    "near-white": { "value": "#E7E7E7" },
     "black": { "value": "#332F2E" },
     "dark-gray": { "value": "#636b6f" },
     "system": {
@@ -19,6 +20,7 @@
       "darkest-gray": { "value": "#444242" },
       "red": { "value": "#C54643" },
       "light-red": { "value": "#F22435" },
+      "light-blue": { "value": "#d8dde6" },
       "dark-red": { "value": "#921F1D" },
       "darkest-red": { "value": "#38060E" },
       "green": { "value": "#1C8741" }

@@ -1,0 +1,61 @@
+.sr-container,
+.sr-text {
+  position: relative;
+
+  &.title {
+    --text-size: #{pxToRem(36)};
+    .sr-text-container {
+      font-family: Bebas;
+      * {
+        font-family: inherit;
+      }
+    }
+  }
+
+  &.subtitle {
+    font-family: Bebas;
+    --text-size: #{pxToRem(22)};
+    * {
+      font-family: inherit;
+    }
+  }
+}
+
+.swiper {
+  &-button {
+    &-next,
+    &-prev {
+      width: pxToRem(50) !important;
+      height: pxToRem(50) !important;
+      flex-shrink: 0;
+      color: $color-quivi-light-red !important;
+      background-color: $color-white !important;
+      box-shadow: pxToRem(0) pxToRem(0) pxToRem(10) rgba($color-black, 0.3) !important;
+      padding: pxToRem(10);
+      border-radius: 100%;
+      border: {
+        style: solid;
+        color: $color-quivi-light-red;
+        width: pxToRem(4);
+      }
+
+      &::after {
+        font-size: pxToRem(30) !important;
+        font-weight: 900;
+      }
+    }
+  }
+
+  &-pagination {
+    &-bullet {
+      width: pxToRem(13) !important;
+      height: pxToRem(13) !important;
+      background-color: $color-quivi-light-gray !important;
+      border: {
+        style: solid;
+        color: $color-quivi-gray;
+        width: pxToRem(2);
+      }
+    }
+  }
+}
