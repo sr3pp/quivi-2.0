@@ -5,6 +5,7 @@
 .nitro
 .cache
 dist
+content
 public
 
 # Node dependencies
