@@ -6,10 +6,7 @@ ul.quivi-cart-list
             SrText(:text="product.name" class="subtitle")
             SrText(:text="`Marca: ${product.brand.name}`")
             SrText(:text="`Web: ${product.web}`")
-            div.quivi-cart-list-qty(v-if="editable")
-              button(@click="updateQty(product, -1)") -
-              input.sr-form-input(:value="product.qty" @input="validateInput(product, $event)")
-              button(@click="updateQty(product, 1)") +
+            Incrementor(v-if="editable" :qty="product.qty" @updateQty="updateQty(product, $event)" @setTotal="setTotal(product, $event)")
             SrText(v-else :text="`Qty: ${String(product.qty)}`")
             .price-container
                 SrText.discount(:text="toPrice(product.price)")
@@ -36,13 +33,6 @@ defineProps({
 const emit = defineEmits(["remove", "setTotal"]);
 const removeProduct = (product: Product) => {
   emit("remove", product);
-};
-
-const validateInput = (product: Product, $event: InputEvent) => {
-  const targetValue = ($event.target as HTMLInputElement).value;
-  const value = targetValue.replace(/[^0-9]/g, "");
-  ($event.target as HTMLInputElement).value = value;
-  setTotal(product, Number(value));
 };
 
 const updateQty = (product: Product, value: number) => {
@@ -116,46 +106,6 @@ const setTotal = (product: Product, value: number) => {
         .price {
           margin-left: auto;
         }
-      }
-    }
-  }
-
-  &-qty {
-    display: flex;
-    gap: pxToRem(10);
-    margin: auto;
-    width: 100%;
-    justify-content: center;
-    padding: pxToRem(10) 0;
-    button {
-      font-weight: bold;
-      width: pxToRem(30);
-      flex-shrink: 0;
-      appearance: none;
-      border: none;
-      border-radius: pxToRem(5);
-      color: $color-white;
-      background: $color-quivi-green;
-      text-align: center;
-    }
-    .sr-form-input {
-      width: pxToRem(50);
-      border-radius: pxToRem(5);
-      border: {
-        style: solid;
-        color: $color-quivi-gray;
-        width: pxToRem(2);
-      }
-      text-align: center;
-
-      &[type="number"]::-webkit-outer-spin-button,
-      &[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-      &[type="number"] {
-        appearance: textfield;
-        -moz-appearance: textfield;
       }
     }
   }

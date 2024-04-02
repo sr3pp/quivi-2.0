@@ -34,8 +34,8 @@ export default defineEventHandler(async (event) => {
     elaboraFactura: String(billSw),
     estadoEnvio: shippmentData.address.state,
     formaPago: paymentMethod,
-    importeTotal: String(total),
-    impuestoTotal: String(total * 0.16),
+    importeTotal: total.toFixed(2),
+    impuestoTotal: (total * 0.16).toFixed(2),
     metodoPago: "PUE",
     municipioEnvio: shippmentData.address.city,
     nombreEnvio: shippmentData.name,
@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
     numInteriorEnvio: shippmentData.address.int_num,
     numOrdenCompraPortal: order_id,
     paisEnvio: "MEXICO",
-    referenciaPago: `Compra en Quivi.mx. Orden: ${order_id}`,
+    referenciaPago: `${order_id}`,
     registrado: user ? String(true) : String(false),
     telefonoEnvio: shippmentData.phone,
     usoCFDI: billing ? billing.cfdi : "",
@@ -52,18 +52,19 @@ export default defineEventHandler(async (event) => {
   //partidas, deben contener numero de sae valido
   const partidas = _partidas.join("|");
 
-  console.log("saeData", saeData);
-  console.log("partidas", partidas);
-
-  if (process.env.NODE_ENV === "production") {
+  if (config.openpay.production) {
     //Send data to SAE
     try {
       const SAE = new saeHelper();
       await SAE.init(config.sae.url);
       const order = await SAE.sendOrder(saeData, partidas);
+      if (order == "-1") {
+        return false;
+      }
       return order;
     } catch (err) {
-      return err;
+      console.log(err);
+      return false;
     }
   }
   return String(Date.now());

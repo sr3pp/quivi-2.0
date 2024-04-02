@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   return {
     products: searchResults.products.map((product: any) => ({
       ...product._doc,
-      url: `/producto/${product.web}`,
+      url: `/producto/${product._id}`,
     })),
     pagination: searchResults.pagination,
   };

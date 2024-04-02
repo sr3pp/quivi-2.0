@@ -58,8 +58,6 @@ import { colorQuiviDarkestGray, colorQuiviGray } from "~/assets/ts/tokens";
 
 const { data: navigation } = await useFetch("/api/content/navigation");
 
-console.log(navigation);
-
 const searchActive = ref(false);
 const menuActive = ref(false);
 

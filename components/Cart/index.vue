@@ -64,8 +64,8 @@ const setTotal = () => {
       ? 0
       : Number(cart.value.shipping.costo);
 
-  cart.value.subtotal = total;
-  cart.value.total = total + shipping;
+  cart.value.subtotal = Number(total.toFixed(2));
+  cart.value.total = Number((total + shipping).toFixed(2));
 };
 
 const removeProduct = (idx: number) => {

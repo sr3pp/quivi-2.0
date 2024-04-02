@@ -5,10 +5,17 @@ import type { Product } from "~/types";
 const { params } = useRoute();
 const { _id } = params;
 
-const { data: product } = await useFetch<Product>(`/api/product/${_id}`);
+const { data: product }: any = await useFetch<Product>(`/api/product/${_id}`);
+
 const relatedProducts = await $fetch(
   `/api/product/hightlights?brand=${product.value?.brand.name}`,
 );
+
+const { data: existences }: any = await $fetch(
+  `/api/product/get-existences?sae=${product.value.sae}&type=${product.value.meassure_unity || "P"}`,
+);
+product.value.existences = existences;
+product.value.qty = 1;
 
 const notifications: any = useState("notifications", () => []);
 
@@ -37,15 +44,24 @@ const cart = useLocalStorage("cart", {
   },
 });
 
+const updateQty = (value: number) => {
+  if (!product.value.qty) product.value.qty = 1 + value;
+  else product.value.qty += value;
+};
+
 const addToCart = () => {
-  const productExists = cart.value.products.find(
+  const productExists: Product | undefined = cart.value.products.find(
     (p: any) => p.web === product.value.web,
   );
 
   if (productExists) {
-    productExists.qty++;
+    if (productExists.qty + product.value.qty > product.value.existences)
+      return;
+    productExists.qty += product.value.qty;
   } else {
-    product.value.qty = 1;
+    if (!product.value.qty) {
+      product.value.qty = 1;
+    }
     cart.value.products.push(product.value);
   }
 
@@ -86,6 +102,10 @@ const printValue = (value: any) => {
     return String(value);
   }
 };
+
+const setTotal = (value: number) => {
+  product.value.qty = value;
+};
 </script>
 
 <template lang="pug">
@@ -105,9 +125,14 @@ const printValue = (value: any) => {
                         .price-container
                           SrText(:text="processDiscount(product)" class="title" v-if="product.discount")
                           SrText.discount(:text="toPrice(product.price)" class="subtitle")
-                        SrText(text="Solicitar informacion")
+                        .product-detail-no-existences(v-if="!existences")
+                          SrText(text="Producto no disponible")
+                          QuiviButton(label="Solicitar información" size="lg" variant="secondary")
+                        .product-detail-existences(v-else)
+                          Incrementor(:qty="product.qty" :max="product.existences" @updateQty="updateQty" @setTotal="setTotal($event)")
+                          QuiviButton(v-if="product.qty > product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
-                        QuiviButton(@click="addToCart(product)" label="Agregar al carrito")
+                        QuiviButton(@click="addToCart(product)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
                         QuiviButton(href="/" label="Ir a la tienda")
             SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
                 SrText(text="ESPECIFICACIONES DEL PRODUCTO" class="title")
@@ -145,7 +170,10 @@ const printValue = (value: any) => {
     justify-content: space-between;
 
     .price-container {
-      width: 100%;
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .discount {
@@ -169,6 +197,20 @@ const printValue = (value: any) => {
       margin-right: pxToRem(6);
       font-weight: bold;
       text-transform: capitalize;
+    }
+  }
+  &-no-existences {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 50%;
+    .sr-text {
+      --text-align: center;
+      &:not(:last-of-type) {
+        margin-bottom: pxToRem(10);
+      }
     }
   }
 }

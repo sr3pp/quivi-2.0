@@ -22,4 +22,5 @@ export interface Product {
   models: object[] | [{ type: typeof Schema.Types.ObjectId; ref: string }];
   segment: object | { type: typeof Schema.Types.ObjectId; ref: string };
   motors: object[] | [{ type: typeof Schema.Types.ObjectId; ref: string }];
+  existences: number;
 }

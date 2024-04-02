@@ -262,57 +262,62 @@ const resetStorage = () => {
 const proccesOrder = async (id: string, transaction?: string) => {
   const user = null;
 
-  const sae = await $fetch("/api/order/sae", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: {
-      transactionId,
-      partidas: cart.value.products.map((product: any) => {
-        return `${product.qty},${product.sae},${product.price}`;
-      }),
-      shippmentData: saleData.value.shipping,
-      billing: saleData.value.bill,
-      billSw: saleData.value.billSw,
-      paymentMethod: paymentKeyDict[(paymentMethod.value as any).value] || "",
-      total: cart.value.total,
+  try {
+    const sae = await $fetch("/api/order/sae", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: {
+        transactionId,
+        partidas: cart.value.products.map((product: any) => {
+          return `${product.qty},${product.sae},${product.price}`;
+        }),
+        shippmentData: saleData.value.shipping,
+        billing: saleData.value.bill,
+        billSw: saleData.value.billSw,
+        paymentMethod: paymentKeyDict[(paymentMethod.value as any).value] || "",
+        total: cart.value.total,
+        user,
+        order_id: id,
+      },
+    });
+
+    const order: any = {
       user,
-      order_id: id,
-    },
-  });
+      products: cart.value.products.map((product: any) => ({
+        product: product._id,
+        quantity: product.qty,
+        price: product.price,
+        discount: product.discount,
+      })),
+      order_no: id,
+      sae_order: sae ? sae : null,
+      status: ["cash", "spei"].includes(paymentMethod.value.value as string)
+        ? false
+        : true,
+      shipping: saleData.value.shipping,
+      payment: {
+        method: paymentKeyDict[(paymentMethod.value as any).value] || "",
+        transaction: transaction || "",
+        status: true,
+        installments: 1,
+      },
+      discount: 0,
+      total: cart.value.total,
+    };
 
-  const order: any = {
-    user,
-    products: cart.value.products.map((product: any) => ({
-      product: product._id,
-      quantity: product.qty,
-      price: product.price,
-      discount: product.discount,
-    })),
-    order_no: id,
-    sae_order: sae,
-    status: ["cash", "spei"].includes(paymentMethod.value.value as string)
-      ? false
-      : true,
-    shipping: saleData.value.shipping,
-    payment: {
-      method: paymentKeyDict[(paymentMethod.value as any).value] || "",
-      transaction: transaction || "",
-      status: true,
-      installments: 1,
-    },
-    discount: 0,
-    total: cart.value.total,
-  };
+    if (saleData.value.billSw) {
+      order.billing = saleData.value.bill;
+    }
 
-  if (saleData.value.billSw) {
-    order.billing = saleData.value.bill;
+    return {
+      order,
+    };
+  } catch (error) {
+    console.log(error);
+    return false;
   }
-
-  return {
-    order,
-  };
 };
 
 if (transactionId) {
@@ -333,13 +338,15 @@ if (transactionId) {
   if (status === "completed") {
     verifyingPayment.value = false;
 
-    const { order } = await proccesOrder(
+    const { order }: any = await proccesOrder(
       registeredOrder as string,
       transactionId as string,
     );
 
-    saveOrder(order);
-    resetStorage();
+    if (order) {
+      saveOrder(order);
+      resetStorage();
+    }
 
     //if payment method is not cash redirect to success page
     if (payment_method.type !== "store") {

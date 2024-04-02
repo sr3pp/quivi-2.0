@@ -51,8 +51,11 @@ defineProps({
 
   &.secondary {
     min-width: inherit;
+    max-width: inherit;
     a,
     button {
+      font-family: inria;
+      font-size: pxToRem(18);
       background: linear-gradient(
         90deg,
         $color-quivi-light-red 0%,
@@ -60,6 +63,8 @@ defineProps({
       );
       color: $color-white;
       border-radius: pxToRem(40);
+      padding-right: pxToRem(20);
+      padding-left: pxToRem(20);
     }
   }
 
