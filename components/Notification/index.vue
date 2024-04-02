@@ -5,7 +5,7 @@ article.quivi-notification(:class="{active: status}" @mouseover="cancelTimeout" 
   .quivi-notification-content
     slot
     .quivi-notification-description(v-if="description")
-      SrText(:text="description")
+      SrText(:html="description")
 </template>
 
 <script lang="ts" setup>

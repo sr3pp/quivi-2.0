@@ -185,7 +185,7 @@ const saleForm = ref([
           type: "checkbox",
           label: "Requiero Factura",
           name: "billSw",
-          value: billSw.value,
+          modelValue: billSw.value,
           onchange: (e: any) => {
             const sw = e.target.checked;
             appendBilling(sw);

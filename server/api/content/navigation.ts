@@ -37,7 +37,7 @@ const getData = (file: any, url: string) => {
   };
 };
 
-export default defineEventHandler((e) => {
+export default defineEventHandler((e: any) => {
   const navigation: any = [];
 
   const getNames = (url: any, obj: any) => {

@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
+import type { Product } from "~/types";
 
 const { params } = useRoute();
 const { _id } = params;
 
-const product: any = await $fetch(`/api/product/${_id}`);
+const { data: product } = await useFetch<Product>(`/api/product/${_id}`);
 const relatedProducts = await $fetch(
-  `/api/product/hightlights?brand=${product.brand.name}`,
+  `/api/product/hightlights?brand=${product.value?.brand.name}`,
 );
 
 const notifications: any = useState("notifications", () => []);

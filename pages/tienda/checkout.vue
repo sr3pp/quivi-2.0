@@ -27,11 +27,11 @@
                 QuiviTerms(:terms="terms" )
                 .check
                   SrFormBox( v-model="termsSw" type="checkbox")
-                  SrText(@click="termsSw = !termsSw" :text="termsLegend")
+                  SrText(@click="termsSw = !termsSw" :html="termsLegend")
         template(#footer)
           .sr-modal-footer
             SrText(text="Para continuar acepta los términos y condiciones")
-            SrText(:text="termsLegend2")
+            SrText(:html="termsLegend2")
             br
             QuiviButton(label="Pagar" @buttonclick="processPayment" :disabled="!termsSw")
 </template>
@@ -48,12 +48,17 @@ import {
 import type { Cart } from "~/types";
 
 const {
-  "amp;id": transactionId,
+  id: transactionId,
   order_id: registeredOrder,
   token: paypal_order_id,
 } = useRoute().query;
 
-const cart: Ref<Cart> = useLocalStorage("cart");
+const cart: Ref<Cart> = useLocalStorage("cart", {
+  products: [],
+  total: 0,
+  subtotal: 0,
+  shipping: 0,
+});
 
 const saleData: Ref<any> = useLocalStorage("saleData", {
   shipping: {
@@ -229,7 +234,6 @@ const processPayment = async () => {
   if (termsSw.value) {
     termsModalSw.value = false;
   }
-
   if (
     ["credit-card", "debit-card", "cash"].includes(paymentMethod.value.value)
   ) {
