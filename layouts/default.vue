@@ -37,6 +37,9 @@ hook("page:start", () => {
 hook("page:transition:finish", () => {
   loading.value = false;
 });
+hook("page:finish", () => {
+  loading.value = false;
+});
 </script>
 
 <style lang="scss">

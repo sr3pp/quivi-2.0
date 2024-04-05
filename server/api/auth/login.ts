@@ -7,42 +7,45 @@ export default defineEventHandler(async (event) => {
   const { email, password } = await readBody(event);
 
   if (!email || !password) {
-    event.node.res.statusCode = 400;
+    setResponseStatus(event, 400);
     return "error";
   }
 
   try {
-    const user: any = await UserModel.findOne(
-      { email: email },
-      { password: 1 },
+    const user: any = await UserModel.findOne({ email: email }).select(
+      "+password",
     );
     if (!user) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: "User with given email does not exists",
-      });
+      setResponseStatus(event, 404);
+      return {
+        error: "User does not exists",
+      };
     }
 
     const validate_pass = await user.verifyPasswordSync(password);
 
-    if (validate_pass) {
-      const { secret } = config.jwt as { secret: string };
-      const token = jwt.sign({ user_id: user._id }, secret, {
-        expiresIn: "2h",
-      });
-
-      user.token = token;
-      return user;
+    if (!validate_pass) {
+      setResponseStatus(event, 404);
     }
 
-    throw createError({
-      statusCode: 404,
-      statusMessage: "User with given email or password doesn't exists.",
+    const { secret } = config.jwt as { secret: string };
+    const token = jwt.sign({ user_id: user._id }, secret, {
+      expiresIn: "2h",
     });
+
+    return {
+      token,
+      user: {
+        id: user._id,
+        name: user.profile.name,
+        email: user.email,
+      },
+    };
   } catch (err: any) {
-    throw createError({
-      statusCode: err.statusCode || 500,
-      statusMessage: err.statusMessage || err.message,
-    });
+    console.error(err);
+    setResponseStatus(event, 500);
+    return {
+      error: err,
+    };
   }
 });

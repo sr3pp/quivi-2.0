@@ -6,6 +6,10 @@ aside.sidebar
                 NuxtLink(:to="item.url")
                     SrIcon(:name="item.icon")
                     span {{ item.label }}
+            li.sidebar-menu-item
+                button(@click="logout")
+                    SrIcon(name="logout-o")
+                    span Logout
 </template>
 
 <script lang="ts" setup>
@@ -15,6 +19,15 @@ defineProps({
     default: () => [],
   },
 });
+
+const logout = async () => {
+  try {
+    useAuth().logout();
+    useRouter().push("/");
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <style lang="scss" scoped>
@@ -42,10 +55,13 @@ defineProps({
       height: pxToRem(50);
       display: flex;
       align-items: center;
-      a {
+      a,
+      button {
         display: flex;
         align-items: center;
         color: currentColor;
+        background: none;
+        border: none;
       }
 
       span {

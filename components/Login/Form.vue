@@ -36,10 +36,11 @@ const loginForm = ref([
 
 const login = async (data: any) => {
   try {
-    await useFetch("/api/auth/login", {
+    const { user, token }: any = await $fetch("/api/auth/login", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: data,
     });
+    useAuth().login(user, token);
   } catch (error) {
     console.error(error);
   }
