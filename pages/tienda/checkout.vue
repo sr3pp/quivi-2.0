@@ -214,7 +214,7 @@ const saveOrder = async (order: any) => {
 };
 
 const storePayment = async (orderId: string, reference: string) => {
-  const { order } = await proccesOrder(orderId);
+  const { order }: any = await proccesOrder(orderId);
   saveOrder(order);
   resetStorage();
   useRouter().push(
@@ -224,7 +224,7 @@ const storePayment = async (orderId: string, reference: string) => {
 
 const speiHandler = async () => {
   const orderId = buildOrderId();
-  const { order } = await proccesOrder(orderId);
+  const { order }: any = await proccesOrder(orderId);
   saveOrder(order);
   resetStorage();
   useRouter().push(`/tienda/order/spei?order_id=${order.order_no}`);
@@ -367,7 +367,7 @@ if (transactionId) {
   const confirm = await paypal.confirm(paypal_order_id as string);
 
   if (confirm === "APPROVED") {
-    const { order } = await proccesOrder(
+    const { order }: any = await proccesOrder(
       registeredOrder as string,
       paypal_order_id as string,
     );

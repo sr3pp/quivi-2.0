@@ -37,7 +37,7 @@
           SrText(text="Edit product" class="title text-center")
       template(#body)
         .sr-modal-body
-          SrForm(:fieldsets="productForm" @submit="updateProduct")
+          SrForm.product-form(:fieldsets="productForm" @submit="updateProduct")
 </template>
 
 <script lang="ts" setup>
@@ -50,14 +50,50 @@ definePageMeta({
 const route = useRoute();
 const { search: _search, page = 1, filters: _filters } = route.query;
 
+const [productBrands, categories, subcategories, carBrands, carModels] =
+  await Promise.all([
+    $fetch("/api/product/brands"),
+    $fetch("/api/category"),
+    $fetch("/api/subcategory"),
+    $fetch("/api/car-brand"),
+    $fetch("/api/car-model"),
+  ]);
+
 const search = ref(_search as string);
 const filters = ref(_filters as string);
 const editModal = ref(false);
 const products = ref([]);
 const pagination = ref({});
+const currentProduct = ref("");
+
 const productForm = ref([
   {
     fields: [
+      {
+        component: "ProductEditThumbs",
+        props: {
+          name: "thumbs",
+          thumbs: [],
+          removeThumb: (i: number) => {
+            productForm.value.forEach((fieldset: any) => {
+              fieldset.fields.forEach((field: any) => {
+                if (field.props.name === "thumbs") {
+                  field.props.thumbs.splice(i, 1);
+                }
+              });
+            });
+          },
+          addThumb: (thumb: string) => {
+            productForm.value.forEach((fieldset: any) => {
+              fieldset.fields.forEach((field: any) => {
+                if (field.props.name === "thumbs") {
+                  field.props.thumbs.push(thumb);
+                }
+              });
+            });
+          },
+        },
+      },
       {
         component: "SrFormInput",
         props: {
@@ -81,6 +117,7 @@ const productForm = ref([
           name: "price",
           label: "Precio",
           type: "number",
+          step: "0.01",
           required: true,
         },
       },
@@ -90,7 +127,8 @@ const productForm = ref([
           name: "priority",
           label: "Prioridad",
           type: "number",
-          required: true,
+          value: "99",
+          required: false,
         },
       },
       {
@@ -99,7 +137,8 @@ const productForm = ref([
           name: "discount",
           label: "Descuento",
           type: "number",
-          required: true,
+          value: 0,
+          required: false,
         },
       },
       {
@@ -107,8 +146,7 @@ const productForm = ref([
         props: {
           name: "extra",
           label: "Extra",
-          type: "number",
-          required: true,
+          required: false,
         },
       },
       {
@@ -124,123 +162,179 @@ const productForm = ref([
         props: {
           name: "line",
           label: "linea",
+          required: false,
+        },
+      },
+      {
+        component: "SrFormSelect",
+        props: {
+          name: "brand",
+          label: "Marca",
           required: true,
+          options: productBrands.map((brand: any) => ({
+            value: brand._id,
+            name: brand.name,
+          })),
         },
       },
       {
-        component: "ProductEditList",
+        component: "SrFormSelect",
         props: {
-          select: {
-            name: "Brand",
-            label: "Marca",
-            required: true,
-            options: [
-              { value: "1", text: "Option 1" },
-              { value: "2", text: "Option 2" },
-            ],
-          },
+          name: "category",
+          label: "Categoria",
+          required: true,
+          options: categories.map((brand: any) => ({
+            value: brand._id,
+            name: brand.name,
+          })),
         },
       },
       {
-        component: "ProductEditList",
+        component: "SrFormSelect",
         props: {
-          select: {
-            name: "category",
-            label: "Categoria",
-            required: true,
-            options: [
-              { value: "1", text: "Option 1" },
-              { value: "2", text: "Option 2" },
-            ],
-            onChange: (e: Event) => {
-              console.log("set subcategorias: ", e);
-            },
-          },
+          name: "subcategory",
+          label: "Subcategoria",
+          required: true,
+          options: subcategories.map((brand: any) => ({
+            value: brand._id,
+            name: brand.name,
+          })),
         },
       },
+
       {
         component: "ProductEditList",
         props: {
+          name: "years",
           select: {
-            name: "subcategory",
-            label: "Subcategoria",
-            required: true,
-            options: [
-              { value: "1", text: "Option 1" },
-              { value: "2", text: "Option 2" },
-            ],
-          },
-        },
-      },
-      {
-        component: "ProductEditList",
-        props: {
-          select: {
-            name: "years",
             label: "Anios",
             required: true,
-            options: [
-              { value: "1", name: "Option 1" },
-              { value: "2", name: "Option 2" },
-            ],
+            options: Array.from(
+              { length: new Date().getFullYear() - 1980 + 1 },
+              (_, i) => ({
+                value: i + 1980,
+                name: String(i + 1980),
+              }),
+            ),
           },
+          items: [],
+          removeItem,
+          addItem,
         },
       },
       {
         component: "ProductEditList",
         props: {
+          name: "car_brands",
           select: {
-            name: "car_brands",
             label: "Marcas de auto",
             required: true,
-            options: [
-              { value: "1", name: "Option 1" },
-              { value: "2", name: "Option 2" },
-            ],
+            options: carBrands.map((brand: any) => ({
+              value: brand._id,
+              name: brand.name,
+            })),
           },
+          items: [],
+          removeItem,
+          addItem,
         },
       },
       {
         component: "ProductEditList",
         props: {
+          name: "models",
+          value: [],
           select: {
-            name: "models",
             label: "modelos",
             required: true,
-            options: [
-              { value: "1", name: "Option 1" },
-              { value: "2", name: "Option 2" },
-            ],
+            options: carModels.map((model: any) => ({
+              value: model._id,
+              name: model.name,
+            })),
           },
+          items: [],
+          removeItem,
+          addItem,
         },
       },
     ],
   },
 ]);
 
-const { products: _products, pagination: _pagination } = await fetchProducts(
-  route.path,
-  page as string,
-  search.value as string,
-  filters.value as string,
+const prodctData = ref(
+  await fetchProducts(route.path, page as string, _search as string, _filters),
 );
 
-products.value = _products;
-pagination.value = _pagination;
+products.value = prodctData.value.products;
+pagination.value = prodctData.value.pagination;
 
 const editProduct = (product: any) => {
+  currentProduct.value = product._id;
   editModal.value = true;
   productForm.value.forEach((fieldset: any) => {
     fieldset.fields.forEach((field: any) => {
-      if (field.component == "SrFormInput") {
-        field.props.value = product[field.props.name];
+      if (field.props.name == "years") {
+        field.props.items = product[field.props.name].map((year: any) => ({
+          value: year,
+          name: year,
+        }));
+      } else if (field.component === "ProductEditList") {
+        field.props.items = product[field.props.name].map((item: any) => {
+          let id, name;
+          if (field.props.name === "car_brands") {
+            const brand: any = carBrands.find(
+              (brand: any) => brand._id === item,
+            );
+            id = brand._id;
+            name = brand.name;
+          } else {
+            const model: any = carModels.find(
+              (model: any) => model._id === item,
+            );
+            id = model._id;
+            name = model.name;
+          }
+          return {
+            value: id,
+            name,
+          };
+        });
+      } else if (field.props.name === "thumbs") {
+        field.props.thumbs = product[field.props.name].filter(
+          (th: string) => th,
+        );
+        field.props.productId = product._id;
+      } else {
+        field.props.value = String(product[field.props.name]);
       }
     });
   });
 };
 
-const updateProduct = (data: any) => {
-  console.log(data);
+const updateProduct = async (data: any) => {
+  productForm.value.forEach((fieldset: any) => {
+    fieldset.fields.forEach((field: any) => {
+      if (field.component === "ProductEditList") {
+        data[field.props.name] = field.props.items.map(
+          (item: any) => item.value,
+        );
+      } else if (field.component === "ProductEditThumbs") {
+        data[field.props.name] = field.props.thumbs;
+      }
+    });
+  });
+
+  data._id = currentProduct.value;
+
+  try {
+    const product = await $fetch("/api/product", {
+      method: "PUT",
+      body: data,
+    });
+    editModal.value = false;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 watch(
@@ -262,7 +356,6 @@ watch(
 
 const uploading: Ref<boolean> = ref(false);
 const handleFileUpload = async (e: Event) => {
-  console.log("handleFileUpload");
   uploading.value = true;
 
   const target = e.target as HTMLInputElement;
@@ -280,9 +373,28 @@ const handleFileUpload = async (e: Event) => {
     uploading.value = false;
   }
 };
+
+function removeItem(idx: number, key: string) {
+  productForm.value.forEach((fieldset: any) => {
+    fieldset.fields.forEach((field: any) => {
+      if (field.props.name === key) {
+        field.props.items.splice(idx, 1);
+      }
+    });
+  });
+}
+function addItem(item: any, key: string) {
+  productForm.value.forEach((fieldset: any) => {
+    fieldset.fields.forEach((field: any) => {
+      if (field.props.name === key) {
+        field.props.items.push(item);
+      }
+    });
+  });
+}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .products {
   .massive-file {
     display: flex;
@@ -297,6 +409,24 @@ const handleFileUpload = async (e: Event) => {
       height: pxToRem(20);
       background-color: red;
       border-radius: pxToRem(50);
+    }
+  }
+
+  .product-form {
+    fieldset {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+
+      > *:not(.quivi-product-edit-list) {
+        width: calc(33.33333% - pxToRem(8));
+      }
+      .quivi-product-edit-list {
+        width: calc(50% - pxToRem(8));
+      }
+      .quivi-product-edit-thumbs {
+        width: 100%;
+      }
     }
   }
 }

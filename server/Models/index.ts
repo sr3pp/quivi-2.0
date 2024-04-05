@@ -8,8 +8,8 @@ import Motor from "./Motor";
 import CarModel from "./CarModel";
 import CarBrand from "./CarBrand";
 import ProductBrand from "./ProductBrand";
-import Segment from "./Segment";
 import Shipment from "./Shipment";
+import Segment from "./Segment";
 
 export {
   Bill,
