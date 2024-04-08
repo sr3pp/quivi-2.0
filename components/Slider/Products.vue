@@ -37,10 +37,20 @@ const props = defineProps({
 <style lang="scss">
 .product-slider {
   width: 100%;
+  padding: 0;
+  margin: 0;
 
   &-slide {
     overflow: hidden;
     height: auto;
+
+    margin-left: pxToRem(-10);
+    width: 80vw;
+
+    @media (min-width: #{$breakpoint-md}) {
+      width: auto;
+      margin-left: 0;
+    }
 
     .quivi-product-card {
       height: 100%;

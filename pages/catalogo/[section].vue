@@ -39,7 +39,7 @@ const options = {
 };
 
 const product_options = {
-  slidesPerView: 4,
+  slidesPerView: "auto",
   centeredSlides: true,
   autoplay: true,
   loop: true,
@@ -52,11 +52,20 @@ const product_options = {
       translate: ["100%", 0, 0],
     },
   },
+  breakpoints: {
+    744: {
+      slidesPerView: 3,
+      spaceBetween: 30,
+    },
+    1024: {
+      slidesPerView: 4,
+    },
+  },
 };
 </script>
 
 <style lang="scss">
-.catalog-detail {
+.catalogo-detail {
   &-description {
     .sr-text {
       &:not(:last-of-type) {
@@ -78,6 +87,10 @@ const product_options = {
         margin-bottom: pxToRem(20);
       }
     }
+  }
+
+  .product-slider {
+    margin-bottom: pxToRem(40);
   }
 }
 </style>

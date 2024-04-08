@@ -58,6 +58,7 @@ import { colorQuiviDarkestGray, colorQuiviGray } from "~/assets/ts/tokens";
 
 const { data: navigation } = await useFetch("/api/content/navigation");
 
+const route = ref(useRoute());
 const searchActive = ref(false);
 const menuActive = ref(false);
 
@@ -86,6 +87,12 @@ const productsLength = computed(() => {
 
   return total;
 });
+watch(
+  () => route.value.name,
+  () => {
+    menuActive.value = false;
+  },
+);
 </script>
 
 <style lang="scss" scoped>

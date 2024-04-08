@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
 import type { Product } from "~/types";
+import "swiper/css";
+
+import "swiper/css/pagination";
 
 const { params } = useRoute();
 const { _id } = params;
@@ -73,8 +76,8 @@ const addToCart = () => {
 };
 
 const sliderOptions = {
-  slidesPerView: 4,
-  spaceBetween: 30,
+  slidesPerView: "auto",
+  spaceBetween: 0,
   centeredSlides: true,
   autoplay: true,
   loop: true,
@@ -85,6 +88,15 @@ const sliderOptions = {
     },
     next: {
       translate: ["100%", 0, 0],
+    },
+  },
+  breakpoints: {
+    744: {
+      slidesPerView: 3,
+      spaceBetween: 10,
+    },
+    1024: {
+      slidesPerView: 4,
     },
   },
 };

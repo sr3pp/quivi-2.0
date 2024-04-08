@@ -514,11 +514,13 @@ const emitInfo = (data: any) => {
     }
     .sr-form-input,
     .sr-form-select {
-      width: calc((100% / 3) - pxToRem(8));
-      flex-grow: 1;
-
-      &:last-child {
-        flex-grow: 0;
+      width: 100%;
+      @media (min-width: $breakpoint-md) {
+        width: calc((100% / 3) - pxToRem(8));
+        flex-grow: 1;
+        &:last-child {
+          flex-grow: 0;
+        }
       }
     }
   }

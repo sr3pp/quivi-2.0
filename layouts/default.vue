@@ -36,9 +36,11 @@ hook("page:start", () => {
 });
 hook("page:transition:finish", () => {
   loading.value = false;
+  cartSwitch.value = false;
 });
 hook("page:finish", () => {
   loading.value = false;
+  cartSwitch.value = false;
 });
 </script>
 

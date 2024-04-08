@@ -3,8 +3,8 @@
     SrContainer(:with-padding="true")
         SrText(:text="`Numero de orden: ${order_id}`" class="title")
         SrText(text="Siguientes pasos:" class="subtitle")
-        SrText(:text="steps[0]")
-        SrText(:text="steps[1]")
+        SrText(:html="steps[0]")
+        SrText(:html="steps[1]")
         iframe(:src="reciptUrl" width="100%" height="1000px" ref="iframe")
         QuiviButton(label="Imprimir" :href="reciptUrl" target="_blank")
 </template>

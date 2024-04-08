@@ -6,13 +6,13 @@
     
     SrGrid(tag="ul")
       SrGridColumn(tag="li" :size="{mobile: '1'}")
-        SrText(:text="paymentStepsText[0]")
+        SrText(:html="paymentStepsText[0]")
       SrGridColumn(tag="li" v-for="(account, i) in accounts" :key="i" :size="{mobile: '1', sm: '1/3'}")
         SrText(:text="`Banco: ${account.bank_name}`" class="subtitle")
         SrText(:text="`Número de cuenta: ${account.account_number}`")
         SrText(:text="`Clabe: ${account.CLABE}`")
       SrGridColumn(tag="li" :size="{mobile: '1'}")
-        SrText(:text="paymentStepsText[1]")
+        SrText(:html="paymentStepsText[1]")
     QuiviButton(href="/" label="Ir a la tienda")
 </template>
 

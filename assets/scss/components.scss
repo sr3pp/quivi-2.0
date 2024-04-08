@@ -38,10 +38,15 @@
         color: $color-quivi-light-red;
         width: pxToRem(4);
       }
+      display: none;
 
       &::after {
         font-size: pxToRem(30) !important;
         font-weight: 900;
+      }
+
+      @media (min-width: #{$breakpoint-md}) {
+        display: flex;
       }
     }
   }
