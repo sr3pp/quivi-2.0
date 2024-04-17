@@ -18,7 +18,7 @@
             button(@click="editUser(user)") edit
             button(@click="deleteUser(user._id, i)") Delete
 
-    SrModal(:active="userModal" @close="userModal = false")
+    SrModal(ref="userModal")
       template(#body)
         .sr-modal-body
           SrText(text="Create user" class="title" alignment="center")
@@ -27,13 +27,12 @@
               SrText(:text="`${error.field}: ${error.message}`" class="error")
           SrForm(:fieldsets="userForm" @submit="saveUser")
 
-    SrModal(:active="passwordModal" @close="passwordModal = false")
+    SrModal(ref="passwordModal")
       template(#body)
-        .sr-modal-body
-          ul(v-if="formErrors.length")
-            li(v-for="error in formErrors" :key="error")
-              SrText(:text="`${error.field}: ${error.message}`" class="error")
-          SrForm(:fieldsets="passwordForm" @submit="savePassword") 
+        ul(v-if="formErrors.length")
+          li(v-for="error in formErrors" :key="error")
+            SrText(:text="`${error.field}: ${error.message}`" class="error")
+        SrForm(:fieldsets="passwordForm" @submit="savePassword") 
 </template>
 
 <script lang="ts" setup>
@@ -47,8 +46,8 @@ definePageMeta({
 
 const { data: users } = await useFetch<User[]>("/api/users");
 
-const userModal: Ref<boolean> = ref(false);
-const passwordModal: Ref<boolean> = ref(false);
+const userModal: Ref<Component | null> = ref(null);
+const passwordModal: Ref<Component | null> = ref(null);
 
 const currentUser: Ref<Object | null> = ref(null);
 
@@ -167,7 +166,7 @@ const newUser = () => {
       }
     });
   });
-  userModal.value = true;
+  (userModal.value as any).toggle();
 };
 
 const saveUser = async () => {
@@ -194,7 +193,7 @@ const saveUser = async () => {
 
     users.value?.push(user as User);
 
-    userModal.value = false;
+    (userModal.value as any).toggle();
   } catch (error) {
     console.error(error);
   }
@@ -234,7 +233,7 @@ const editUser = (user: User) => {
     });
   });
 
-  userModal.value = true;
+  (userModal.value as any).toggle();
 };
 
 const updateUser = async (_user: any) => {
@@ -266,7 +265,7 @@ const updateUser = async (_user: any) => {
       1,
       user,
     );
-    userModal.value = false;
+    (userModal.value as any).toggle();
   } catch (error) {
     console.error(error);
   }
@@ -274,7 +273,7 @@ const updateUser = async (_user: any) => {
 
 const changePassword = (user: User) => {
   currentUser.value = user;
-  passwordModal.value = true;
+  (passwordModal.value as any).toggle();
 };
 
 const savePassword = async (_password: any) => {
@@ -301,7 +300,7 @@ const savePassword = async (_password: any) => {
       },
     });
 
-    passwordModal.value = false;
+    (passwordModal.value as any).toggle();
   } catch (error) {
     console.error(error);
   }

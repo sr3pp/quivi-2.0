@@ -31,12 +31,10 @@
 
     Pagination(:pagination="pagination")
 
-    SrModal(:active="editModal" @close="editModal = false")
+    SrModal(ref="productModal")
       template(#header)
-        .sr-modal-header
           SrText(text="Edit product" class="title text-center")
       template(#body)
-        .sr-modal-body
           SrForm.product-form(:fieldsets="productForm" @submit="updateProduct")
 </template>
 
@@ -61,7 +59,7 @@ const [productBrands, categories, subcategories, carBrands, carModels] =
 
 const search = ref(_search as string);
 const filters = ref(_filters as string);
-const editModal = ref(false);
+const productModal = ref(false);
 const products = ref([]);
 const pagination = ref({});
 const currentProduct = ref("");
@@ -270,7 +268,7 @@ pagination.value = prodctData.value.pagination;
 
 const editProduct = (product: any) => {
   currentProduct.value = product._id;
-  editModal.value = true;
+  (productModal.value as any).toggle();
   productForm.value.forEach((fieldset: any) => {
     fieldset.fields.forEach((field: any) => {
       if (field.props.name == "years") {
@@ -331,7 +329,7 @@ const updateProduct = async (data: any) => {
       method: "PUT",
       body: data,
     });
-    editModal.value = false;
+    (productModal.value as any).toggle();
   } catch (error) {
     console.error(error);
   }

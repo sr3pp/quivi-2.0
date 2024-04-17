@@ -16,17 +16,17 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
       li.quivi-navbar-list-item.hidden(class="sm:flex")
         a(href="tel:5555555555") 5555555555
       li.quivi-navbar-list-item
-        button(@click="contactModal = true")
+        button(@click="$emit('contactModal')")
           SrIcon(name="contacto-o")
           span Contacto
       li.quivi-navbar-list-item
-        button.cart-btn(@click="cartSwitch = true")
+        button.cart-btn(@click="$emit('cartModal')")
           ClientOnly
             span.cart-counter(v-if="productsLength") {{ productsLength }}
           SrIcon(name="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
-        button.variant-red(@click="loginSw = true")
+        button.variant-red(@click="$emit('loginModal')")
             .icon-container
               SrIcon(name="registrarsecaja-o")
             span Ingresar
@@ -62,10 +62,6 @@ const route = ref(useRoute());
 const searchActive = ref(false);
 const menuActive = ref(false);
 
-const contactModal = useState("contactModal", () => false);
-const cartSwitch = useState("cartSwitch", () => false);
-const loginSw = useState("loginSw", () => false);
-
 const btnColor1: string = colorQuiviGray;
 const btnColor2: string = colorQuiviDarkestGray;
 
@@ -87,6 +83,7 @@ const productsLength = computed(() => {
 
   return total;
 });
+
 watch(
   () => route.value.name,
   () => {

@@ -2,7 +2,7 @@
 .panel
   SrContainer(:with-padding="true")
     SrText(value="Panel ventas" class="title" alignment="center")
-    button(@click="salesModal = true") Create venta
+    button(@click="salesModal.toggle()") Create venta
     table
       thead
         tr
@@ -28,14 +28,12 @@
             button(@click="saleDetail(sale)") detail
             button(@click="deleteSale(sale._id, i)") Delete
 
-    SrModal(:active="currentSaleModal" @close="currentSaleModal = false")
+    SrModal(ref="saleDetailModal")
       template(#body)
-        .sr-modal-body
           SaleDetail(:sale="currentSale" v-if="currentSale")
 
-    SrModal(:active="salesModal" @close="salesModal = false")
+    SrModal(ref="salesModal")
       template(#body)
-        .sr-modal-body
           SrForm(:fieldsets="salesForm" @submit="saveSale")
 </template>
 
@@ -46,8 +44,8 @@ definePageMeta({
   layout: "panel",
 });
 
-const salesModal: Ref<boolean> = ref(false);
-const currentSaleModal: Ref<boolean> = ref(false);
+const salesModal: Ref<Component | null> = ref(null);
+const saleDetailModal: Ref<Component | null> = ref(null);
 
 const currentSale: Ref<any> = ref(null);
 
@@ -230,7 +228,7 @@ const salesForm = [
 
 const saleDetail = (_sale: any) => {
   currentSale.value = _sale;
-  currentSaleModal.value = true;
+  (saleDetailModal.value as any).toggle();
 };
 
 const deleteSale = async (id: string, idx: number) => {

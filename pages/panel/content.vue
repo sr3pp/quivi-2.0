@@ -1,7 +1,6 @@
 <template lang="pug">
 .quivi-content
-  SrModal(:active="previewSw"
-      @close="closePreview"
+  SrModal(ref="previewModal"
       v-bind="{ css: { class: 'preview-modal' } }")
       template(#close)
         span X
@@ -27,10 +26,10 @@
             v-bind="{content: proccessContent(content)}")
   .top-bar 
     SrFormSelect(:options="pagesOtions" value="nosotros/index" v-model="page" @change="setContent" placeholder="Seleccionar página")
-    button(@click="contentModal = true") Edit Seo
-    button(@click="componentModal = true") component list
+    button(@click="seoModal.toggle()") Edit Seo
+    button(@click="componentsModal.toggle()") component list
     button(@click="saveContent") save
-    button(@click="previewSw = true") Preview
+    button(@click="showPreview") Preview
   SrContainer(:with-padding="true")
     SrText(text="Panel content" class="title" alignment="center")
     component(v-for="(component, i) in content"
@@ -41,34 +40,29 @@
       @edit-props="editComponent"
       v-bind="component.props")
     .fill
-  SrModal(:active="contentModal" @close="contentModal = false")
+  SrModal(ref="seoModal")
     template(#body)
-      .sr-modal-body
         SeoWizzard
-  SrModal(:active="componentModal" @close="componentModal = false")
+  SrModal(ref="componentsModal")
     template(#body)
-      .sr-modal-body
         p list of components here
-  SrModal(:active="mediaGallery" @close="mediaGallery = false")
+  SrModal(ref="mediaModal")
     template(#body)
-      .sr-modal-body
         button
           SrPicture(src="https://via.placeholder.com/400" alt="placeholder" @click="setPicture('https://via.placeholder.com/400')")
-  SrModal(:active="iconGallery" @close="iconGallery = false")
+  SrModal(ref="iconModal")
     template(#body)
-      .sr-modal-body
         button
           SrIcon(name="edit-o" @click="setIcon('edit-o')")
 
 
   SrModal(class="component-props-modal"
-      :active="propsSw"
-      @close="propsSw = false"
+      ref="propsModal"
       layout="bottom")
       template(#close)
         span X
       template(#body)
-        div(class="sr-modal-body" v-if="currentComponent")
+        template(v-if="currentComponent")
           SrTextPropsForm(:responsive="responsive"
             @clear-breakpoint="clearBreakpoint"
             v-if="currentComponent.component.component == 'SrText'"
@@ -122,13 +116,15 @@ const breakpoints = [
   },
 ];
 
-const contentModal: Ref<boolean> = ref(false);
-const componentModal: Ref<boolean> = ref(false);
+const componentsModal: Ref<boolean> = ref(false);
+const seoModal: Ref<boolean> = ref(false);
+const previewModal: Ref<boolean> = ref(false);
+const mediaModal: Ref<boolean> = ref(false);
+const iconModal: Ref<boolean> = ref(false);
+const propsModal: Ref<boolean> = ref(false);
+
 const currentComponent: Ref<any> = ref(null);
-const mediaGallery: Ref<boolean> = ref(false);
-const iconGallery: Ref<boolean> = ref(false);
 const previewSw: Ref<boolean> = ref(false);
-const propsSw: Ref<boolean> = ref(false);
 const responsive: Ref<string> = ref("");
 const page: Ref<string> = ref("nosotros/index");
 const currentPicture: Ref<any> = ref({ props: { src: "" } });
@@ -151,8 +147,14 @@ onMounted(() => {
 
 const setResolution = () => {};
 
+const showPreview = () => {
+  previewSw.value = true;
+  (previewModal.value as any).toggle();
+};
+
 const closePreview = () => {
   previewSw.value = false;
+  (previewModal.value as any).toggle();
 };
 
 const content: any = ref([]);
@@ -172,7 +174,7 @@ const saveContent = () => {
 
 const editPicture = (picture: any) => {
   currentPicture.value = picture;
-  mediaGallery.value = true;
+  (mediaModal.value as any).toggle();
 };
 
 const editComponent = (component: Component) => {
@@ -199,12 +201,12 @@ const editComponent = (component: Component) => {
     },
   };
 
-  propsSw.value = true;
+  (propsModal.value as any).toggle();
 };
 
 const editIcon = (icon: any) => {
   currentIcon.value = icon;
-  iconGallery.value = true;
+  (iconModal.value as any).toggle();
 };
 
 const setPicture = (url: string) => {
@@ -215,12 +217,12 @@ const setPicture = (url: string) => {
     console.log(bg, resolution);
     bg[resolution] = url;
   }
-  mediaGallery.value = false;
+  (mediaModal.value as any).toggle();
 };
 
 const setIcon = (name: string) => {
   currentIcon.value.props.name = name;
-  iconGallery.value = false;
+  (iconModal.value as any).toggle();
 };
 
 const clearBreakpoint = (resolution: string) => {

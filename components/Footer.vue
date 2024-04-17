@@ -15,11 +15,11 @@ footer.quivi-footer
                 SrText(text="Cliente" class="subtitle")
                 ul.quivi-footer-menu
                     li.quivi-footer-menu-item
-                        button(@click="cartSwitch = true") Carrito
+                        button(@click="$emit('cartModal')") Carrito
                     li.quivi-footer-menu-item
                         NuxtLink(to="/") Tienda
                     li.quivi-footer-menu-item
-                        button(@click="loginSw = true") Registro
+                        button(@click="$emit('loginModal')") Registro
             SrGridColumn(:size="{mobile: '1', sm: '3/5'}" class="column")
                 SrText(text="Distribuidor Autorizado" class="subtitle")
                 ul.quivi-footer-distribuidores
@@ -33,7 +33,7 @@ footer.quivi-footer
           NuxtLink(to="/pdf/aviso_de_privacidad.pdf" target="_blank")
             SrText(text="Aviso de privacidad")
         SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
-          button(@click="loginSw = true")
+          button(@click="console.log('ir terminos y condiciones')")
             SrText(text="Términos y Condiciones")
 </template>
 
@@ -65,9 +65,6 @@ defineProps({
     default: () => [],
   },
 });
-
-const cartSwitch = useState("cartSwitch", () => false);
-const loginSw = useState("loginSw", () => false);
 </script>
 
 <style lang="scss" scoped>

@@ -1,14 +1,17 @@
 <script lang="ts" setup>
-defineProps({
-  loginSw: {
-    type: Boolean,
-    default: false,
-  },
+const loginModal = ref(null);
+
+const toggleLoginModal = () => {
+  (loginModal.value as any).toggle();
+};
+
+defineExpose({
+  toggleLoginModal,
 });
 </script>
 
 <template lang="pug">
-SrModal.quivi-modal-login(:active="loginSw" @close="loginSw = false")
+SrModal.quivi-modal-login(ref="loginModal")
     template(#header)
       .sr-modal-header
         SrText(value="Login" class="title")
@@ -20,8 +23,11 @@ SrModal.quivi-modal-login(:active="loginSw" @close="loginSw = false")
 
 <style lang="scss">
 .quivi-modal-login {
-  .sr-modal-content {
+  .sr-modal-container {
     max-width: pxToRem(400) !important;
+  }
+  .sr-modal-content {
+    min-width: inherit;
   }
   .sr-modal-close {
     z-index: 3;

@@ -20,20 +20,18 @@
                 ClientOnly
                     CartList(:products="cart.products" :editable="false")
                     CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping")
-                QuiviButton(label="Pagar" :disabled="!paymentLock" kind="primary" @buttonclick="termsModalSw = true")
-    SrModal(:active="termsModalSw" @close="termsModalSw = false" class="modal-terms")
+                QuiviButton(label="Pagar" :disabled="!paymentLock" kind="primary" @buttonclick="termsModal.toggle()")
+    SrModal(ref="termsModal" class="modal-terms")
         template(#body)
-            .sr-modal-body
-                QuiviTerms(:terms="terms" )
-                .check
-                  SrFormBox( v-model="termsSw" type="checkbox")
-                  SrText(@click="termsSw = !termsSw" :html="termsLegend")
+            QuiviTerms(:terms="terms" )
+            .check
+              SrFormBox( v-model="termsSw" type="checkbox")
+              SrText(@click="termsSw = !termsSw" :html="termsLegend")
         template(#footer)
-          .sr-modal-footer
-            SrText(text="Para continuar acepta los términos y condiciones")
-            SrText(:html="termsLegend2")
-            br
-            QuiviButton(label="Pagar" @buttonclick="processPayment" :disabled="!termsSw")
+          SrText(text="Para continuar acepta los términos y condiciones")
+          SrText(:html="termsLegend2")
+          br
+          QuiviButton(label="Pagar" @buttonclick="processPayment" :disabled="!termsSw")
 </template>
 
 <script lang="ts" setup>
@@ -119,6 +117,7 @@ const termsLegend2: string =
 const paymentLock: Ref<Boolean> = ref(false);
 const verifyingPayment: Ref<Boolean> = ref(false);
 const termsModalSw: Ref<Boolean> = ref(false);
+const termsModal: Ref<any> = ref(null);
 const termsSw: Ref<Boolean> = ref(false);
 
 const stepsState = ref([
@@ -415,8 +414,14 @@ if (transactionId) {
   }
 
   .modal-terms {
-    .sr-modal-content {
+    .sr-modal-container {
+      overflow: hidden;
       max-width: pxToRem(800);
+      max-height: 90vh;
+    }
+    .sr-modal-content {
+      width: 100%;
+      min-width: inherit;
     }
 
     .sr-modal-body {

@@ -4,15 +4,21 @@ defineProps({
     type: Array,
     default: () => [],
   },
-  contactModal: {
-    type: Boolean,
-    default: false,
-  },
+});
+
+const contactModal = ref(null);
+
+const toggleContactModal = () => {
+  (contactModal.value as any).toggle();
+};
+
+defineExpose({
+  toggleContactModal,
 });
 </script>
 
 <template lang="pug">
-SrModal.modal-contact-form(:active="contactModal" @close="$emit('close')")
+SrModal.modal-contact-form(ref="contactModal")
     template(#body)
       .sr-modal-body
         SrGrid
