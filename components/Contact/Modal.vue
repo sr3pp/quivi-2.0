@@ -39,14 +39,15 @@ SrModal.modal-contact-form(ref="contactModal")
 .modal-contact-form {
   .sr-modal-content {
     max-width: pxToRem(800);
+    min-width: inherit !important;
   }
   .sr-modal-close {
     z-index: 3;
   }
   .sr-modal-body {
-    padding: 0;
-    max-height: inherit;
-    overflow: hidden;
+    padding: 0 !important;
+    max-height: inherit !important;
+    overflow: hidden !important;
     border-radius: pxToRem(10);
 
     .sr-picture {

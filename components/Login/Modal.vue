@@ -27,7 +27,7 @@ SrModal.quivi-modal-login(ref="loginModal")
     max-width: pxToRem(400) !important;
   }
   .sr-modal-content {
-    min-width: inherit;
+    min-width: inherit !important;
   }
   .sr-modal-close {
     z-index: 3;
