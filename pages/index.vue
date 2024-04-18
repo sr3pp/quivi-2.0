@@ -30,14 +30,17 @@ const promises: any = await Promise.all([
 ]);
 
 const content = promises[0];
-const { shipment } = promises[1];
-
+const shipment = promises[1];
 const cart = useLocalStorage("cart", {
   products: [],
   total: 0,
   subtotal: 0,
   shipping: shipment,
 });
+
+if (!cart.value.shipping) {
+  cart.value.shipping = shipment;
+}
 
 const products = ref([]);
 const pagination = ref({});

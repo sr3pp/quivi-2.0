@@ -24,7 +24,7 @@ footer.quivi-footer
                 SrText(text="Distribuidor Autorizado" class="subtitle")
                 ul.quivi-footer-distribuidores
                     li.quivi-footer-distribuidores-item(v-for="(item, i) in distribuidores" :key="i")
-                      SrPicture(:src="item.logo" :alt="item.nombre")
+                      SrPicture(:src="item.logo" :alt="item.name")
     SrGrid.quivi-footer-bottom
         SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
           NuxtLink(to="/")

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
-import type { Product } from "~/types";
+import type { Cart, Product } from "~/types";
 import "swiper/css";
 
 import "swiper/css/pagination";
@@ -37,7 +37,7 @@ const detailExcludes = [
   "updatedAt",
 ];
 
-const cart = useLocalStorage("cart", {
+const cart: any = useLocalStorage("cart", {
   products: [],
   total: 0,
   subtotal: 0,
@@ -58,9 +58,12 @@ const addToCart = () => {
   );
 
   if (productExists) {
-    if (productExists.qty + product.value.qty > product.value.existences)
+    if (
+      (productExists as Product).qty + product.value.qty >
+      product.value.existences
+    )
       return;
-    productExists.qty += product.value.qty;
+    (productExists as Product).qty += product.value.qty;
   } else {
     if (!product.value.qty) {
       product.value.qty = 1;

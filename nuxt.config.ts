@@ -73,11 +73,11 @@ export default defineNuxtConfig({
     "@/assets/scss/main.scss",
     "@/assets/scss/transitions/index.scss",
     "@/assets/scss/components.scss",
+    "normalize.css/normalize.css",
   ],
   nitro: {
     plugins: ["@/server/DB.ts"],
   },
-  css: ["normalize.css/normalize.css"],
   vite: {
     css: {
       preprocessorOptions: {
@@ -86,9 +86,7 @@ export default defineNuxtConfig({
             @import "sr-content-2/assets/scss/utilities/index.scss";
             @import "sr-content-2/assets/scss/main.scss";
             @import "@/assets/fonts/index.scss";
-            @import "@/assets/scss/tokens.scss";
-            @import "@/assets/scss/main.scss";
-            @import "@/assets/scss/components.scss";`,
+            @import "@/assets/scss/tokens.scss";`,
         },
       },
     },

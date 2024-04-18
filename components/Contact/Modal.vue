@@ -20,7 +20,6 @@ defineExpose({
 <template lang="pug">
 SrModal.modal-contact-form(ref="contactModal")
     template(#body)
-      .sr-modal-body
         SrGrid
           SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
             SrText(text="Contacto" class="title")
@@ -92,6 +91,12 @@ SrModal.modal-contact-form(ref="contactModal")
       width: pxToRem(30);
       height: pxToRem(30);
       color: $color-quivi-red;
+    }
+  }
+
+  .contact-form {
+    .quivi-button {
+      width: 50%;
     }
   }
 }
