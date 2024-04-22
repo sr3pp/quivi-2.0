@@ -6,7 +6,11 @@ const schema = new mongoose.Schema(
     last_name: { type: String, required: true },
     phone: { type: String, required: true },
     email: { type: String, required: true },
-    tracking: { type: String, required: false },
+    tracking: {
+      store: { type: String, required: false },
+      number: { type: String, required: false },
+      url: { type: String, required: false },
+    },
     status: {
       type: String,
       required: true,

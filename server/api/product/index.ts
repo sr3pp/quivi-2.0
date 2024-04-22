@@ -25,6 +25,7 @@ export default defineEventHandler(async (event: any) => {
     Product,
     {},
     [],
+    [],
     limit,
     perPage,
     "products",

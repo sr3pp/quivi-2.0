@@ -4,6 +4,7 @@ export const modelPagination = async (
   model: any,
   query: any,
   populations: any[],
+  aggregate: any[],
   limit: number,
   perPage: number,
   key: string,
@@ -11,12 +12,20 @@ export const modelPagination = async (
   order?: string,
 ) => {
   const page = queryObj && queryObj.page ? Number(queryObj.page) : 1;
-  const items = await model
-    .find(query)
-    .sort(order ? { [order]: -1 } : {})
-    .populate(populations)
-    .skip((page - 1) * perPage)
-    .limit(perPage);
+  let items;
+  if (aggregate.length) {
+    items = await model
+      .aggregate(aggregate)
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+  } else {
+    items = await model
+      .find(query)
+      .sort(order ? { [order]: -1 } : {})
+      .populate(populations)
+      .skip((page - 1) * perPage)
+      .limit(perPage);
+  }
   const startIndex = getStartIndex(page, limit);
   const total = await model.countDocuments(query);
   const pages = Math.ceil(Number(total) / perPage);

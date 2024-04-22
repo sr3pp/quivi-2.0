@@ -1,7 +1,16 @@
 <template lang="pug">
-.quivi-button(:href="href" :class="{ 'size-lg': size === 'lg', [variant]: variant }")
-    NuxtLink(:to="href" :target="target" :disabled="disabled" v-if="href" :aria-label="label" :title="label") {{ label }}
-    button(v-else :disabled="disabled" @click="$emit('buttonclick')") {{ label }}
+.quivi-button(:href="href" :class="{ 'size-lg': size === 'lg', [variant]: variant, loading }")
+    NuxtLink(:to="href" :target="target" :disabled="disabled || loading" v-if="href" :aria-label="label" :title="label") 
+      span.label {{ label }}
+      slot
+      span.loader
+        Spinner(v-if="loading")
+
+    button(v-else :disabled="disabled | loading" @click="$emit('buttonclick')") 
+      span.label {{ label }}
+      slot
+      span.loader
+        Spinner(v-if="loading")
 
 </template>
 
@@ -31,11 +40,16 @@ defineProps({
     type: String,
     default: "primary",
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 </script>
 
 <style lang="scss" scoped>
 .quivi-button {
+  position: relative;
   margin: auto;
   color: $color-white;
   font-family: Bebas;
@@ -88,6 +102,33 @@ defineProps({
       background-color: $color-quivi-gray;
       cursor: not-allowed;
       opacity: 0.5;
+    }
+  }
+
+  .loader {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .spinner {
+    width: pxToRem(30);
+    height: pxToRem(30);
+  }
+
+  &.loading {
+    button,
+    a {
+      background: rgba($color-quivi-light-red, $alpha: 0.4);
+    }
+    .label {
+      opacity: 0.3;
     }
   }
 }

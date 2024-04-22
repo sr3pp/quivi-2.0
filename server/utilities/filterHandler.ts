@@ -17,6 +17,7 @@ export const filterHandler = async (
     Product,
     query,
     [],
+    [],
     limit,
     perPage,
     "products",

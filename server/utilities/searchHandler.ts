@@ -19,6 +19,7 @@ export const searchHandler = async (
     Product,
     query,
     ["brand", "category", "subcategory"],
+    [],
     limit,
     perPage,
     "products",

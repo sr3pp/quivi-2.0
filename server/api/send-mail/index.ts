@@ -14,14 +14,16 @@ export default defineEventHandler(async (event) => {
     html: info,
   };
 
-  mailHandler.sendMail(mailOptions, (error: any, info: any) => {
-    if (error) {
-      console.log("Error occurred:", error.message);
-    } else {
-      console.log("Email sent successfully!");
-      console.log("Message ID:", info.messageId);
-    }
+  await new Promise((resolve, reject) => {
+    mailHandler.sendMail(mailOptions, (error: any, info: any) => {
+      if (error) {
+        console.log("Error occurred:", error.message);
+        reject(error);
+      } else {
+        console.log("Email sent successfully!");
+        console.log("Message ID:", info.messageId);
+        return resolve(info);
+      }
+    });
   });
-
-  return mailOptions;
 });
