@@ -39,7 +39,6 @@
       @icon-gallery="EmitHandler($event, component, editIcon)"
       @edit-props="editComponent"
       v-bind="component.props")
-    .fill
   SrModal(ref="seoModal")
     template(#body)
         SeoWizzard

@@ -12,9 +12,8 @@ Swiper.main-slider(
             SrText(:text="slide.title" @edit-props="($event, e) => $emit('edit-props', $event || e)" class="title" style="--text-align: center;" @input="updateSlide('title', i, $event)")
             SrText(:text="slide.description" @edit-props="($event, e) => $emit('edit-props', $event || e)" style="--text-align: center;" @input="updateSlide('description', i, $event)")
             NuxtLink.main-slider-slide-link(:to="slide.link.url") {{ slide.link.label }}
-SrModal(:active="settingSw" @close="settingSw = false")
+SrModal(ref="slideModal")
   template(#body)
-    .sr-modal-body
       .main-slider-slide-form-resolution(v-if="currentSlide")
         SrFormBox(type="radio" name="resolution" label="Mobile" value="mobile" v-model="currentResolution")
         SrFormBox(type="radio" name="resolution" label="Tablet" value="sm" v-model="currentResolution")
@@ -74,7 +73,7 @@ const props = defineProps({
 });
 const currentResolution = ref("mobile");
 const currentSlide: any = ref(null);
-const settingSw = ref(false);
+const slideModal: any = ref(null);
 const pagesOtions = [
   { name: "No link", value: "" },
   { name: "Inicio", value: "/" },
@@ -107,7 +106,7 @@ const slideSettings = (slide: any) => {
   if (!currentSlide.value.background) {
     currentSlide.value.background = {};
   }
-  settingSw.value = true;
+  slideModal.value.toggle();
 };
 
 const updateSlide = (
