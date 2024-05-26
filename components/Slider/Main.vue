@@ -9,8 +9,8 @@ Swiper.main-slider(
         .main-slider-slide-background
             SrPicture(:src="slide.background.mobile" :alt="slide.title" v-if="slide.background")
         SrContainer(:with-padding="true")
-            SrText(:text="slide.title" @edit-props="($event, e) => $emit('edit-props', $event || e)" class="title" style="--text-align: center;" @input="updateSlide('title', i, $event)")
-            SrText(:text="slide.description" @edit-props="($event, e) => $emit('edit-props', $event || e)" style="--text-align: center;" @input="updateSlide('description', i, $event)")
+            SrText(:text="slide.title" @edit-props="($event, e) => $emit('edit-props', $event || e)" class="title" :style="`--text-align: ${slide['text-align']}`" @input="updateSlide('title', i, $event)")
+            SrText(:text="slide.description" @edit-props="($event, e) => $emit('edit-props', $event || e)" :style="`--text-align: ${slide['text-align']}`" @input="updateSlide('description', i, $event)")
             NuxtLink.main-slider-slide-link(:to="slide.link.url") {{ slide.link.label }}
 SrModal(ref="slideModal")
   template(#body)
@@ -32,16 +32,16 @@ SrModal(ref="slideModal")
           SrGrid
             SrGridColumn(:size="{mobile: '1/3'}")
               label.slide-form-format-option
-                input(type="radio" name="text-position" value="left" v-model="currentSlide.textPosition")
-                SrIcon(name="trash-o")
+                input(type="radio" name="text-position" value="left" v-model="currentSlide.style['--text-align']")
+                SrIcon(name="text-left-o")
             SrGridColumn(:size="{mobile: '1/3'}")
               label.slide-form-format-option
-                input(type="radio" name="text-position" value="center" v-model="currentSlide.textPosition")
-                SrIcon(name="trash-o")
+                input(type="radio" name="text-position" value="center" v-model="currentSlide.style['--text-align']")
+                SrIcon(name="text-center-o")
             SrGridColumn(:size="{mobile: '1/3'}")
               label.slide-form-format-option
-                input(type="radio" name="text-position" value="right" v-model="currentSlide.textPosition")
-                SrIcon(name="trash-o")
+                input(type="radio" name="text-position" value="right" v-model="currentSlide.style['--text-align']")
+                SrIcon(name="text-right-o")
         SrFormInput(label="Slide title" v-model="currentSlide.title" @input="updateSlide('title', i, $event)")
         SrFormInput(label="Slide description" type="textarea" v-model="currentSlide.description" @input="updateSlide('description', i, $event)")
         SrFormInput(label="Slide Link label" v-model="currentSlide.link.label" @input="updateSlide('link.label', i, $event)")
@@ -97,6 +97,7 @@ const emits = defineEmits([
 ]);
 
 const slideSettings = (slide: any) => {
+  console.log(slide);
   currentSlide.value = slide;
   if (!currentSlide.value.video) {
     currentSlide.value.video = {
@@ -106,6 +107,11 @@ const slideSettings = (slide: any) => {
   if (!currentSlide.value.background) {
     currentSlide.value.background = {};
   }
+
+  if (!currentSlide.value.style) {
+    currentSlide.value.style = {};
+  }
+
   slideModal.value.toggle();
 };
 

@@ -3,9 +3,13 @@
   Sidebar(:items="items")
   .content
     NuxtPage
+
+  ClientOnly
+    NotificationStack
 </template>
 
 <script lang="ts" setup>
+const notifications = useState("notifications", (): any => []);
 const items = [
   {
     label: "Users",
@@ -14,32 +18,32 @@ const items = [
   },
   {
     label: "Productos",
-    icon: "carrito-o",
+    icon: "product-f",
     url: "/panel/products",
   },
   {
     label: "Ventas",
-    icon: "carrito-o",
+    icon: "sales-f",
     url: "/panel/sales",
   },
   {
     label: "Envios",
-    icon: "carrito-o",
+    icon: "send-order-f",
     url: "/panel/shipping",
   },
   {
     label: "Contenido",
-    icon: "carrito-o",
+    icon: "edit-o",
     url: "/panel/content",
   },
   {
     label: "Configuracion",
-    icon: "carrito-o",
+    icon: "settings-f",
     url: "/panel/config",
   },
   {
     label: "Negocio",
-    icon: "carrito-o",
+    icon: "business-f",
     url: "/panel/business",
   },
 ];

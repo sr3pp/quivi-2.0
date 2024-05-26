@@ -1,5 +1,5 @@
 <template lang="pug">
-article.quivi-notification(:class="{active: status}" @mouseover="cancelTimeout" @mouseleave="setCloseTimeout")
+article.quivi-notification(:class="{active: status}" :style="{ '--main-color': type === 'success' ? toRgba(colorSystemSuccess) : toRgba(colorSystemError) }" @mouseover="cancelTimeout" @mouseleave="setCloseTimeout")
   button.quivi-notification-close(@click="$emit('close')") X
   SrText.quivi-notification-title(:text="title" class="subtitle")
   .quivi-notification-content
@@ -9,6 +9,7 @@ article.quivi-notification(:class="{active: status}" @mouseover="cancelTimeout" 
 </template>
 
 <script lang="ts" setup>
+import { colorSystemSuccess, colorSystemError } from "~/assets/ts/tokens";
 const props = defineProps({
   title: {
     type: String,
@@ -21,6 +22,10 @@ const props = defineProps({
   status: {
     type: Boolean,
     default: false,
+  },
+  type: {
+    type: String,
+    default: "success",
   },
 });
 const emit = defineEmits(["close"]);
@@ -42,17 +47,25 @@ const setCloseTimeout = () => {
     emit("close");
   }, 5000);
 };
+
+const toRgba = (hex: string) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `${r}, ${g}, ${b}`;
+};
 </script>
 
 <style lang="scss" scoped>
 .quivi-notification {
-  background-color: rgba($color-system-success, 0.3);
+  --main-color: #{$color-system-success};
+  background-color: rgba(var(--main-color), 0.3);
   backdrop-filter: blur(pxToRem(6));
   width: 20vw;
   min-width: pxToRem(200);
   border: {
     style: solid;
-    color: $color-system-success;
+    color: rgba(var(--main-color), 1);
     width: pxToRem(2);
     radius: pxToRem(8);
   }
@@ -81,7 +94,7 @@ const setCloseTimeout = () => {
     background: $color-quivi-red;
     border: none;
     cursor: pointer;
-    font-size: pxToRem(18);
+    font-size: pxToRem(16);
     font-family: Bebas;
     color: $color-white;
   }

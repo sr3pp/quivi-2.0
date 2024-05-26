@@ -10,14 +10,14 @@ import Motor from "./Motor";
 
 const schema: Schema<Product> = new mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: { type: String, required: true, maxlength: 40 },
     web: { type: String, required: true, unique: true },
     sae: { type: String, required: true },
     priority: { type: Number, default: 99 },
     price: { type: Number, required: true },
     discount: { type: Number, default: 0 },
     thumbs: [{ type: String, required: false }],
-    description: { type: String, default: "" },
+    description: { type: String, default: "", maxlength: 200 },
     extra: { type: String, default: "" },
     meassure_unity: { type: String, default: "" },
     line: { type: String, default: "" },

@@ -1,33 +1,26 @@
 <template lang="pug">
 .products
   SrContainer(:with-padding="true")
-    label.massive-file
-      span Carga Massiva
-      span.spinner(v-if="uploading")
-      input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
-    SrText(text="Panel Products" class="title text-center")
+    .products-header
+      .header-title
+        SrText(text="Panel Products" class="title text-center")
+        SrFormInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar")
+        QuiviButton(@click="searchProduct")
+          SrIcon(name="lupa-o")
+      label.massive-file
+        span Carga Massiva
+        Spinner(v-if="uploading")
+        input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
 
-    table
-      thead
-        tr
-          th
-            SrText(text="SAE")
-          th
-            SrText(text="WEB")
-          th
-            SrText(text="Nombre")
-          th
-            SrText(text="Actions")
-      tbody
-        tr(v-for="product in products")
-          td
-            SrText(:text="product.sae")
-          td
-            SrText(:text="product.web")
-          td
-            SrText(:text="product.name")
-          td
-            button(@click="editProduct(product)") Edit
+
+    DetailTable(
+      :headers="['sae', 'web', 'name', 'actions']"
+      :data="products"
+      @delete="deleteProduct"
+      @edit="editProduct"
+      @update:data="(val) => products = val"
+      :actions="['edit']"
+    )
 
     Pagination(:pagination="pagination")
 
@@ -40,6 +33,8 @@
 
 <script lang="ts" setup>
 import { fetchProducts } from "@/assets/ts/utilities";
+
+const notifications = useState("notifications", (): any => []);
 
 definePageMeta({
   layout: "panel",
@@ -60,7 +55,7 @@ const [productBrands, categories, subcategories, carBrands, carModels] =
 const search = ref(_search as string);
 const filters = ref(_filters as string);
 const productModal = ref(false);
-const products = ref([]);
+const products: any = ref([]);
 const pagination = ref({});
 const currentProduct = ref("");
 
@@ -266,7 +261,18 @@ const prodctData = ref(
 products.value = prodctData.value.products;
 pagination.value = prodctData.value.pagination;
 
-const editProduct = (product: any) => {
+const searchProduct = async () => {
+  const _prodcutData = await fetchProducts(
+    route.path,
+    page as string,
+    search.value,
+  );
+  products.value = _prodcutData.products;
+  pagination.value = _prodcutData.pagination;
+};
+
+const editProduct = (_product: any) => {
+  const product = products.value.find((p: any) => p.sae === _product.sae);
   currentProduct.value = product._id;
   (productModal.value as any).toggle();
   productForm.value.forEach((fieldset: any) => {
@@ -335,6 +341,14 @@ const updateProduct = async (data: any) => {
   }
 };
 
+const deleteProduct = async (_product: any) => {
+  const product = products.value.find((p: any) => p.sae === _product.sae);
+  const id = product._id;
+  await $fetch(`/api/product/${id}`, {
+    method: "DELETE",
+  });
+};
+
 watch(
   () => route.query,
   async ({ search: _search, page, filters: _filters }) => {
@@ -354,6 +368,11 @@ watch(
 
 const uploading: Ref<boolean> = ref(false);
 const handleFileUpload = async (e: Event) => {
+  notifications.value.push({
+    title: "Procesando archivo",
+    description: `El archivo se esta procesando, por favor espere`,
+    status: true,
+  });
   uploading.value = true;
 
   const target = e.target as HTMLInputElement;
@@ -363,12 +382,18 @@ const handleFileUpload = async (e: Event) => {
   if (file) {
     const formData = new FormData();
     formData.append("dbFile", file);
-    await useFetch("/api/product/masive", {
+    await $fetch("/api/product/masive", {
       method: "POST",
       body: formData,
     });
 
     uploading.value = false;
+
+    notifications.value.push({
+      title: "Listo!",
+      description: `El archivo se proceso correctamente`,
+      status: true,
+    });
   }
 };
 
@@ -394,6 +419,56 @@ function addItem(item: any, key: string) {
 
 <style lang="scss">
 .products {
+  .header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: pxToRem(20);
+    .sr-form-input {
+      margin-left: pxToRem(20);
+      padding: pxToRem(0);
+    }
+
+    .quivi-button {
+      margin-left: pxToRem(10);
+      min-width: inherit;
+    }
+
+    .sr-icon {
+      width: pxToRem(20);
+      height: pxToRem(20);
+    }
+  }
+  .massive-file {
+    color: $color-white;
+    background: linear-gradient(
+      90deg,
+      $color-quivi-light-red,
+      $color-quivi-red
+    );
+    padding: pxToRem(10);
+    border-radius: pxToRem(25);
+    cursor: pointer;
+    display: flex;
+    input {
+      visibility: hidden;
+      width: 0;
+      height: 0;
+      opacity: 0;
+    }
+    .spinner {
+      background-color: $color-white !important;
+      margin-left: 10px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: pxToRem(20);
+  }
   .massive-file {
     display: flex;
 

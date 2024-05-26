@@ -13,7 +13,7 @@ export const fetchProducts = async (
     query.filters = filters;
   }
 
-  const { data }: any = await useFetch(
+  const data: any = await $fetch(
     `/api/product${
       Object.keys(query).length ? `?path=${path}&` : ""
     }${Object.keys(query)
@@ -23,7 +23,7 @@ export const fetchProducts = async (
   );
 
   return {
-    products: data.value?.products,
-    pagination: data.value?.pagination,
+    products: data?.products,
+    pagination: data?.pagination,
   };
 };

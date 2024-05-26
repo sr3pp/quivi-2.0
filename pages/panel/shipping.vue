@@ -1,29 +1,19 @@
 <template lang="pug">
 .quivi-shipping
   SrContainer(:with-padding="true")
-    SrText(text="Panel Envios" class="title" alignment="center")
+    .header-title
+        SrText(text="Panel Envios" class="title text-center")
+        SrFormInput(v-model="search" @keyup.enter="searchShipping" placeholder="Buscar")
+        QuiviButton(@click="searchShipping")
+          SrIcon(name="lupa-o")
 
-    table
-      thead
-        tr
-          th order
-          th name
-          th date
-          th status
-          th actions
-      tbody 
-        template(v-for="(shipp, i) in shipping" :key="shipp._id")
-          tr(v-if="shipp.sale.at(0)")
-            td {{ shipp.sale.at(0).sae_order }}
-            td {{ shipp.name }}
-            td {{ shipp.createdAt }}
-            td
-              span.status-box 
-                | {{ shipp.status }}
-                Status(:status="shipp.status == 'delivered' ? 2 : shipp.status == 'shipping' ? 1 : 0")
-            td
-              QuiviButton(@click="shippDetail(shipp)" variant="secondary")
-                SrIcon(name="edit-o")
+    DetailTable(
+      :headers="['order', 'name', 'createdAt', 'status', 'actions']"
+      :data="shipping"
+      @detail="shippDetail"
+      :actions="['detail']"
+      @update:data="(val) => shipping = val"
+    )
 
     Pagination(:pagination="pagination")
 
@@ -34,7 +24,7 @@
     template(#body v-if="currentShipping")
       SrGrid
         SrGridColumn(:size="{mobile: '1/2'}")
-          SrText(:text="`orden no. ${currentShipping.sale.at(0)._id}`" class="subtitle")
+          SrText(v-if="currentShipping.sale.length" :text="`orden no. ${currentShipping.sale.at(0)._id}`" class="subtitle")
         SrGridColumn(:size="{mobile: '1/2'}")
           p.status-box 
             span {{ currentShipping.status }}
@@ -60,7 +50,7 @@
       SrText(:text="`${currentShipping.name} ${currentShipping.last_name}`")
       SrText(:text="currentShipping.email")
       SrText(:text="currentShipping.phone")
-      SrText(:text="Object.values(currentShipping.address).filter(el => el).join(', ')")
+      SrText(v-if="currentShipping.address" :text="Object.values(currentShipping.address).filter(el => el).join(', ')")
 </template>
 
 <script lang="ts" setup>
@@ -74,14 +64,31 @@ const {
 
 const data: any = await $fetch("/api/shipping?page=" + (page || 1));
 
-const shipping: any = ref(data.shipping);
+const shipping: any = ref(
+  data.shipping.map((el: any) => {
+    if (el.sale.length) {
+      el.order = el.sale.at(0).sae_order;
+    }
+    return el;
+  }),
+);
 const pagination: any = ref(data.pagination);
 const shippDetailModal: any = ref(null);
 const currentShipping: any = ref(null);
 const fetching = ref(false);
 const sending = ref(false);
+const search = ref("");
 
-const shippDetail = (shipp: any) => {
+const searchShipping = async () => {
+  console.log(search.value);
+  return;
+  const { data }: any = await $fetch("/api/shipping?search=" + search.value);
+  shipping.value = data.value.shipping;
+  pagination.value = data.value.pagination;
+};
+
+const shippDetail = (_shipp: any) => {
+  const shipp = shipping.value.find((el: any) => el.order === _shipp.order);
   currentShipping.value = shipp;
   shippDetailModal.value.toggle();
 };
@@ -133,12 +140,24 @@ watch(
 
 <style lang="scss" scoped>
 .quivi-shipping {
-  table {
-    margin: auto;
+  .header-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: pxToRem(20);
-    td {
-      min-width: pxToRem(150);
-      text-align: center;
+    .sr-form-input {
+      margin-left: pxToRem(20);
+      padding: pxToRem(0);
+    }
+
+    .quivi-button {
+      margin-left: pxToRem(10);
+      min-width: inherit;
+    }
+
+    .sr-icon {
+      width: pxToRem(20);
+      height: pxToRem(20);
     }
   }
   .status-box {

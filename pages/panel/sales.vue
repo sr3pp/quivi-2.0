@@ -1,36 +1,27 @@
 <template lang="pug">
-.panel
+.sales
   SrContainer(:with-padding="true")
+    .sales-header
+      .header-title
+        SrText(text="Panel Ventas" class="title text-center")
+        SrFormInput(v-model="search" @keyup.enter="searchSale" placeholder="Buscar")
+        QuiviButton(@click="searchSale")
+          SrIcon(name="lupa-o")
+
     SrText(value="Panel ventas" class="title" alignment="center")
-    button(@click="salesModal.toggle()") Create venta
-    table
-      thead
-        tr
-          th Order No
-          th Sae No
-          th Products
-          th Total
-          th 
-            p Status
-            button(@click="sortBy('status')") sort
-          th Created At
-          th Actions
-      tbody
-        tr(v-for="(sale, i) in sales" :key="i")
-          td {{ sale.order_no }}
-          td {{ sale.sae_order }}
-          td {{ sale.products.length }}
-          td {{ toPrice(sale.total) }}
-          td 
-            Status(:status="sale.status ? 2 : 0")
-          td {{ new Date(sale.createdAt).toLocaleDateString('es-MX') }}
-          td
-            button(@click="saleDetail(sale)") detail
-            button(@click="deleteSale(sale._id, i)") Delete
+    //button(@click="salesModal.toggle()") Create venta
+    DetailTable(
+      :headers="['order_no', 'sae_order', 'products', 'total', 'status', 'createdAt', 'actions']"
+      :data="sales"
+      @detail="saleDetail"
+      @delete="deleteSale"
+      @update:data="(val) => sales = val"
+      :actions="['detail', 'delete']"
+    )
 
     SrModal(ref="saleDetailModal")
       template(#body)
-          SaleDetail(:sale="currentSale" v-if="currentSale")
+        SaleDetail(:sale="currentSale" v-if="currentSale")
 
     SrModal(ref="salesModal")
       template(#body)
@@ -43,6 +34,7 @@ import { toPrice } from "~/assets/ts/utilities";
 definePageMeta({
   layout: "panel",
 });
+const orderSw = ref(false);
 
 const salesModal: Ref<Component | null> = ref(null);
 const saleDetailModal: Ref<Component | null> = ref(null);
@@ -226,38 +218,65 @@ const salesForm = [
   },
 ];
 
-const saleDetail = (_sale: any) => {
-  currentSale.value = _sale;
+const search = ref("");
+
+const searchSale = async () => {
+  if (!search.value) {
+    const { data: _sales } = await useFetch("/api/sales");
+    sales.value = _sales.value;
+  } else {
+    const { data: _sale } = await useFetch(`/api/sales/${search.value}`);
+    sales.value = [_sale.value];
+  }
+};
+
+const saleDetail = (sale: any) => {
+  currentSale.value = sales.value.find(
+    (_sale: any) => _sale.order_no === sale.order_no,
+  );
   (saleDetailModal.value as any).toggle();
 };
 
-const deleteSale = async (id: string, idx: number) => {
-  await useFetch(`/api/sales`, {
-    method: "DELETE",
-    body: JSON.stringify({ id }),
-  });
+const deleteSale = async (_sale: any) => {
+  const sale = sales.value.find(
+    (sale: any) => sale.order_no === _sale.order_no,
+  );
 
-  sales.value?.splice(idx, 1);
+  await $fetch(`/api/sales`, {
+    method: "DELETE",
+    body: JSON.stringify({ id: sale._id }),
+  });
 };
 
 const saveSale = (_sale: any) => {
   console.log(_sale);
 };
-
-const sortBy = (field: string) => {
-  sales.value = sales.value.sort((a: any, b: any) => {
-    if (a[field] < b[field]) {
-      return -1;
-    }
-    if (a[field] > b[field]) {
-      return 1;
-    }
-    return 0;
-  });
-};
 </script>
 
 <style lang="scss" scoped>
-.panel {
+.sales {
+  .sales-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      .sr-form-input {
+        padding: 0;
+        margin-left: pxToRem(10);
+      }
+      .quivi-button {
+        margin-left: pxToRem(10);
+        min-width: inherit;
+      }
+      .sr-icon {
+        width: pxToRem(20);
+        height: pxToRem(20);
+      }
+    }
+  }
 }
 </style>
