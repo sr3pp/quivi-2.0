@@ -19,7 +19,7 @@
                   v-model="responsive")
       template(#body)
         div(class="sr-modal-body")
-          SrPreview(v-if="previewSw"
+          SrPreview(v-show="previewSw"
             :responsive="responsive"
             :app-components="Components"
             prefix="Sr"
@@ -82,12 +82,26 @@
 
 <script lang="ts" setup>
 import { proccessContent, EmitHandler } from "sr-content-2/assets/ts/utilities";
+import * as SrComponents from "sr-content-2/components";
 import SliderMain from "@/components/Slider/Main.vue";
 import type { Component } from "sr-content-2/types";
 
-const Components = {
+const appComponents = {
   SliderMain,
 };
+
+const prefixedComponents: any = {};
+Object.keys(SrComponents).forEach((componentName) => {
+  prefixedComponents[`Sr${componentName}`] = (SrComponents as any)[
+    componentName
+  ];
+});
+
+const Components = {
+  ...prefixedComponents,
+  ...appComponents,
+};
+
 definePageMeta({
   layout: "panel",
 });
