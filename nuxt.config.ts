@@ -55,6 +55,7 @@ export default defineNuxtConfig({
             ? process.env.PAYPAL_SECRET
             : process.env.PAYPAL_DEV_SECRET,
       },
+      vps: process.env.IS_VPS === "true",
     },
   },
   devtools: { enabled: true },

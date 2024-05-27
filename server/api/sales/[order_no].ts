@@ -2,7 +2,9 @@ import { Sale } from "~/server/Models";
 
 export default defineEventHandler(async (event) => {
   const { order_no } = getRouterParams(event);
-  const sale: any = await Sale.findOne({ order_no }).populate([
+  const sale: any = await Sale.findOne({
+    $or: [{ order_no }, { sae_order: order_no }],
+  }).populate([
     {
       path: "products",
       populate: {

@@ -8,6 +8,7 @@
           SrIcon(name="lupa-o")
 
     DetailTable(
+      v-if="shipping"
       :headers="['order', 'name', 'createdAt', 'status', 'actions']"
       :data="shipping"
       @detail="shippDetail"
@@ -54,6 +55,8 @@
 </template>
 
 <script lang="ts" setup>
+import type { ShippmentData } from "~/types";
+
 definePageMeta({
   layout: "panel",
 });
@@ -63,15 +66,7 @@ const {
 } = useRoute();
 
 const data: any = await $fetch("/api/shipping?page=" + (page || 1));
-
-const shipping: any = ref(
-  data.shipping.map((el: any) => {
-    if (el.sale.length) {
-      el.order = el.sale.at(0).sae_order;
-    }
-    return el;
-  }),
-);
+const shipping: any = ref(data.shipping);
 const pagination: any = ref(data.pagination);
 const shippDetailModal: any = ref(null);
 const currentShipping: any = ref(null);
@@ -80,11 +75,9 @@ const sending = ref(false);
 const search = ref("");
 
 const searchShipping = async () => {
-  console.log(search.value);
-  return;
-  const { data }: any = await $fetch("/api/shipping?search=" + search.value);
-  shipping.value = data.value.shipping;
-  pagination.value = data.value.pagination;
+  const data: any = await $fetch("/api/shipping/search?search=" + search.value);
+  shipping.value = data.shipment;
+  pagination.value = data.pagination;
 };
 
 const shippDetail = (_shipp: any) => {

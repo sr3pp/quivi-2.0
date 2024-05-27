@@ -4,7 +4,7 @@ import { Shipment } from "../../Models";
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
   const { search, filters, limit = 10, perPage = 10 }: any = query;
-  const data = modelPagination(
+  const data = await modelPagination(
     Shipment,
     {},
     [],
@@ -24,6 +24,13 @@ export default defineEventHandler(async (event) => {
     query,
     "",
   );
+
+  data.shipping = data.shipping.map((el: any) => {
+    if (el.sale.length) {
+      el.order = el.sale.at(0).sae_order;
+    }
+    return el;
+  });
 
   return data;
 });
