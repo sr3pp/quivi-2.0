@@ -23,7 +23,7 @@
             :responsive="responsive"
             :app-components="Components"
             prefix="Sr"
-            v-bind="{content: proccessContent(content)}")
+            v-bind="{content: proccessContent(content, true)}")
   .top-bar 
     SrFormSelect(:options="pagesOtions" value="nosotros/index" v-model="page" @change="setContent" placeholder="Seleccionar página")
     button(@click="seoModal.toggle()") Edit Seo
