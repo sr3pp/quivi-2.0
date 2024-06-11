@@ -1,5 +1,6 @@
 <template lang="pug">
 .store
+    SliderMain(:slides="content.slides" :options="options")
     SrGrid
         SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column store-filters")
           SrText(text="Encuentra lo que necesitas." class="subtitle")
@@ -24,13 +25,25 @@ const { search: _search, page = 1, filters: _filters } = route.query;
 const search = ref(_search as string);
 const filters = ref(_filters as string);
 
-const promises: any = await Promise.all([
+const [content, shipment]: any = await Promise.all([
   $fetch("/api/content?page=index"),
   $fetch("/api/content?page=_config/shipping"),
 ]);
 
-const content = promises[0];
-const shipment = promises[1];
+const options = {
+  pagination: true,
+  navigation: true,
+  creative: {
+    prev: {
+      shadow: false,
+      translate: ["-20%", 0, -1],
+    },
+    next: {
+      translate: ["100%", 0, 0],
+    },
+  },
+};
+
 const cart = useLocalStorage("cart", {
   products: [],
   total: 0,
@@ -84,7 +97,7 @@ const filterProducts = async (filters: any) => {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .store {
   overflow: hidden;
 
@@ -111,8 +124,11 @@ const filterProducts = async (filters: any) => {
 
   > .sr-grid {
     margin: 0;
-    > * {
+    .store-filters {
       padding-top: pxToRem(40);
+    }
+    > *:not(.store-filters) {
+      padding-top: pxToRem(0);
     }
   }
 
@@ -133,6 +149,13 @@ const filterProducts = async (filters: any) => {
 
   .quivi-pagination {
     margin: auto;
+  }
+
+  .main-slider {
+    &-slide {
+      height: pxToRem(200);
+      min-height: inherit;
+    }
   }
 }
 </style>

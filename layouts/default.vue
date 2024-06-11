@@ -8,6 +8,8 @@ main.default-layout
 
   ContactModal(ref="contactModal" :social="social")
   LoginModal(ref="loginModal")
+  QuiviButton(@click="openFaqs" label="FAQ's" variant="secondary" class="faq-btn")
+  FAQModal(ref="faqModal" :faqs="faqs")
   ClientOnly
     Cart(:active="cartSwitch" @close="cartSwitch = false")
     NotificationStack
@@ -19,11 +21,13 @@ const cartSwitch = ref(false);
 
 const contactModal = ref(null);
 const loginModal = ref(null);
+const faqModal = ref(null);
 const loading = ref(false);
 
-const [business, _distribuidores] = await Promise.all([
+const [business, _distribuidores, faqs] = await Promise.all([
   $fetch("/api/content?page=_config/business"),
   $fetch("/api/content?page=_config/distribuidores"),
+  $fetch("/api/content?page=_config/faqs"),
 ]);
 
 const { social } = business;
@@ -39,6 +43,10 @@ const loginHandler = () => {
 
 const cartHandler = () => {
   cartSwitch.value = !cartSwitch.value;
+};
+
+const openFaqs = () => {
+  (faqModal.value as any).toggleFaqModal();
 };
 
 const { hook } = useNuxtApp();
@@ -60,5 +68,12 @@ hook("page:finish", () => {
 .default-layout {
   background-color: $color-white;
   overflow: hidden;
+
+  .faq-btn {
+    position: fixed;
+    bottom: pxToRem(20);
+    right: pxToRem(20);
+    z-index: 1000;
+  }
 }
 </style>
