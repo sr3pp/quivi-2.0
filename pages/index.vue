@@ -1,16 +1,16 @@
 <template lang="pug">
 .store
-    SliderMain(:slides="content.slides" :options="options")
     SrGrid
         SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column store-filters")
           SrText(text="Encuentra lo que necesitas." class="subtitle")
           ProductFilters(@filter="filterProducts")
-        SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column")
+        SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column products")
           SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.limite} MXN`")
+          SliderMain(:slides="content.slides" :options="options")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
               QuiviButton(href="/" label="Ver todos los productos" disabled)
-          SrGrid(tag="ul")
+          SrGrid(tag="ul" class="product-grid")
               SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
           Pagination(:pagination="pagination")
@@ -107,7 +107,6 @@ const filterProducts = async (filters: any) => {
     padding: pxToRem(10) pxToRem(20);
     background-color: $color-quivi-red;
     color: $color-white;
-    margin-bottom: pxToRem(20);
     position: relative;
 
     &::before {
@@ -129,6 +128,15 @@ const filterProducts = async (filters: any) => {
     }
     > *:not(.store-filters) {
       padding-top: pxToRem(0);
+    }
+
+    .products {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .product-grid {
+      padding: pxToRem(30) pxToRem(10);
     }
   }
 
@@ -153,7 +161,7 @@ const filterProducts = async (filters: any) => {
 
   .main-slider {
     &-slide {
-      height: pxToRem(200);
+      height: pxToRem(250);
       min-height: inherit;
     }
   }

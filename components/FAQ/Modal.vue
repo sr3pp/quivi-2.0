@@ -23,7 +23,7 @@ SrModal.faq-modal(ref="faqModal")
     ul.faq-list
       li.faq-list-item(v-for="faq in faqs" :key="'faq-' + new Date().getTime()")
         SrText(:text="faq.question" class="subtitle")
-        SrText.answer(:text="faq.answer")
+        SrText.answer(:html="faq.answer")
 </template>
 
 <style lang="scss" scoped>
@@ -31,15 +31,17 @@ SrModal.faq-modal(ref="faqModal")
   .sr-modal-header {
     .title {
       padding: pxToRem(20);
+      padding-bottom: 0;
     }
   }
+
   .faq-list {
     border-radius: pxToRem(10);
     overflow: hidden;
     &-item {
       padding: pxToRem(20);
       &:nth-child(even) {
-        background-color: $color-quivi-gray;
+        background-color: $color-quivi-light-gray;
         color: $color-white;
       }
       .answer {

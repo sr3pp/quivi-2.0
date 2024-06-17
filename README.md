@@ -73,3 +73,9 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+Este proyecto Requiere de una carpeta "content" en la raiz, en esa carpeta se almacenan los json que contiene la informacion del contenido del sitio.
+
+Para hacer un respaldo completo es necesario:
+Guardar la carpeta content y public, ya que estas carpetas no estan en el repositorio.
+Crear el backup de la base de datos.

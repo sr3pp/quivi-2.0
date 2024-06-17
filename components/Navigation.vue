@@ -1,4 +1,3 @@
-import { colorDarkGray } from '~/assets/ts/tokens';
 <template lang="pug">
 nav.quivi-navbar(:class="{'active-search': searchActive}")
   SrContainer
@@ -14,7 +13,7 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
           SrIcon(name="x-o" v-else)
           span Busqueda
       li.quivi-navbar-list-item.hidden(class="sm:flex")
-        a(href="tel:5555555555") 5555555555
+        a(:href="`tel:${contact.phone}`") {{ contact.phone }}
       li.quivi-navbar-list-item
         button(@click="$emit('contactModal')")
           SrIcon(name="contacto-o")
@@ -56,7 +55,16 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
 <script lang="ts" setup>
 import { colorQuiviDarkestGray, colorQuiviGray } from "~/assets/ts/tokens";
 
-const { data: navigation } = await useFetch("/api/content/navigation");
+defineProps({
+  navigation: {
+    type: Array,
+    required: true,
+  },
+  contact: {
+    type: Object,
+    required: true,
+  },
+});
 
 const route = ref(useRoute());
 const searchActive = ref(false);
@@ -223,6 +231,9 @@ watch(
     justify-content: flex-end;
     &-item {
       width: pxToRem(30);
+      a {
+        white-space: nowrap;
+      }
       button {
         cursor: pointer;
         padding: 0;
