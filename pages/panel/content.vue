@@ -1,12 +1,12 @@
 <template lang="pug">
 .quivi-content
-  SrModal(ref="previewModal"
+  SrModal(ref="previewModal" @toggled="previewSw = $event"
       v-bind="{ css: { class: 'preview-modal' } }")
       template(#close)
         span X
       template(#header)
         div(class="sr-modal-header")
-          SrContainer(:with-padding="true")
+          SrContainer
             h2 Preview
             ul(class="sr-preview-controls-resolutions")
               li(class="sr-preview-controls-resolution"
@@ -19,11 +19,11 @@
                   v-model="responsive")
       template(#body)
         div(class="sr-modal-body")
-          SrPreview(v-show="previewSw"
+          SrPreview(v-if="previewSw"
             :responsive="responsive"
             :app-components="Components"
             prefix="Sr"
-            v-bind="{content: proccessContent(content)}")
+            v-bind="{content}")
   .top-bar 
     SrFormSelect(:options="pagesOtions" value="nosotros/index" v-model="page" @change="setContent" placeholder="Seleccionar página")
     button(@click="seoModal.toggle()") Edit Seo
@@ -162,11 +162,7 @@ const setResolution = () => {};
 
 const showPreview = () => {
   previewSw.value = true;
-  (previewModal.value as any).toggle();
-};
-
-const closePreview = () => {
-  previewSw.value = false;
+  content.value = proccessContent(content.value, false);
   (previewModal.value as any).toggle();
 };
 
@@ -181,8 +177,12 @@ const setContent = async () => {
   content.value = _content;
 };
 
-const saveContent = () => {
-  console.log(content.value);
+const saveContent = async () => {
+  const res = await $fetch(`/api/content?page=${page.value}`, {
+    method: "PUT",
+    body: content.value,
+  });
+  console.log(res);
 };
 
 const editPicture = (picture: any) => {
@@ -247,6 +247,12 @@ const clearBreakpoint = (resolution: string) => {
     }
   });
 };
+
+watch(previewSw, () => {
+  if (!previewSw.value) {
+    proccessContent(content.value, true);
+  }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -271,6 +277,21 @@ const clearBreakpoint = (resolution: string) => {
 
   .fill {
     height: 110vh;
+  }
+
+  .sr-modal {
+    &-header {
+      padding: pxToRem(20);
+    }
+
+    &-body {
+      height: 65vh;
+    }
+  }
+
+  .sr-preview-controls-resolutions {
+    display: flex;
+    gap: pxToRem(10);
   }
 }
 </style>
