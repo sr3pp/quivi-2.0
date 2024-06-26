@@ -3,7 +3,6 @@ import type { User } from "~/types";
 
 export const useAuth = () => {
   const defaultLogin = {
-    isLoggedIn: false,
     token: "",
     user: {
       id: "",
@@ -12,26 +11,38 @@ export const useAuth = () => {
     },
   };
 
-  const cookie: CookieRef<typeof defaultLogin> = useCookie("auth", {
+  const authCookie: CookieRef<typeof defaultLogin> = useCookie("auth", {
     default: () => defaultLogin,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    sameSite: "strict",
   });
 
   const login = async (user: User, token: string) => {
-    cookie.value = {
-      isLoggedIn: true,
+    authCookie.value = {
       token,
       user: user as any,
     };
-
+    LoggedInCookie.value = true;
     useRouter().push("/panel");
   };
 
-  const logout = async () => (cookie.value = defaultLogin);
+  const logout = async () => {
+    authCookie.value = defaultLogin;
+    LoggedInCookie.value = false;
+  };
 
-  const isLoggedIn = cookie.value.isLoggedIn;
+  const LoggedInCookie = useCookie("isLoggedIn", {
+    default: () => false,
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    sameSite: "strict",
+  });
+
+  const isLoggedIn = LoggedInCookie.value;
 
   return {
-    cookie,
     login,
     logout,
     isLoggedIn,

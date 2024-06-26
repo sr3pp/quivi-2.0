@@ -1,8 +1,11 @@
 <template lang="pug">
+div.main-slider-options(v-if="editable")
+  QuiviButton(@click="addSlide") Add slide
 Swiper.main-slider(
     :modules="[SwiperAutoplay, SwiperEffectCreative, SwiperPagination, SwiperNavigation]"
     :creative-effect="options.creative"
     v-bind="options"
+    ref="mainSlider"
 )
     SwiperSlide.main-slider-slide(v-for="(slide, i) in slides" :key="i")
         button.main-slider-slide-options(v-if="editable" @click="slideSettings(slide)") Configurar slide
@@ -50,6 +53,7 @@ SrModal(ref="slideModal")
 </template>
 
 <script lang="ts" setup>
+const mainSlider = ref(null);
 const props = defineProps({
   slides: {
     type: Array,
@@ -57,12 +61,15 @@ const props = defineProps({
   },
   options: {
     type: Object,
-    required: true,
     default: () => ({
       creative: {},
-      autoplay: {},
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
       loop: false,
       perPage: 1,
+      slidesPerView: 1,
       effect: "creative",
     }),
   },
@@ -83,6 +90,7 @@ const pagesOtions = [
 ];
 
 const emits = defineEmits([
+  "add-slide",
   "update:slide",
   "edit-props",
   "media-gallery",
@@ -135,6 +143,25 @@ const updateSlide = (
     slide[key] = value;
   }
 };
+
+const addSlide = () => {
+  emits("add-slide", {
+    title: "",
+    description: "",
+    link: {
+      label: "",
+      url: "",
+    },
+    background: {
+      mobile: "https://picsum.photos/1100/322",
+    },
+  });
+};
+
+watch(props.slides, () => {
+  const swiper = (mainSlider.value as any).$el.swiper;
+  swiper.update();
+});
 </script>
 
 <style lang="scss">
@@ -203,6 +230,19 @@ const updateSlide = (
     }
   }
 
+  &-options {
+    width: 100%;
+    display: flex;
+    gap: pxToRem(20);
+    padding-top: pxToRem(20);
+    padding-bottom: pxToRem(20);
+    align-items: start;
+    justify-content: start;
+
+    .quivi-button {
+      margin-left: 0;
+    }
+  }
   .swiper {
     &-button {
       &-next,

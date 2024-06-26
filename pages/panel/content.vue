@@ -25,7 +25,7 @@
             prefix="Sr"
             v-bind="{content}")
   .top-bar 
-    SrFormSelect(:options="pagesOtions" value="nosotros/index" v-model="page" @change="setContent" placeholder="Seleccionar página")
+    SrFormSelect(:options="pagesOtions" value="/index" v-model="page" @change="setContent" placeholder="Seleccionar página")
     button(@click="seoModal.toggle()") Edit Seo
     button(@click="componentsModal.toggle()") component list
     button(@click="saveContent") save
@@ -38,6 +38,8 @@
       @media-gallery="EmitHandler($event, component, editPicture)"
       @icon-gallery="EmitHandler($event, component, editIcon)"
       @edit-props="editComponent"
+      @add-slide="addSlide($event, component)"
+      :options="options"
       v-bind="component.props")
   SrModal(ref="seoModal")
     template(#body)
@@ -48,7 +50,7 @@
   SrModal(ref="mediaModal")
     template(#body)
         button
-          SrPicture(src="https://via.placeholder.com/400" alt="placeholder" @click="setPicture('https://via.placeholder.com/400')")
+          SrPicture(src="https://via.placeholder.com/1100x322" alt="placeholder" @click="setPicture('https://via.placeholder.com/1100x322')")
   SrModal(ref="iconModal")
     template(#body)
         button
@@ -106,6 +108,20 @@ definePageMeta({
   layout: "panel",
 });
 
+const options = {
+  pagination: true,
+  navigation: true,
+  creative: {
+    prev: {
+      shadow: false,
+      translate: ["-20%", 0, -1],
+    },
+    next: {
+      translate: ["100%", 0, 0],
+    },
+  },
+};
+
 const breakpoints = [
   {
     name: "Mobile",
@@ -139,11 +155,15 @@ const propsModal: Ref<boolean> = ref(false);
 const currentComponent: Ref<any> = ref(null);
 const previewSw: Ref<boolean> = ref(false);
 const responsive: Ref<string> = ref("");
-const page: Ref<string> = ref("nosotros/index");
+const page: Ref<string> = ref("/index");
 const currentPicture: Ref<any> = ref({ props: { src: "" } });
 const currentIcon: Ref<any> = ref({ props: { name: "" } });
 
 const pagesOtions = [
+  {
+    value: "/index",
+    name: "Tienda",
+  },
   {
     value: "nosotros/index",
     name: "Nosotros",
@@ -236,6 +256,10 @@ const setPicture = (url: string) => {
 const setIcon = (name: string) => {
   currentIcon.value.props.name = name;
   (iconModal.value as any).toggle();
+};
+
+const addSlide = (slide: any, component: any) => {
+  component.props.slides.push(slide);
 };
 
 const clearBreakpoint = (resolution: string) => {
