@@ -39,6 +39,7 @@
       @icon-gallery="EmitHandler($event, component, editIcon)"
       @edit-props="editComponent"
       @add-slide="addSlide($event, component)"
+      @delete-slide="deleteSlide($event, component)"
       :options="options"
       v-bind="component.props")
   SrModal(ref="seoModal")
@@ -47,10 +48,12 @@
   SrModal(ref="componentsModal")
     template(#body)
         p list of components here
-  SrModal(ref="mediaModal")
+  SrModal.media-modal(ref="mediaModal")
     template(#body)
-        button
-          SrPicture(src="https://via.placeholder.com/1100x322" alt="placeholder" @click="setPicture('https://via.placeholder.com/1100x322')")
+      ul.media-modal-list
+        li.media-modal-item(v-for="(item, i) in mediaSlides" :key="'media-item-'+new Date().getTime() + i")
+          button(@click="setPicture(`/img/slides/${item}`)")
+            SrPicture(:src="`/img/slides/${item}`" alt="placeholder")
   SrModal(ref="iconModal")
     template(#body)
         button
@@ -158,6 +161,9 @@ const responsive: Ref<string> = ref("");
 const page: Ref<string> = ref("/index");
 const currentPicture: Ref<any> = ref({ props: { src: "" } });
 const currentIcon: Ref<any> = ref({ props: { name: "" } });
+const { data: mediaSlides }: any = await useAsyncData("mediaSlides", () => {
+  return $fetch("/api/admin/gallery?folder=slides");
+});
 
 const pagesOtions = [
   {
@@ -200,9 +206,9 @@ const setContent = async () => {
 const saveContent = async () => {
   const res = await $fetch(`/api/content?page=${page.value}`, {
     method: "PUT",
-    body: content.value,
+    body: proccessContent(content.value, false),
   });
-  console.log(res);
+  proccessContent(content.value, true);
 };
 
 const editPicture = (picture: any) => {
@@ -247,7 +253,6 @@ const setPicture = (url: string) => {
     currentPicture.value.props.src = url;
   } else {
     const { bg, resolution }: any = currentPicture.value;
-    console.log(bg, resolution);
     bg[resolution] = url;
   }
   (mediaModal.value as any).toggle();
@@ -260,6 +265,10 @@ const setIcon = (name: string) => {
 
 const addSlide = (slide: any, component: any) => {
   component.props.slides.push(slide);
+};
+
+const deleteSlide = (idx: number, component: any) => {
+  component.props.slides.splice(idx, 1);
 };
 
 const clearBreakpoint = (resolution: string) => {
@@ -310,6 +319,14 @@ watch(previewSw, () => {
 
     &-body {
       height: 65vh;
+      .media-modal-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: pxToRem(10);
+      }
+      .media-modal-item {
+        width: calc((100% - pxToRem(40)) / 4);
+      }
     }
   }
 

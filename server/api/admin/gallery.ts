@@ -4,6 +4,9 @@ import { join } from "pathe";
 const dir = join(process.cwd(), "public", "img");
 
 export default defineEventHandler(async (event) => {
-  const gallery = fs.readdirSync(dir);
+  const { folder }: any = getQuery(event);
+  const gallery = fs
+    .readdirSync(join(dir, folder ? folder : ""))
+    .filter((file: string) => file[0] !== ".");
   return gallery;
 });

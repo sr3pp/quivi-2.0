@@ -8,7 +8,11 @@ Swiper.main-slider(
     ref="mainSlider"
 )
     SwiperSlide.main-slider-slide(v-for="(slide, i) in slides" :key="i")
-        button.main-slider-slide-options(v-if="editable" @click="slideSettings(slide)") Configurar slide
+        .main-slider-slide-actions
+          button.main-slider-slide-options(v-if="editable" @click="slideSettings(slide)")
+            SrIcon(name="edit-o")
+          button.main-slider-slide-options(v-if="editable" @click="deleteSlide(i)")
+            SrIcon(name="trash-o")
         .main-slider-slide-background
             SrPicture(:src="slide.background.mobile" :alt="slide.title" v-if="slide.background")
         SrContainer(:with-padding="true")
@@ -91,6 +95,7 @@ const pagesOtions = [
 
 const emits = defineEmits([
   "add-slide",
+  "delete-slide",
   "update:slide",
   "edit-props",
   "media-gallery",
@@ -158,10 +163,16 @@ const addSlide = () => {
   });
 };
 
-watch(props.slides, () => {
-  const swiper = (mainSlider.value as any).$el.swiper;
-  swiper.update();
-});
+const deleteSlide = (idx: number) => {
+  emits("delete-slide", idx);
+};
+watch(
+  () => props.slides,
+  () => {
+    const swiper = (mainSlider.value as any).$el.swiper;
+    swiper.update();
+  },
+);
 </script>
 
 <style lang="scss">
@@ -204,15 +215,25 @@ watch(props.slides, () => {
       }
     }
 
-    &-options {
+    &-actions {
       position: absolute;
       top: 0;
       left: 0;
+      z-index: 3;
+      display: flex;
+      gap: pxToRem(10);
+    }
+
+    &-options {
       background-color: $color-quivi-red;
       border: none;
       color: $color-white;
       padding: pxToRem(10);
-      z-index: 3;
+
+      .sr-icon {
+        width: pxToRem(20);
+        height: pxToRem(20);
+      }
     }
 
     &-background {
@@ -243,12 +264,25 @@ watch(props.slides, () => {
       margin-left: 0;
     }
   }
-  .swiper {
+  &.swiper {
     &-button {
       &-next,
       &-prev {
         background-color: transparent !important;
       }
+    }
+    .swiper-slide {
+      .sr-container {
+        display: none !important;
+      }
+    }
+  }
+
+  &-slide-form {
+    display: none !important;
+
+    &-resolution {
+      display: none !important;
     }
   }
 }
