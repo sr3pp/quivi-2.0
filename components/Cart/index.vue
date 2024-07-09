@@ -86,6 +86,8 @@ watch(
       setTimeout(() => {
         activeDone.value = true;
       }, 100);
+    } else {
+      lockBody(false);
     }
   },
 );

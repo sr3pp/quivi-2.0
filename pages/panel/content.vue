@@ -37,11 +37,37 @@
       :key="i"
       @media-gallery="EmitHandler($event, component, editPicture)"
       @icon-gallery="EmitHandler($event, component, editIcon)"
-      @edit-props="editComponent"
+      @edit-props="editComponent($event, component)"
       @add-slide="addSlide($event, component)"
       @delete-slide="deleteSlide($event, component)"
       :options="options"
       v-bind="component.props")
+
+  // This part shows the catalog content
+  template(v-if="currentCatalog.sw")
+    SrContainer
+      SrText(text="Catalogos" class="subtitle" alignment="center")
+      SrFormSelect(:options="currentCatalog.options" v-model="currentCatalog.name" @change="setCatalog")
+      br
+      div.catalog-card(v-if="currentCatalog.card")
+        SrPicture(:src="currentCatalog.card.thumb" alt="placeholder" :editable="true")
+        div  
+          SrFormInput(v-model="currentCatalog.card.label" label="Titulo")
+          SrFormInput(v-model="currentCatalog.card.order" label="Orden")
+        ul.catalog-card-list
+          li.catalog-card-item(v-for="(item, i) in currentCatalog.card.list" :key="i")
+            SrFormInput(v-model="currentCatalog.card.list[i]")
+            button(@click="deleteItem(i)")
+              SrIcon(name="trash-o")
+          li.catalog-card-item
+            button(@click="addItem")
+              SrIcon(name="plus-o")
+      template(v-if="currentCatalog.current")
+        component(v-for="(c, i) in currentCatalog.current" :is="c.component" v-bind="c.props" :key="i"
+          @media-gallery="EmitHandler($event, c, editPicture)"
+          @icon-gallery="EmitHandler($event, c, editIcon)"
+          @edit-props="editComponent($event, c)")
+
   SrModal(ref="seoModal")
     template(#body)
         SeoWizzard
@@ -50,10 +76,13 @@
         p list of components here
   SrModal.media-modal(ref="mediaModal")
     template(#body)
-      ul.media-modal-list
-        li.media-modal-item(v-for="(item, i) in mediaSlides" :key="'media-item-'+new Date().getTime() + i")
-          button(@click="setPicture(`/img/slides/${item}`)")
-            SrPicture(:src="`/img/slides/${item}`" alt="placeholder")
+      div(class="media-modal-container")
+        SrDirectory(:directory="mediaDir.children" @change="setMediaDir" :onlyDirs="true")
+        ul.media-modal-list(v-if="currentMedia")
+          template(v-for="(item, i) in currentMedia.children" :key="'media-item-'+new Date().getTime() + i")
+            li.media-modal-item(v-if="!item.children")
+              button(@click="setPicture(`/${item.path}`)")
+                SrPicture(:src="`/${item.path}`" alt="placeholder")
   SrModal(ref="iconModal")
     template(#body)
         button
@@ -79,7 +108,8 @@
             :column-element="currentComponent.component.props")
           SrContainerPropsForm(:responsive="responsive"
             v-if="currentComponent.component.component == 'SrContainer'"
-            :container-element="currentComponent.component.props")
+            :container-element="currentComponent.component.props"
+            @media-gallery="EmitHandler($event, currentComponent.component, editBackground)")
           SrTabsPropsForm(:responsive="responsive"
             v-if="currentComponent.component.component == 'SrTabs'"
             :tabs-element="currentComponent.component.props")
@@ -106,6 +136,23 @@ const Components = {
   ...prefixedComponents,
   ...appComponents,
 };
+
+const currentCatalog = ref({
+  name: "",
+  options: [
+    {
+      value: "catalogo/acumuladores",
+      name: "Acumuladores",
+    },
+    {
+      value: "catalogo/baterias",
+      name: "Baterias",
+    },
+  ],
+  sw: false,
+  current: null,
+  card: null,
+});
 
 definePageMeta({
   layout: "panel",
@@ -161,14 +208,26 @@ const responsive: Ref<string> = ref("");
 const page: Ref<string> = ref("/index");
 const currentPicture: Ref<any> = ref({ props: { src: "" } });
 const currentIcon: Ref<any> = ref({ props: { name: "" } });
-const { data: mediaSlides }: any = await useAsyncData("mediaSlides", () => {
-  return $fetch("/api/admin/gallery?folder=slides");
+const currentMedia: Ref<any> = ref(null);
+const isBackground: Ref<boolean> = ref(false);
+const mediaDir = ref(await $fetch("/api/admin/get-directory?folder=img"));
+const { data: media }: any = await useAsyncData("media", async () => {
+  const promises = await Promise.all([
+    $fetch("/api/admin/gallery?folder=slides"),
+    $fetch("/api/admin/gallery?folder=catalogo"),
+  ]);
+
+  const media = {
+    slides: promises[0],
+    catalogo: promises[1],
+  };
+  return media;
 });
 
 const pagesOtions = [
   {
     value: "/index",
-    name: "Tienda",
+    name: "Home",
   },
   {
     value: "nosotros/index",
@@ -201,6 +260,20 @@ const getContent = async () => {
 const setContent = async () => {
   const _content = proccessContent(await getContent(), true);
   content.value = _content;
+  if (page.value == "catalogo/index") {
+    currentCatalog.value.sw = true;
+  } else {
+    currentCatalog.value.sw = false;
+  }
+};
+
+const setCatalog = async (catalog: string) => {
+  const { content, card } = await $fetch(
+    `/api/content?page=${currentCatalog.value.name}&section=content,card`,
+  );
+
+  currentCatalog.value.current = proccessContent(content, true);
+  currentCatalog.value.card = card;
 };
 
 const saveContent = async () => {
@@ -209,14 +282,34 @@ const saveContent = async () => {
     body: proccessContent(content.value, false),
   });
   proccessContent(content.value, true);
+  if (currentCatalog.value.sw) {
+    await $fetch(`/api/content?page=${currentCatalog.value.name as string}`, {
+      method: "PUT",
+      body: proccessContent(currentCatalog.value?.current || [], false),
+    });
+    await $fetch(
+      `/api/content?page=${currentCatalog.value.name as string}&section=card`,
+      {
+        method: "PUT",
+        body: currentCatalog.value.card,
+      },
+    );
+  }
 };
 
 const editPicture = (picture: any) => {
+  isBackground.value = false;
   currentPicture.value = picture;
   (mediaModal.value as any).toggle();
 };
 
-const editComponent = (component: Component) => {
+const editBackground = ($event: any) => {
+  isBackground.value = true;
+  (mediaModal.value as any).toggle();
+};
+
+const editComponent = ($event: any, _component: Component) => {
+  const component = $event || _component;
   if (!("css" in component.props)) {
     component.props.css = {
       style: {},
@@ -249,7 +342,9 @@ const editIcon = (icon: any) => {
 };
 
 const setPicture = (url: string) => {
-  if (currentPicture.value.props) {
+  if (isBackground.value) {
+    currentComponent.value.component.props.css.style.backgroundImage = `url(${url})`;
+  } else if (currentPicture.value.props) {
     currentPicture.value.props.src = url;
   } else {
     const { bg, resolution }: any = currentPicture.value;
@@ -269,6 +364,18 @@ const addSlide = (slide: any, component: any) => {
 
 const deleteSlide = (idx: number, component: any) => {
   component.props.slides.splice(idx, 1);
+};
+
+const addItem = () => {
+  currentCatalog.value.card.list.push("New item");
+};
+
+const deleteItem = (idx: number) => {
+  currentCatalog.value.card.list.splice(idx, 1);
+};
+
+const setMediaDir = (item: any) => {
+  currentMedia.value = item;
 };
 
 const clearBreakpoint = (resolution: string) => {
@@ -326,6 +433,49 @@ watch(previewSw, () => {
       }
       .media-modal-item {
         width: calc((100% - pxToRem(40)) / 4);
+      }
+
+      .media-modal-container {
+        display: flex;
+        gap: pxToRem(10);
+      }
+    }
+  }
+
+  .catalog-card {
+    display: flex;
+    align-items: center;
+    gap: pxToRem(10);
+    .sr-picture {
+      width: pxToRem(100);
+      img {
+        height: 100% !important;
+      }
+    }
+
+    &-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: pxToRem(10);
+      margin-bottom: pxToRem(20);
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: pxToRem(10);
+      button {
+        background: none;
+        border: none;
+        margin-top: auto;
+        margin-bottom: pxToRem(4);
+      }
+
+      .sr-icon {
+        color: $color-quivi-red;
+        width: pxToRem(20);
+        height: pxToRem(20);
       }
     }
   }

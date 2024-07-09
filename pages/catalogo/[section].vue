@@ -1,10 +1,10 @@
 <template lang="pug">
 .catalogo-detail
-    SliderMain(:slides="content.slides" :options="options")
+    SliderMain(:slides="json.slides" :options="options")
     SrContainer(:with-padding="true")
         SrText(:html="sellerLabel" class="title")
     SliderProducts(:products="hightlights" :options="product_options")
-    component(v-for="(component, i) in content.content" :is="component.component" :key="i" v-bind="component.props")
+    component(v-for="(component, i) in json.content" :is="component.component" :key="i" v-bind="component.props")
     SrContainer(:with-padding="true")
         DownloadsList(:downloads="downloads" :path="path")
 </template>
@@ -12,13 +12,13 @@
 <script lang="ts" setup>
 const { path } = useRoute();
 
-const [content, downloads] = await Promise.all([
-  $fetch(`/api/content?page=${path}`),
+const [json, downloads] = await Promise.all([
+  $fetch(`/api/content?page=${path}&section=brand,slides,content`),
   $fetch(`/api/content/downloads?path=${path}`),
 ]);
 
 const hightlights = await $fetch(
-  `/api/product/hightlights?brand=${content.brand}`,
+  `/api/product/hightlights?brand=${(json as any).brand}`,
 );
 
 const sellerLabel =

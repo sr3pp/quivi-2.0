@@ -30,7 +30,7 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
               SrIcon(name="registrarsecaja-o")
             span Ingresar
   ul.quivi-navbar-menu(:class="{active: menuActive}")
-    li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active}" :key="i")
+    li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active, 'highlight': item.highLight}" :key="i")
       .link-container  
         NuxtLink(:to="item.url")
           span {{ item.label }}
@@ -46,6 +46,12 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
             linearGradient(id="stateMenuBtn" x1="0%" y1="0%" x2="0%" y2="100%")
               stop(offset="0%" :stop-color="btnColor1")
               stop(offset="100%" :stop-color="btnColor2")
+            linearGradient(id="stateMenuBtnHighlightHover" x1="0%" y1="0%" x2="0%" y2="100%")
+              stop(offset="0%" stop-color="#E0C207")
+              stop(offset="100%" stop-color="#E0C207")
+            linearGradient(id="stateMenuBtnHighlight" x1="0%" y1="0%" x2="0%" y2="100%")
+              stop(offset="0%" :stop-color="btnColor3")
+              stop(offset="100%" :stop-color="btnColor4")
           use(href="/icons/botonmenu-o.svg#s")
       ol.quivi-navbar-submenu(v-if="item.items && item.items.length" role="list")
         li.quivi-navbar-submenu-item(v-for="(el, e) in item.items" :key="e")
@@ -53,7 +59,12 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
 </template>
 
 <script lang="ts" setup>
-import { colorQuiviDarkestGray, colorQuiviGray } from "~/assets/ts/tokens";
+import {
+  colorQuiviDarkestGray,
+  colorQuiviGray,
+  colorQuiviYellow,
+  colorQuiviDarkYellow,
+} from "~/assets/ts/tokens";
 
 defineProps({
   navigation: {
@@ -72,6 +83,8 @@ const menuActive = ref(false);
 
 const btnColor1: string = colorQuiviGray;
 const btnColor2: string = colorQuiviDarkestGray;
+const btnColor3: string = colorQuiviYellow;
+const btnColor4: string = colorQuiviDarkYellow;
 
 const cart = useLocalStorage("cart", {
   products: [],
@@ -218,7 +231,7 @@ watch(
       display: flex;
       align-items: center;
       margin-left: auto;
-      margin-bottom: pxToRem(-50);
+      margin-bottom: pxToRem(-55);
       padding-left: pxToRem(20);
       padding-right: pxToRem(20);
     }
@@ -346,6 +359,24 @@ watch(
     flex-direction: column;
     position: relative;
     z-index: 2;
+    min-width: pxToRem(170);
+
+    &.highlight {
+      a {
+        color: $color-text-color;
+      }
+
+      svg.bg {
+        fill: url(#stateMenuBtnHighlight);
+      }
+
+      &:hover,
+      &:has(.router-link-active) {
+        svg.bg {
+          fill: url(#stateMenuBtnHighlightHover);
+        }
+      }
+    }
 
     &:not(:last-child) {
       &::after {

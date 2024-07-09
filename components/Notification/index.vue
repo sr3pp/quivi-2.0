@@ -2,7 +2,7 @@
 article.quivi-notification(:class="{active: status}" :style="{ '--main-color': type === 'success' ? toRgba(colorSystemSuccess) : toRgba(colorSystemError) }" @mouseover="cancelTimeout" @mouseleave="setCloseTimeout")
   button.quivi-notification-close(@click="$emit('close')") X
   SrText.quivi-notification-title(:text="title" class="subtitle")
-  .quivi-notification-content
+  button.quivi-notification-content(@click="clickHandler")
     slot
     .quivi-notification-description(v-if="description")
       SrText(:html="description")
@@ -26,6 +26,10 @@ const props = defineProps({
   type: {
     type: String,
     default: "success",
+  },
+  clickHandler: {
+    type: Function,
+    default: () => {},
   },
 });
 const emit = defineEmits(["close"]);
@@ -81,6 +85,12 @@ const toRgba = (hex: string) => {
   &.active {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  &-content {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
   }
 
   &-close {

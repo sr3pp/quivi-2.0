@@ -1,7 +1,7 @@
 <template lang="pug">
 ul.quivi-notification-stack
     li.quivi-notification-stack-item(v-for="(notification, i) in notifications" :key="i")
-        Notification(:status="notification.status" :title="notification.title" :description="notification.description" @close="removeNotification(notification, i)")
+        Notification(:status="notification.status" :title="notification.title" :description="notification.description" :clickHandler="notification.clickHandler" @close="removeNotification(notification, i)")
 </template>
 
 <script lang="ts" setup>

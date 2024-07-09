@@ -4,7 +4,7 @@ main.default-layout
   Transition(name="page", mode="out-in")
     Loading(v-if="loading")
     
-  NuxtPage
+  NuxtPage(@cartModal="cartHandler")
 
   ContactModal(ref="contactModal" :social="social")
   LoginModal(ref="loginModal")
@@ -96,6 +96,10 @@ hook("page:finish", () => {
     font-size: pxToRem(16);
     width: pxToRem(60);
     height: pxToRem(60);
+  }
+
+  .quivi-notification-stack {
+    right: pxToRem(150);
   }
 }
 </style>

@@ -23,7 +23,9 @@
       "light-blue": { "value": "#d8dde6" },
       "dark-red": { "value": "#921F1D" },
       "darkest-red": { "value": "#38060E" },
-      "green": { "value": "#1C8741" }
+      "green": { "value": "#1C8741" },
+      "yellow": { "value": "#FFEC5C" },
+      "dark-yellow": { "value": "#E0C207" }
     }
   }
 }

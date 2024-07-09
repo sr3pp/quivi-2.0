@@ -5,7 +5,7 @@ export class openpayHandler {
 
   async pay(data: any, callback?: Function) {
     const orderId = buildOrderId();
-    const { paymentMethod, total, shippmentData } = data;
+    const { paymentMethod, total, shippmentData, paymentPlan } = data;
     const dataObj: any = {
       method: paymentMethod.value.includes("card") ? "card" : "store", // switch to store if cash
       amount: total,
@@ -21,6 +21,15 @@ export class openpayHandler {
       send_email: "false",
       redirect_url: `${window.location.host}/tienda/checkout?order_id=${orderId}`,
     };
+
+    //TODO add payment plan (MSI)
+    /*
+      if(paymentPlan){
+        dataObj.payment_plan = {
+          "payments": paymentPlan
+        }
+      }
+    */
 
     if (paymentMethod.value.includes("cash")) {
       dataObj.due_date = new Date().setDate(new Date().getDate() + 3);

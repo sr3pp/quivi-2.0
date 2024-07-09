@@ -242,6 +242,16 @@ const processPayment = async () => {
       shippmentData: saleData.value.shipping,
     };
 
+    //TODO add payment plan (MSI)
+    /*
+      if all the products in the cart are available for MSI
+      and the user selected the MSI option:
+        availablePayments = [3, 6, 9, 12, 18];
+        data.payment_plan = {
+          payments: availablePayments[x];
+        }
+    */
+
     const openpay = new openpayHandler();
     openpay.pay(data, storePayment);
   } else if (paymentMethod.value.value == "paypal") {

@@ -52,6 +52,8 @@ const updateQty = (value: number) => {
   else product.value.qty += value;
 };
 
+const emit = defineEmits(["cartModal"]);
+
 const addToCart = () => {
   const productExists: Product | undefined = cart.value.products.find(
     (p: any) => p.web === product.value.web,
@@ -75,6 +77,9 @@ const addToCart = () => {
     title: "Producto agregado",
     description: `El producto <b>${product.value.name}</b> se ha agregado al carrito`,
     status: true,
+    clickHandler: () => {
+      emit("cartModal");
+    },
   });
 };
 
