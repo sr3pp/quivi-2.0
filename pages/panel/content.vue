@@ -412,6 +412,10 @@ watch(previewSw, () => {
       width: pxToRem(200);
       --input-border-color: #{$color-white};
       --input-color: #{$color-white};
+
+      option {
+        color: $color-black;
+      }
     }
   }
 
