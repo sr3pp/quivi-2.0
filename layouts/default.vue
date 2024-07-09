@@ -27,17 +27,17 @@ const loginModal = ref(null);
 const faqModal = ref(null);
 const loading = ref(false);
 
-const [business, _distribuidores, faqs, navigation, contact] =
-  await Promise.all([
+const [business, distribuidores, faqs, navigation, contact] = await Promise.all(
+  [
     $fetch("/api/content?page=_config/business"),
     $fetch("/api/content?page=_config/distribuidores"),
     $fetch("/api/content?page=_config/faqs"),
     $fetch("/api/content/navigation"),
     $fetch("/api/content?page=_config/contact"),
-  ]);
+  ],
+);
 
 const { social } = business;
-const { distribuidores } = _distribuidores;
 
 const contactModalHandler = () => {
   (contactModal.value as any).toggleContactModal();

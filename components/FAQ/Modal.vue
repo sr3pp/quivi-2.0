@@ -21,7 +21,7 @@ SrModal.faq-modal(ref="faqModal")
       SrText(text="FAQ's" class="title")
   template(#body)
     ul.faq-list
-      li.faq-list-item(v-for="faq in faqs" :key="'faq-' + new Date().getTime()")
+      li.faq-list-item(v-for="(faq, i) in faqs" :key="'faq-'+ i + new Date().getTime()")
         SrText(:text="faq.question" class="subtitle")
         SrText.answer(:html="faq.answer")
 </template>
