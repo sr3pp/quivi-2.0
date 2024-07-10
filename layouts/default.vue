@@ -69,8 +69,10 @@ watch(loading, () => {
   }
 });
 
-onBeforeMount(() => {
-  getCart();
+onMounted(() => {
+  if (process.client) {
+    getCart();
+  }
 });
 </script>
 

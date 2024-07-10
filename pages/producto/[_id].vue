@@ -114,7 +114,7 @@ const setTotal = (value: number) => {
                           QuiviButton(v-if="product.qty > product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
                         QuiviButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
-                        QuiviButton(href="/tienda" label="Ir a la tienda")
+                        QuiviButton(href="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
             SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
                 SrText(text="ESPECIFICACIONES DEL PRODUCTO" class="title")
                 ul.product-detail-details

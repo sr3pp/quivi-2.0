@@ -20,7 +20,7 @@
                 ClientOnly
                     CartList(:products="cart.products" :editable="false")
                     CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
-                QuiviButton(label="Pagar" :disabled="!paymentLock" kind="primary" @buttonclick="termsModal.toggle()")
+                QuiviButton(label="Pagar" :disabled="!paymentLock" kind="primary" @click="termsModal.toggle()")
     SrModal(ref="termsModal" class="modal-terms")
         template(#body)
             QuiviTerms(:terms="terms" )
@@ -31,7 +31,7 @@
           SrText(text="Para continuar acepta los términos y condiciones")
           SrText(:html="termsLegend2")
           br
-          QuiviButton(label="Pagar" @buttonclick="processPayment" :disabled="!termsSw")
+          QuiviButton(label="Pagar" @click="processPayment" :disabled="!termsSw")
 </template>
 
 <script lang="ts" setup>

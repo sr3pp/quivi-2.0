@@ -1,11 +1,11 @@
 <template lang="pug">
-NuxtLink.quivi-button(:class="{ 'size-lg': size === 'lg', [variant]: variant, loading }" :to="href" :target="target" :disabled="isDisabled" v-if="href" :aria-label="label" :title="label") 
+NuxtLink.quivi-button(:class="{ 'size-lg': size === 'lg', [variant]: variant, loading, disabled: isDisabled }" :to="href" :target="target" v-if="href" :aria-label="label" :title="label") 
   span.label {{ label }}
   slot
   span.loader
     Spinner(v-if="loading")
 
-button.quivi-button(v-else :class="{ 'size-lg': size === 'lg', [variant]: variant, loading }" :disabled="isDisabled" @click="$emit('buttonclick')") 
+button.quivi-button(v-else :class="{ 'size-lg': size === 'lg', [variant]: variant, loading, disabled: isDisabled }") 
   span.label {{ label }}
   slot
   span.loader
@@ -45,7 +45,9 @@ const props = defineProps({
   },
 });
 
-const isDisabled = computed((): boolean => props.disabled || props.loading);
+const isDisabled = computed(() => {
+  return props.disabled || props.loading;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -53,7 +55,8 @@ button.quivi-button,
 a.quivi-button {
   border: none;
 
-  &[disabled] {
+  &[disabled],
+  &.disabled {
     background-color: $color-quivi-gray;
     cursor: not-allowed;
     opacity: 0.5;

@@ -9,7 +9,7 @@
         SrText(:text="toPrice(processDiscount(product))" class="title")
         SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
     .quivi-product-card-footer
-        QuiviButton(:href="`/producto/${product._id}`" label="Ver Mas")
+        QuiviButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
         Tooltip(position="top-right")
             SrText(:text="product.extra")
                 
