@@ -106,7 +106,7 @@ export function useCart() {
   }
 
   function getCart() {
-    if (localStorage) {
+    if (process.client) {
       const products = localStorage.getItem("cart-products");
       if (products) {
         cart.value.products = JSON.parse(products);
