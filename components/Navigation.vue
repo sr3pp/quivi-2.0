@@ -118,6 +118,8 @@ watch(
   .sr-container {
     display: flex;
     align-items: center;
+    position: relative;
+    z-index: 3;
     > * {
       &:not(:last-child) {
         margin-right: pxToRem(20);

@@ -72,6 +72,7 @@ defineProps({
   &-container {
     position: relative;
     z-index: 1;
+    width: 100%;
     background: $color-white;
     border-radius: pxToRem(10);
     overflow: hidden;
