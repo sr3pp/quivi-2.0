@@ -20,7 +20,7 @@ const { data: existences }: any = await $fetch(
 product.value.existences = existences;
 product.value.qty = 1;
 
-const notifications: any = useState("notifications", () => []);
+const qty = ref(product.value.qty);
 
 const detailExcludes = [
   "__v",
@@ -37,50 +37,11 @@ const detailExcludes = [
   "updatedAt",
 ];
 
-const cart: any = useLocalStorage("cart", {
-  products: [],
-  total: 0,
-  subtotal: 0,
-  shipping: {
-    costo: 0,
-    limite: 0,
-  },
-});
+const { cart, addToCart } = useCart();
 
 const updateQty = (value: number) => {
   if (!product.value.qty) product.value.qty = 1 + value;
   else product.value.qty += value;
-};
-
-const emit = defineEmits(["cartModal"]);
-
-const addToCart = () => {
-  const productExists: Product | undefined = cart.value.products.find(
-    (p: any) => p.web === product.value.web,
-  );
-
-  if (productExists) {
-    if (
-      (productExists as Product).qty + product.value.qty >
-      product.value.existences
-    )
-      return;
-    (productExists as Product).qty += product.value.qty;
-  } else {
-    if (!product.value.qty) {
-      product.value.qty = 1;
-    }
-    cart.value.products.push(product.value);
-  }
-
-  notifications.value.push({
-    title: "Producto agregado",
-    description: `El producto <b>${product.value.name}</b> se ha agregado al carrito`,
-    status: true,
-    clickHandler: () => {
-      emit("cartModal");
-    },
-  });
 };
 
 const sliderOptions = {
@@ -143,17 +104,17 @@ const setTotal = (value: number) => {
 
                     .product-detail-price
                         .price-container
-                          SrText(:text="processDiscount(product)" class="title" v-if="product.discount")
+                          SrText(:text="toPrice(processDiscount(product))" class="title" v-if="product.discount")
                           SrText.discount(:text="toPrice(product.price)" class="subtitle")
                         .product-detail-no-existences(v-if="!existences")
                           SrText(text="Producto no disponible")
                           QuiviButton(label="Solicitar información" size="lg" variant="secondary")
                         .product-detail-existences(v-else)
-                          Incrementor(:qty="product.qty" :max="product.existences" @updateQty="updateQty" @setTotal="setTotal($event)")
+                          Incrementor(:qty="qty" :max="product.existences" @updateQty="($event) => qty += $event")
                           QuiviButton(v-if="product.qty > product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
-                        QuiviButton(@click="addToCart(product)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
-                        QuiviButton(href="/" label="Ir a la tienda")
+                        QuiviButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
+                        QuiviButton(href="/tienda" label="Ir a la tienda")
             SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
                 SrText(text="ESPECIFICACIONES DEL PRODUCTO" class="title")
                 ul.product-detail-details

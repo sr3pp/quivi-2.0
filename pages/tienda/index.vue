@@ -45,16 +45,9 @@ const options = {
   },
 };
 
-const cart = useLocalStorage("cart", {
-  products: [],
-  total: 0,
-  subtotal: 0,
-  shipping: shipment,
-});
+const { setShippingConfig } = useCart();
 
-if (!cart.value.shipping) {
-  cart.value.shipping = shipment;
-}
+setShippingConfig(shipment);
 
 const products = ref([]);
 const pagination = ref({});
@@ -125,7 +118,10 @@ const filterProducts = async (filters: any) => {
   > .sr-grid {
     margin: 0;
     .store-filters {
-      padding-top: pxToRem(40);
+      padding-top: pxToRem(16);
+      .sr-text {
+        margin-bottom: pxToRem(16);
+      }
     }
     > *:not(.store-filters) {
       padding-top: pxToRem(0);

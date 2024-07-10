@@ -1,15 +1,16 @@
 <template lang="pug">
 .quivi-product-card
+  .quivi-product-card-container
     figure.quivi-product-card-img
         img(:src="`/products/${product._id}/${product.thumbs[0]}`" :alt="product.name")
     .quivi-product-card-body
         SrText(:text="product.name" class="title")
         SrText.sae(:text="`Clave: ${product.sae}`")
-        SrText(:text="processDiscount(product)" class="title")
+        SrText(:text="toPrice(processDiscount(product))" class="title")
         SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
     .quivi-product-card-footer
         QuiviButton(:href="`/producto/${product._id}`" label="Ver Mas")
-        Tooltip
+        Tooltip(position="top-right")
             SrText(:text="product.extra")
                 
 
@@ -47,6 +48,7 @@ defineProps({
       models: [],
       segment: {},
       motors: [],
+      existences: 1,
     }),
   },
 });
@@ -60,18 +62,45 @@ defineProps({
   position: relative;
   justify-content: center;
   width: 100%;
-  border: {
-    width: pxToRem(2);
-    color: $color-quivi-light-red;
-    style: solid;
-  }
+  border: none;
   border-radius: pxToRem(10);
   margin-bottom: pxToRem(20);
+  padding: pxToRem(4);
+  background: $color-white;
+  transition: transform 0.35s ease-in-out;
+
+  &-container {
+    position: relative;
+    z-index: 1;
+    background: $color-white;
+    border-radius: pxToRem(10);
+    overflow: hidden;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    border-radius: pxToRem(10);
+    background: linear-gradient(
+      to bottom,
+      $color-quivi-light-red,
+      $color-quivi-red
+    );
+    transition:
+      box-shadow 0.35s ease,
+      background 0.35s ease;
+  }
+
   &-img {
     width: 100%;
     height: pxToRem(200);
+    margin: 0;
     margin-bottom: pxToRem(20);
-    margin-top: 0;
     overflow: hidden;
     box-shadow: pxToRem(10) pxToRem(10) pxToRem(0) rgba(0, 0, 0, 0);
     transition: box-shadow 0.35s ease;
@@ -84,6 +113,15 @@ defineProps({
   }
 
   &:hover {
+    transform: scale(1.03);
+    &::before {
+      box-shadow: pxToRem(10) pxToRem(10) pxToRem(20) rgba(0, 0, 0, 0.25);
+      background: linear-gradient(
+        to bottom,
+        $color-quivi-red,
+        $color-quivi-light-red
+      );
+    }
     .quivi-product-card {
       &-img {
         box-shadow: pxToRem(10) pxToRem(10) pxToRem(20) rgba(0, 0, 0, 0.25);
@@ -112,14 +150,24 @@ defineProps({
 
   .quivi-tooltip {
     margin-left: auto;
+    flex-shrink: 0;
+    width: pxToRem(40);
+    height: pxToRem(40);
+    font-size: pxToRem(16);
   }
 
   &-footer {
     width: 100%;
     display: flex;
     position: relative;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     padding: pxToRem(20);
+
+    .quivi-button {
+      min-width: pxToRem(120);
+      margin-left: 0;
+    }
   }
 }
 </style>

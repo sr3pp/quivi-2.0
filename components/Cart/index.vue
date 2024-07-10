@@ -1,108 +1,46 @@
 <template lang="pug">
-.quivi-cart(:class="{ active, 'active-done': activeDone }")
+.quivi-cart(:class="{ active: isOpen, 'active-done': activeDone }")
     .quivi-cart-content
       .quivi-cart-header
-        button.quivi-cart-close(:class="{ active }" @click="closeCart") X 
-        button.quivi-cart-empty(@click="emptyCart()" v-if="cart.products.length") Vaciar carrito
+        button.quivi-cart-close(:class="{ active: isOpen }" @click="toggleCart") X 
+        button.quivi-cart-empty(@click="emptyCart" v-if="cart.products.length") Vaciar carrito
       template(v-if="cart.products.length")
-        CartList(:products="cart.products" :editable="true" @remove="removeProduct" @setTotal="setTotal")
-        CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping")
+        CartList(:products="cart.products" :editable="true" @remove="removeFromCart")
+        CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
       template(v-else)
         SrText.quivi-cart-empty(text="Tu carrito está vacío" class="title text-center")
-    .quivi-cart-backdrop(@click="closeCart")
+    .quivi-cart-backdrop(@click="toggleCart")
 </template>
 
 <script lang="ts" setup>
 import { lockBody } from "sr-content-2/assets/ts/utilities";
-import { toPrice, processDiscount } from "~/assets/ts/utilities";
-import type { Product } from "~/types";
 
-const props = defineProps({
-  active: {
-    type: Boolean,
-    default: false,
-  },
-});
-
-const cart = useLocalStorage("cart", {
-  products: [],
-  total: 0,
-  subtotal: 0,
-  shipping: {
-    costo: 0,
-    limite: 0,
-  },
-});
-
+const {
+  active,
+  toggleCart,
+  removeFromCart,
+  emptyCart,
+  totalCartProducts,
+  cart,
+} = useCart();
 const emit = defineEmits(["close"]);
+const isOpen = ref(active.value);
 const activeDone = ref(false);
-const closeCart = () => {
-  activeDone.value = false;
-  setTimeout(() => {
-    emit("close");
-    lockBody(false);
-  }, 350);
-};
 
-const realPrice = (product: Product): number => {
-  if (product.discount) {
-    const price = processDiscount(product);
-
-    return Number(price.replace(/[^0-9.-]+/g, ""));
-  }
-  return Number(product.price);
-};
-
-const setTotal = () => {
-  let total = 0;
-  cart.value.products.forEach((product: Product) => {
-    total += realPrice(product) * Number(product.qty);
-  });
-
-  const shipping =
-    total > Number(cart.value.shipping.limite)
-      ? 0
-      : Number(cart.value.shipping.costo);
-
-  cart.value.subtotal = Number(total.toFixed(2));
-  cart.value.total = Number((total + shipping).toFixed(2));
-};
-
-const removeProduct = (idx: number) => {
-  cart.value.products.splice(idx, 1);
-  setTotal();
-};
-
-const emptyCart = () => {
-  cart.value.products = [];
-  setTotal();
-};
-
-watch(
-  () => props.active,
-  (value) => {
-    if (value) {
-      lockBody(true);
-      setTimeout(() => {
-        activeDone.value = true;
-      }, 100);
-    } else {
-      lockBody(false);
-    }
-  },
-);
-
-watch(
-  () => cart.value.products,
-  (value) => {
+watch(active, (value) => {
+  if (value) {
+    lockBody(true);
+    isOpen.value = true;
     setTimeout(() => {
-      setTotal();
+      activeDone.value = true;
     }, 100);
-  },
-);
-
-onMounted(() => {
-  setTotal();
+  } else {
+    lockBody(false);
+    activeDone.value = false;
+    setTimeout(() => {
+      isOpen.value = false;
+    }, 350);
+  }
 });
 </script>
 

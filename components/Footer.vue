@@ -15,7 +15,7 @@ footer.quivi-footer
                 SrText(text="Cliente" class="subtitle")
                 ul.quivi-footer-menu
                     li.quivi-footer-menu-item
-                        button(@click="$emit('cartModal')") Carrito
+                        button(@click="toggleCart") Carrito
                     li.quivi-footer-menu-item
                         NuxtLink(to="/") Tienda
                     li.quivi-footer-menu-item
@@ -38,6 +38,8 @@ footer.quivi-footer
 </template>
 
 <script lang="ts" setup>
+const { toggleCart } = useCart();
+
 const footer = {
   navegacion: [
     {

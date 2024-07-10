@@ -1,11 +1,21 @@
+<script lang="ts" setup>
+defineProps({
+  label: {
+    type: String,
+    default: "?",
+  },
+  position: {
+    type: String,
+    default: "top-center",
+  },
+});
+</script>
 <template lang="pug">
-.quivi-tooltip
-    span.quivi-tooltip-label ?
+.quivi-tooltip(:class="position")
+    span.quivi-tooltip-label {{ label }}
     .quivi-tooltip-content
         slot
 </template>
-
-<script lang="ts" setup></script>
 
 <style lang="scss" scoped>
 .quivi-tooltip {
@@ -20,7 +30,7 @@
 
   &-label {
     font-family: Bebas;
-    font-size: pxToRem(30);
+    font-size: pxToRem(25);
     color: $color-white;
   }
 
@@ -57,7 +67,21 @@
     }
   }
 
-  &:hover {
+  &.top-right {
+    .quivi-tooltip-content {
+      left: auto;
+      right: 0;
+      transform: translateX(0);
+
+      &::after {
+        left: auto;
+        right: pxToRem(10);
+      }
+    }
+  }
+
+  &:hover,
+  &:has(:focus) {
     .quivi-tooltip-content {
       opacity: 1;
       z-index: 1;

@@ -19,9 +19,9 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
           SrIcon(name="contacto-o")
           span Contacto
       li.quivi-navbar-list-item
-        button.cart-btn(@click="$emit('cartModal')")
+        button.cart-btn(@click="toggleCart")
           ClientOnly
-            span.cart-counter(v-if="productsLength") {{ productsLength }}
+            span.cart-counter(v-if="totalCartProducts") {{ totalCartProducts }}
           SrIcon(name="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
@@ -86,24 +86,7 @@ const btnColor2: string = colorQuiviDarkestGray;
 const btnColor3: string = colorQuiviYellow;
 const btnColor4: string = colorQuiviDarkYellow;
 
-const cart = useLocalStorage("cart", {
-  products: [],
-  total: 0,
-  subtotal: 0,
-  shipping: {
-    costo: 0,
-    limite: 0,
-  },
-});
-
-const productsLength = computed(() => {
-  let total = 0;
-  cart.value.products.forEach((product: any) => {
-    total += Number(product.qty);
-  });
-
-  return total;
-});
+const { cart, toggleCart, totalCartProducts } = useCart();
 
 watch(
   () => route.value.name,
@@ -231,7 +214,7 @@ watch(
       display: flex;
       align-items: center;
       margin-left: auto;
-      margin-bottom: pxToRem(-55);
+      margin-bottom: pxToRem(-50);
       padding-left: pxToRem(20);
       padding-right: pxToRem(20);
     }
@@ -359,7 +342,7 @@ watch(
     flex-direction: column;
     position: relative;
     z-index: 2;
-    min-width: pxToRem(170);
+    min-width: pxToRem(140);
 
     &.highlight {
       a {
@@ -464,7 +447,7 @@ watch(
 
     @media (min-width: $breakpoint-sm) {
       &:not(:last-child) {
-        margin-right: pxToRem(20);
+        margin-right: pxToRem(4);
       }
 
       &:hover {
@@ -488,7 +471,7 @@ watch(
         position: relative;
         z-index: 2;
         font-family: Bebas;
-        font-size: pxToRem(26);
+        font-size: pxToRem(22);
         line-height: 1.4;
         justify-content: center;
 

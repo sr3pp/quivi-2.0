@@ -3,7 +3,7 @@ ul.quivi-product-filters
     li.quivi-product-filters-item(v-for="(item, i) in filtersForm" :key="i")
         label
             span {{item.label}}
-            input(type="text" v-model="item.value" @change="setChildren(item)" :list="item.label")
+            input(type="text" v-model="item.value" @change="setChildren(item)" :list="item.label" :placeholder="item.placeholder")
             datalist(:id="item.label")
                 option(v-for="(opt, j) in item.options" :key="j" :id="opt.value" :value="opt.label")
     li.quivi-product-filters-item
@@ -61,18 +61,21 @@ const filtersForm: any = ref([
   {
     label: "Vehiculo",
     value: "",
+    placeholder: "Selecciona la marca",
     options: carBrandsOptions,
     key: "car_brands",
   },
   {
     label: "Submarca",
     value: "",
+    placeholder: "Selecciona la submarca",
     options: [],
     key: "car_models",
   },
   {
     label: "Año",
     value: "",
+    placeholder: "Selecciona el año",
     key: "years",
     options: createYearList()
       .reverse()
@@ -84,12 +87,14 @@ const filtersForm: any = ref([
   {
     label: "Motor",
     value: "",
+    placeholder: "Selecciona el motor",
     options: motorsOptions,
     key: "motors",
   },
   {
     label: "Categoria",
     value: "",
+    placeholder: "Selecciona la categoria",
     options: categoryOptions,
     key: "category",
   },
@@ -164,6 +169,13 @@ watch(
       padding: pxToRem(10);
       border: solid pxToRem(2) $color-quivi-light-gray;
       border-radius: pxToRem(8);
+    }
+
+    display: flex;
+    flex-direction: column;
+
+    .quivi-button {
+      margin: auto;
     }
 
     &:not(:last-child) {

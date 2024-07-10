@@ -19,7 +19,7 @@
               .cart-resume
                 ClientOnly
                     CartList(:products="cart.products" :editable="false")
-                    CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping")
+                    CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
                 QuiviButton(label="Pagar" :disabled="!paymentLock" kind="primary" @buttonclick="termsModal.toggle()")
     SrModal(ref="termsModal" class="modal-terms")
         template(#body)
@@ -36,14 +36,11 @@
 
 <script lang="ts" setup>
 import {
-  toPrice,
-  processDiscount,
   openpayHandler,
   paypalHandler,
   buildOrderId,
   paymentKeyDict,
 } from "~/assets/ts/utilities";
-import type { Cart } from "~/types";
 
 const {
   id: transactionId,
@@ -51,12 +48,7 @@ const {
   token: paypal_order_id,
 } = useRoute().query;
 
-const cart: Ref<Cart> = useLocalStorage("cart", {
-  products: [],
-  total: 0,
-  subtotal: 0,
-  shipping: 0,
-});
+const { cart, totalCartProducts } = useCart();
 
 const saleData: Ref<any> = useLocalStorage("saleData", {
   shipping: {

@@ -18,7 +18,6 @@ const validateInput = ($event: InputEvent) => {
   const targetValue = ($event.target as HTMLInputElement).value;
   const value = targetValue.replace(/[^0-9]/g, "");
   ($event.target as HTMLInputElement).value = value;
-  emit("set-total", Number(value));
 };
 </script>
 

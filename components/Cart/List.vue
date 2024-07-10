@@ -6,12 +6,12 @@ ul.quivi-cart-list
             SrText(:text="product.name" class="subtitle")
             SrText(:text="`Marca: ${product.brand.name}`")
             SrText(:text="`Web: ${product.web}`")
-            Incrementor(v-if="editable" :qty="product.qty" @updateQty="updateQty(product, $event)" @setTotal="setTotal(product, $event)")
+            Incrementor(v-if="editable" :qty="product.qty" @updateQty="updateQty(product, $event)" :max="product.existences")
             SrText(v-else :text="`Qty: ${String(product.qty)}`")
             .price-container
                 SrText.discount(:text="toPrice(product.price)")
-                SrText.price(:text="processDiscount(product)" class="subtitle" v-if="product.discount")
-        button(@click="removeProduct(product)" v-if="editable")
+                SrText.price(:text="toPrice(processDiscount(product))" class="subtitle" v-if="product.discount")
+        button(@click="removeFromCart(product)" v-if="editable")
             SrIcon(name="trash-o")
 </template>
 
@@ -30,21 +30,8 @@ defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["remove", "setTotal"]);
-const removeProduct = (product: Product) => {
-  emit("remove", product);
-};
 
-const updateQty = (product: Product, value: number) => {
-  const qty = (product.qty as number) + value;
-  setTotal(product, qty);
-};
-
-const setTotal = (product: Product, value: number) => {
-  const qty = value < 1 ? 1 : value;
-  product.qty = qty;
-  emit("setTotal");
-};
+const { removeFromCart, updateQty } = useCart();
 </script>
 
 <style lang="scss">
