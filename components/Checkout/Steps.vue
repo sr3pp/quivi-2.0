@@ -1,41 +1,18 @@
 <template lang="pug">
 ul.quivi-checkout-steps
-  li.quivi-checkout-steps-item(v-for="(step, i) in  steps" :key="i" :class="{active: step.active, done: step.done}")
-    button.quivi-checkout-steps-item-label(@click="setStep(i)" :disabled="!step.enabled")
+  li.quivi-checkout-steps-item(v-for="(step, i) in  stepsState" :key="i" :class="{active: step.active, done: step.done}")
+    button.quivi-checkout-steps-item-label(@click="setStepHandler(i)" :disabled="!step.enabled")
       SrText(:text="step.label" class="subtitle")
       span.quivi-checkout-steps-item-status
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  steps: {
-    type: Array,
-    default: () => [
-      {
-        label: "Envío y facturacíon",
-        enabled: true,
-        done: false,
-      },
-      {
-        label: "Información de pago",
-        enabled: false,
-        done: false,
-      },
-      {
-        label: "Revisar Orden",
-        enabled: false,
-        done: false,
-      },
-    ],
-  },
-});
+const { stepsState, setStep } = useCheckout();
 
-const emit = defineEmits(["set-step"]);
-
-const setStep = (idx: number) => {
-  const currentIdx = props.steps.findIndex((step: any) => step.active);
+const setStepHandler = (idx: number) => {
+  const currentIdx = stepsState.value.findIndex((step: any) => step.active);
   if (currentIdx < idx) return;
-  emit("set-step", idx);
+  setStep(idx);
 };
 </script>
 

@@ -2,7 +2,7 @@
 .quivi-checkout-payment
   SrFormSelect(:options="paymentOptions" v-model="method" label="Método de pago")
   br
-  QuiviButton(label="Continuar" @click="method ? $emit('save-payment', paymentOptions.find(el => el.value == method)) : null")
+  QuiviButton(label="Continuar" @click="setPaymentMethod(method)")
 </template>
 
 <script lang="ts" setup>
@@ -15,7 +15,15 @@ const paymentOptions = [
   { value: "cash", name: "Efectivo" },
 ];
 
-const method = ref(paymentOptions[0].value);
+const { paymentMethod, setStep, paymentLock } = useCheckout();
+const method = ref(paymentMethod.value.value);
+const setPaymentMethod = (method: string) => {
+  (paymentMethod.value as any) = paymentOptions.find(
+    (el) => el.value == method,
+  );
+  paymentLock.value = true;
+  setStep(2);
+};
 </script>
 
 <style lang="scss"></style>

@@ -8,6 +8,9 @@
 <script lang="ts" setup>
 import { validateForm, dataFromForm } from "sr-content-2/assets/ts/utilities";
 
+const { shipping, billing, billingSw, billingAddressSw, setStep, sat } =
+  useCheckout();
+
 const { estados } = await $fetch("/api/content?page=_config/estados");
 
 const stateOptions = estados.map((state: any) => ({
@@ -20,27 +23,16 @@ const processData = (data: any) => {
     //display errors
     console.log(data.errors);
   } else {
-    emitInfo(data);
+    shipping.value = data.shipping;
+    billingSw.value = data.billingSw;
+    if (billingSw.value) {
+      billing.value = data.billing;
+    }
+    setStep(1);
   }
 };
 
-const props = defineProps({
-  saleData: {
-    type: Object,
-    default: () => ({}),
-  },
-  sat: {
-    type: Object,
-    default: () => ({
-      usos: [],
-      regimenes: [],
-    }),
-  },
-});
-const { usos, regimenes } = props.sat;
-
-const billSw = ref(false);
-const billAddressSw = ref(false);
+const { usos, regimenes } = sat;
 
 const saleForm = ref([
   {
@@ -184,8 +176,8 @@ const saleForm = ref([
         props: {
           type: "checkbox",
           label: "Requiero Factura",
-          name: "billSw",
-          modelValue: billSw.value,
+          name: "billingSw",
+          modelValue: billingSw.value,
           onchange: (e: any) => {
             const sw = e.target.checked;
             appendBilling(sw);
@@ -197,13 +189,13 @@ const saleForm = ref([
 ]);
 
 const updateBillingAddress = (key: string, e: any) => {
-  if (billAddressSw.value) {
+  if (billingAddressSw.value) {
     saleForm.value.forEach((fieldset: any) => {
       fieldset.fields.forEach((field: any) => {
-        if (field.props.name === key.replace("shipping", "bill")) {
+        if (field.props.name === key.replace("shipping", "billing")) {
           field.props.value = e.target.value;
-          if (field.props.name === "bill.address.state") {
-            setMunicipio("bill", e);
+          if (field.props.name === "billing.address.state") {
+            setMunicipio("billing", e);
           }
         }
       });
@@ -212,7 +204,7 @@ const updateBillingAddress = (key: string, e: any) => {
 };
 
 const appendBilling = (sw: boolean) => {
-  billSw.value = sw;
+  billingSw.value = sw;
   const fieldsets = [
     {
       name: "Datos de facturación",
@@ -220,7 +212,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.name",
+            name: "billing.name",
             required: true,
             label: "Nombre / Razón Social",
             value: "",
@@ -229,7 +221,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.phone",
+            name: "billing.phone",
             required: true,
             label: "Telefono",
             value: "",
@@ -238,7 +230,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.email",
+            name: "billing.email",
             required: true,
             label: "E-mail",
             type: "email",
@@ -248,7 +240,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.rfc",
+            name: "billing.rfc",
             required: true,
             label: "RFC",
             value: "",
@@ -257,7 +249,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormSelect",
           props: {
-            name: "bill.cfdi",
+            name: "billing.cfdi",
             required: true,
             label: "_",
             value: "",
@@ -267,7 +259,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormSelect",
           props: {
-            name: "bill.regime",
+            name: "billing.regime",
             required: true,
             label: "_",
             value: "",
@@ -294,7 +286,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.address.street",
+            name: "billing.address.street",
             required: true,
             label: "Calle",
             value: "",
@@ -303,7 +295,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.address.ext_num",
+            name: "billing.address.ext_num",
             label: "Numero exterior",
             required: true,
             value: "",
@@ -312,7 +304,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.address.int_num",
+            name: "billing.address.int_num",
             label: "Numero interior",
             value: "",
           },
@@ -320,7 +312,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.address.neighborhood",
+            name: "billing.address.neighborhood",
             required: true,
             label: "Colonia",
             value: "",
@@ -329,21 +321,21 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormSelect",
           props: {
-            name: "bill.address.state",
+            name: "billing.address.state",
             label: "_",
             required: true,
             value: "",
             options: stateOptions,
             onChange: (e: InputEvent) => {
-              setMunicipio("bill", e);
-              updateBillingAddress("bill.address.state", e);
+              setMunicipio("billing", e);
+              updateBillingAddress("billing.address.state", e);
             },
           },
         },
         {
           component: "SrFormSelect",
           props: {
-            name: "bill.address.city",
+            name: "billing.address.city",
             label: "_",
             required: true,
             value: "",
@@ -353,7 +345,7 @@ const appendBilling = (sw: boolean) => {
         {
           component: "SrFormInput",
           props: {
-            name: "bill.address.zip",
+            name: "billing.address.zip",
             required: true,
             label: "Codigo postal",
             value: "",
@@ -390,18 +382,21 @@ const findField = (fieldName: string): any => {
 };
 
 const setBillAddress = () => {
-  if (!billSw.value) return;
+  if (!billingSw.value) return;
 
-  billAddressSw.value = !billAddressSw.value;
+  billingAddressSw.value = !billingAddressSw.value;
 
   saleForm.value.forEach((fieldset: any) => {
     fieldset.fields.forEach((field: any) => {
-      if (field.props.name.includes("bill.address")) {
-        field.props.disabled = billAddressSw.value;
-        if (field.props.name === "bill.address.state" && billAddressSw.value) {
+      if (field.props.name.includes("billing.address")) {
+        field.props.disabled = billingAddressSw.value;
+        if (
+          field.props.name === "billing.address.state" &&
+          billingAddressSw.value
+        ) {
           const field = findField("shipping.address.state");
           if (field.props.value) {
-            setMunicipio("bill", {
+            setMunicipio("billing", {
               target: { value: field.props.value },
             } as any);
           }
@@ -410,13 +405,13 @@ const setBillAddress = () => {
     });
   });
 
-  if (billAddressSw.value) {
+  if (billingAddressSw.value) {
     saleForm.value.forEach((fieldset: any) => {
       fieldset.fields.forEach((field: any) => {
-        if (field.props.name.includes("bill.address")) {
+        if (field.props.name.includes("billing.address")) {
           field.props.disabled = true;
           field.props.value = findField(
-            field.props.name.replace("bill", "shipping"),
+            field.props.name.replace("billing", "shipping"),
           ).props.value;
         }
       });
@@ -453,8 +448,8 @@ const accessObject = (keys: string[], field: any, data: any) => {
     accessObject(rest, field, data[key]);
   } else {
     field.props.value = data[key];
-    if (field.props.value && field.props.name === "bill.address.state") {
-      setMunicipio("bill", {
+    if (field.props.value && field.props.name === "billing.address.state") {
+      setMunicipio("billing", {
         target: { value: data[key] },
       } as any);
     }
@@ -464,8 +459,8 @@ const accessObject = (keys: string[], field: any, data: any) => {
       } as any);
     }
     if (
-      props.saleData.billingAddressSw &&
-      field.props.name.includes("bill.address")
+      billingAddressSw.value &&
+      field.props.name.includes("billing.address")
     ) {
       field.props.disabled = true;
     }
@@ -487,17 +482,15 @@ const fillForm = (data: any) => {
 };
 
 onMounted(() => {
-  if (props.saleData.billSw) {
+  if (billingSw.value) {
     appendBilling(true);
   }
-  fillForm(props.saleData);
+  fillForm({
+    shipping: shipping.value,
+    billing: billing.value,
+    billingSw: billingSw.value,
+  });
 });
-
-const emits = defineEmits(["save-info", "next-step"]);
-
-const emitInfo = (data: any) => {
-  emits("save-info", data);
-};
 </script>
 
 <style lang="scss">

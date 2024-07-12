@@ -8,12 +8,12 @@
 
         SrGrid
             SrGridColumn(:size="{mobile: '1', sm: '3/4'}" class="column")
-              CheckoutSteps(:steps="stepsState" @set-step="setStep")
+              CheckoutSteps
               ClientOnly
                 TransitionGroup(name="fade")
-                  CheckoutInfo(v-show="stepsState[0].active" key="1" :sat="sat" :saleData="saleData" @save-info="setSaleData")
-                  CheckoutPayment(v-show="stepsState[1].active" key="2" @save-payment="setPaymentData")
-                  CheckoutResume(v-show="stepsState[2].active" :sat="sat" :shippmentData="saleData.shipping" :billing-sw="saleData.billSw" :billData="saleData.bill" :paymentMethod="paymentMethod" key="3")
+                  CheckoutInfo(v-show="stepsState[0].active" key="1")
+                  CheckoutPayment(v-show="stepsState[1].active" key="2")
+                  CheckoutResume(v-show="stepsState[2].active" key="3")
                         
             SrGridColumn(:size="{mobile: '1', sm: '1/4'}")
               .cart-resume
@@ -31,7 +31,7 @@
           SrText(text="Para continuar acepta los términos y condiciones")
           SrText(:html="termsLegend2")
           br
-          QuiviButton(label="Pagar" @click="processPayment" :disabled="!termsSw")
+          QuiviButton(label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
 </template>
 
 <script lang="ts" setup>
@@ -40,6 +40,7 @@ import {
   paypalHandler,
   buildOrderId,
   paymentKeyDict,
+  resetData,
 } from "~/assets/ts/utilities";
 
 const {
@@ -50,147 +51,29 @@ const {
 
 const { cart, totalCartProducts } = useCart();
 
-const saleData: Ref<any> = useLocalStorage("saleData", {
-  shipping: {
-    name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    address: {
-      street: "",
-      ext_num: "",
-      int_num: "",
-      neighborhood: "",
-      city: "",
-      state: "",
-      country: "",
-      zip: "",
-    },
-  },
-  bill: {
-    name: "",
-    phone: "",
-    email: "",
-    rfc: "",
-    cfdi: "",
-    regime: "",
-    address: {
-      street: "",
-      ext_num: "",
-      int_num: "",
-      neighborhood: "",
-      city: "",
-      state: "",
-      country: "",
-      zip: "",
-    },
-  },
-  billSw: false,
-});
+const {
+  shipping,
+  billing,
+  billingSw,
+  paymentMethod,
+  stepsState,
+  paymentLock,
+  sat,
+  syncData,
+} = useCheckout();
 
-const paymentMethod: Ref<{ name: string; value: string }> = useLocalStorage(
-  "paymentMethod",
-  {
-    name: "",
-    value: "",
-  },
-);
-
-const [sat, terms] = await Promise.all([
-  $fetch("/api/content?page=_config/sat"),
-  $fetch("/api/content?page=_config/terms"),
-]);
+const [terms] = await Promise.all([$fetch("/api/content?page=_config/terms")]);
 
 const termsLegend: string =
   "Acepta los <span class='highlight'>términos y condiciones</span> para proceder al pago";
 const termsLegend2: string =
   "Serás redirigido a un sitio externo a <span class='highlight'>Quivi.mx</span>";
 
-const paymentLock: Ref<Boolean> = ref(false);
+const loadingPayment: Ref<boolean> = ref(false);
 const verifyingPayment: Ref<Boolean> = ref(false);
 const termsModalSw: Ref<Boolean> = ref(false);
 const termsModal: Ref<any> = ref(null);
 const termsSw: Ref<Boolean> = ref(false);
-
-const stepsState = ref([
-  {
-    label: "Envío y facturacíon",
-    enabled: true,
-    active: true,
-    done: false,
-  },
-  {
-    label: "Información de pago",
-    enabled: false,
-    active: false,
-    done: false,
-  },
-  {
-    label: "Revisar Orden",
-    enabled: false,
-    active: false,
-    done: false,
-  },
-]);
-
-const resetData = (obj: any) => {
-  Object.keys(obj).forEach((key) => {
-    if (typeof obj[key] === "object") {
-      resetData(obj[key]);
-    } else {
-      obj[key] = "";
-    }
-  });
-};
-
-const setStep = (step: number) => {
-  const current = stepsState.value.find((step) => step.active);
-  current!.active = false;
-
-  const newStep = stepsState.value[step];
-
-  if (newStep.enabled) {
-    newStep.active = true;
-  }
-};
-
-const buildData = (data: any) => {
-  const obj = {};
-
-  const setKeys = (obj: any, key: string, value = "") => {
-    const keys = key.split(".");
-    if (keys.length === 1) {
-      obj[key] = value;
-    } else {
-      obj[keys[0]] ? null : (obj[keys[0]] = {});
-      keys.forEach((key2, i) => {
-        if (i > 0) {
-          setKeys(obj[keys[0]], key2, data[key]);
-        }
-      });
-    }
-  };
-
-  Object.keys(data).forEach((key) => {
-    setKeys(obj, key, data[key]);
-  });
-
-  return obj;
-};
-
-const setSaleData = (data: any) => {
-  saleData.value = data;
-  stepsState.value[0].done = true;
-  stepsState.value[1].enabled = true;
-  setStep(1);
-};
-const setPaymentData = (data: { name: string; value: string }) => {
-  paymentMethod.value = data;
-  stepsState.value[1].done = true;
-  stepsState.value[2].enabled = true;
-  setStep(2);
-  paymentLock.value = true;
-};
 
 const saveOrder = async (order: any) => {
   const user = {};
@@ -225,13 +108,15 @@ const processPayment = async () => {
   if (termsSw.value) {
     termsModalSw.value = false;
   }
+  loadingPayment.value = true;
+
   if (
     ["credit-card", "debit-card", "cash"].includes(paymentMethod.value.value)
   ) {
     const data = {
       paymentMethod: paymentMethod.value,
       total: cart.value.total,
-      shippmentData: saleData.value.shipping,
+      shippmentData: shipping.value,
     };
 
     //TODO add payment plan (MSI)
@@ -255,8 +140,9 @@ const processPayment = async () => {
 };
 
 const resetStorage = () => {
-  resetData(saleData.value);
-  saleData.value.billSw = false;
+  resetData(shipping.value);
+  resetData(billing.value);
+  billingSw.value = false;
   cart.value.products = [];
 };
 
@@ -274,9 +160,9 @@ const proccesOrder = async (id: string, transaction?: string) => {
         partidas: cart.value.products.map((product: any) => {
           return `${product.qty},${product.sae},${product.price}`;
         }),
-        shippmentData: saleData.value.shipping,
-        billing: saleData.value.bill,
-        billSw: saleData.value.billSw,
+        shippmentData: shipping.value,
+        billing: billing.value,
+        billSw: billingSw.value,
         paymentMethod: paymentKeyDict[(paymentMethod.value as any).value] || "",
         total: cart.value.total,
         user,
@@ -297,7 +183,7 @@ const proccesOrder = async (id: string, transaction?: string) => {
       status: ["cash", "spei"].includes(paymentMethod.value.value as string)
         ? false
         : true,
-      shipping: saleData.value.shipping,
+      shipping: shipping.value,
       payment: {
         method: paymentKeyDict[(paymentMethod.value as any).value] || "",
         transaction: transaction || "",
@@ -308,8 +194,8 @@ const proccesOrder = async (id: string, transaction?: string) => {
       total: cart.value.total,
     };
 
-    if (saleData.value.billSw) {
-      order.billing = saleData.value.bill;
+    if (billingSw.value) {
+      order.billing = billing.value;
     }
 
     return {
@@ -377,6 +263,10 @@ if (transactionId) {
     useRouter().push(`/tienda/order/success?order_id=${registeredOrder}`);
   }
 }
+
+onMounted(() => {
+  syncData();
+});
 </script>
 
 <style lang="scss">
@@ -402,6 +292,10 @@ if (transactionId) {
   .cart-resume {
     position: sticky;
     top: pxToRem(40);
+    display: flex;
+    flex-direction: column;
+    gap: pxToRem(20);
+    justify-content: center;
   }
 
   .quivi-cart {
@@ -450,6 +344,8 @@ if (transactionId) {
     }
 
     .sr-modal-footer {
+      display: flex;
+      flex-direction: column;
       .sr-text {
         &-container {
           text-align: center;
@@ -458,6 +354,9 @@ if (transactionId) {
         &:last-of-type {
           margin-bottom: pxToRem(20);
         }
+      }
+      .quivi-button {
+        margin: auto;
       }
     }
   }

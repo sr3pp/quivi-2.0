@@ -62,6 +62,7 @@ const { removeFromCart, updateQty } = useCart();
     .sr-picture {
       width: 25%;
       min-width: pxToRem(50);
+      max-width: pxToRem(100);
       aspect-ratio: 1/1;
       flex-shrink: 0;
       margin-right: pxToRem(20);
