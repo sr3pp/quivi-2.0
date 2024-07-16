@@ -40,7 +40,6 @@ import {
   paypalHandler,
   buildOrderId,
   paymentKeyDict,
-  resetData,
 } from "~/assets/ts/utilities";
 
 const {
@@ -49,7 +48,7 @@ const {
   token: paypal_order_id,
 } = useRoute().query;
 
-const { cart, totalCartProducts } = useCart();
+const { cart, totalCartProducts, emptyCart } = useCart();
 
 const {
   shipping,
@@ -60,6 +59,7 @@ const {
   paymentLock,
   sat,
   syncData,
+  clearCheckout,
 } = useCheckout();
 
 const [terms] = await Promise.all([$fetch("/api/content?page=_config/terms")]);
@@ -140,10 +140,8 @@ const processPayment = async () => {
 };
 
 const resetStorage = () => {
-  resetData(shipping.value);
-  resetData(billing.value);
-  billingSw.value = false;
-  cart.value.products = [];
+  clearCheckout();
+  emptyCart();
 };
 
 const proccesOrder = async (id: string, transaction?: string) => {

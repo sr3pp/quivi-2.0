@@ -444,6 +444,7 @@ const setMunicipio = (key: string, event: InputEvent) => {
 
 const accessObject = (keys: string[], field: any, data: any) => {
   const [key, ...rest] = keys;
+  if (!data[key]) return;
   if (rest.length) {
     accessObject(rest, field, data[key]);
   } else {

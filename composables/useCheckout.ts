@@ -139,6 +139,14 @@ export function useCheckout() {
     }
   }
 
+  function clearCheckout() {
+    shipping.value = {};
+    billing.value = {};
+    billingSw.value = false;
+    paymentMethod.value = { name: "", value: "" };
+    syncLocalStorage();
+  }
+
   return {
     billing,
     billingSw,
@@ -151,5 +159,6 @@ export function useCheckout() {
     shipping,
     stepsState: readonly(stepsState),
     syncData,
+    clearCheckout,
   };
 }

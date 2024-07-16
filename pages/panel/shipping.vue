@@ -16,6 +16,9 @@
       @update:data="(val) => shipping = val"
     )
 
+    br
+    br
+
     Pagination(:pagination="pagination")
 
   SrModal(ref="shippDetailModal" class="shipp-modal")
@@ -30,7 +33,7 @@
           p.status-box 
             span {{ currentShipping.status }}
             Status(:status="currentShipping.status == 'delivered' ? 2 : currentShipping.status == 'shipping' ? 1 : 0")
-        template(v-if="currentShipping.tracking")
+        template(v-if="currentShipping.tracking.number")
           SrGridColumn(:size="{mobile: '1'}")
             SrText(text="Tracking" class="subtitle")
           SrGridColumn(:size="{mobile: '1/2', sm: '1/4'}")
@@ -43,7 +46,14 @@
             div
               QuiviButton(@click="sendTrackingMail" variant="secondary" label="Enviar al cliente" :loading="sending")
         template(v-else)
-          SrGridColumn(:size="{mobile: '1'}")
+          SrGridColumn(:size="{mobile: '1', sm: '1/3'}")
+            SrFormInput(v-model="newTracking.number" label="Numero de Rastreo")
+          SrGridColumn(:size="{mobile: '1', sm: '1/3'}")
+            SrFormInput(v-model="newTracking.store" label="Tienda")
+          SrGridColumn(:size="{mobile: '1', sm: '1/3'}")
+            SrFormInput(v-model="newTracking.url" label="Url")
+          SrGridColumn(:size="{mobile: '1'}" class="flex-row justify-between" style="--flex-direction-sm: row")
+            QuiviButton(variant="secondary" label="Guardar" @click="saveTracking()" :loading="fetching")
             QuiviButton(variant="secondary" label="Obtener Rastreo" @click="getTracking(currentShipping.sale.at(0).sae_order)" :loading="fetching")
 
       br
@@ -55,8 +65,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { ShippmentData } from "~/types";
-
 definePageMeta({
   layout: "panel",
 });
@@ -73,6 +81,11 @@ const currentShipping: any = ref(null);
 const fetching = ref(false);
 const sending = ref(false);
 const search = ref("");
+const newTracking = ref({
+  number: "",
+  store: "",
+  url: "",
+});
 
 const searchShipping = async () => {
   const data: any = await $fetch("/api/shipping/search?search=" + search.value);
@@ -83,6 +96,7 @@ const searchShipping = async () => {
 const shippDetail = (_shipp: any) => {
   const shipp = shipping.value.find((el: any) => el.order === _shipp.order);
   currentShipping.value = shipp;
+  currentShipping.value.tracking = shipp.tracking || {};
   shippDetailModal.value.toggle();
 };
 
@@ -105,6 +119,20 @@ const getTracking = async (orderSae: string) => {
     fetching.value = false;
     console.log(error);
   }
+};
+
+const saveTracking = async () => {
+  currentShipping.value.tracking = newTracking.value;
+  currentShipping.value.status = "shipping";
+  await $fetch("/api/shipping", {
+    method: "PUT",
+    body: currentShipping.value,
+  });
+  newTracking.value = {
+    number: "",
+    store: "",
+    url: "",
+  };
 };
 
 const sendTrackingMail = async () => {
@@ -131,7 +159,7 @@ watch(
 );
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .quivi-shipping {
   .header-title {
     display: flex;

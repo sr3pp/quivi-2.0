@@ -206,12 +206,15 @@ const currentPicture: Ref<any> = ref({ props: { src: "" } });
 const currentIcon: Ref<any> = ref({ props: { name: "" } });
 const currentMedia: Ref<any> = ref(null);
 const isBackground: Ref<boolean> = ref(false);
-const mediaDir = ref(await $fetch("/api/admin/get-directory?folder=img"));
-const { data: media }: any = await useAsyncData("media", async () => {
+const mediaDir: Ref<any> = ref(null);
+const { data: media } = await useAsyncData<any>("media", async () => {
   const promises = await Promise.all([
     $fetch("/api/admin/gallery?folder=slides"),
     $fetch("/api/admin/gallery?folder=catalogo"),
+    $fetch("/api/admin/get-directory?folder=img"),
   ]);
+
+  mediaDir.value = promises[2];
 
   const media = {
     slides: promises[0],
