@@ -5,7 +5,7 @@ import Handlebars from "handlebars";
 const dir = process.cwd();
 
 export const renderTemplate = (url: string, context: any) => {
-  const stringTemplate = getContent(join(dir, url), false);
+  const stringTemplate = getContent(join(dir, url), "", false);
   const template = Handlebars.compile(stringTemplate);
   return template(context);
 };

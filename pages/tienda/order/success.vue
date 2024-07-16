@@ -21,6 +21,16 @@ import { paymentKeyDict } from "assets/ts/utilities";
 const { order_id } = useRoute().query;
 const order = await $fetch(`/api/sales/${order_id}`);
 
+await $fetch(`/api/send-mail`, {
+  method: "POST",
+  body: {
+    template: "sale",
+    to: order.email,
+    subject: "Resumen de compra Quivi.mx",
+    context: order,
+  },
+});
+
 const getPaymentMethod = (name: string) => {
   const r: any = Object.entries(paymentKeyDict).find(
     ([key, value]: [string, any]) => {

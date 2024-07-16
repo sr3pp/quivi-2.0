@@ -5,6 +5,7 @@ const templateDir = "assets/templates/email/";
 
 export default defineEventHandler(async (event) => {
   const { context, template, to, subject } = await readBody(event);
+  context.appUrl = process.env.APP_URL;
   const info = renderTemplate(`${templateDir}/${template}.hbs`, context);
 
   const mailOptions = {
@@ -13,6 +14,8 @@ export default defineEventHandler(async (event) => {
     subject,
     html: info,
   };
+
+  return info;
 
   await new Promise((resolve, reject) => {
     mailHandler.sendMail(mailOptions, (error: any, info: any) => {

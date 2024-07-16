@@ -137,18 +137,14 @@ const Components = {
   ...appComponents,
 };
 
+const catalogs = await $fetch("/api/catalogo");
+
 const currentCatalog = ref({
   name: "",
-  options: [
-    {
-      value: "catalogo/acumuladores",
-      name: "Acumuladores",
-    },
-    {
-      value: "catalogo/baterias",
-      name: "Baterias",
-    },
-  ],
+  options: catalogs.map((c: any) => ({
+    value: c.slug,
+    name: c.label,
+  })),
   sw: false,
   current: null,
   card: null,
@@ -269,10 +265,10 @@ const setContent = async () => {
 
 const setCatalog = async (catalog: string) => {
   const { content, card } = await $fetch(
-    `/api/content?page=${currentCatalog.value.name}&section=content,card`,
+    `/api/content?page=catalogo/${currentCatalog.value.name}&section=content,card`,
   );
 
-  currentCatalog.value.current = proccessContent(content, true);
+  (currentCatalog.value.current as any) = proccessContent(content, true);
   currentCatalog.value.card = card;
 };
 
@@ -367,11 +363,11 @@ const deleteSlide = (idx: number, component: any) => {
 };
 
 const addItem = () => {
-  currentCatalog.value.card.list.push("New item");
+  (currentCatalog.value.card as any).list.push("New item");
 };
 
 const deleteItem = (idx: number) => {
-  currentCatalog.value.card.list.splice(idx, 1);
+  (currentCatalog.value.card as any).list.splice(idx, 1);
 };
 
 const setMediaDir = (item: any) => {
