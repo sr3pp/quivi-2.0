@@ -64,8 +64,6 @@ const paymentMethod = ref<{ name: string; value: string }>({
   value: "",
 });
 
-const sat = await $fetch("/api/content?page=_config/sat");
-
 watch(shipping, () => {
   if (process.client) {
     syncLocalStorage();
@@ -116,7 +114,9 @@ function syncData(): void {
   }
 }
 
-export function useCheckout() {
+export async function useCheckout() {
+  const sat = await $fetch("/api/content?page=_config/sat");
+
   function handlePayment(kind: string, data: any) {
     console.log(kind, data);
   }
