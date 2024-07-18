@@ -10,7 +10,7 @@
             component(v-bind:is="component.component" v-bind="component.props")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
-              QuiviButton(href="/" label="Ver todos los productos" disabled)
+              QuiviButton(href="/" label="Ver todos los productos")
           SrGrid(tag="ul" class="product-grid")
               SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
