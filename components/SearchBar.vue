@@ -15,7 +15,7 @@
               SrText(:text="result.brand.name")
               SrText.small(:text="result.web")
       .quivi-searchbar-result.full
-          NuxtLink(:to="`/?search=${search}`") Ver todos los resultados
+          NuxtLink(:to="`/tienda?search=${search}`") Ver todos los resultados
 </template>
 
 <script lang="ts" setup>
@@ -66,7 +66,7 @@ const runSearch = async () => {
 const router = useRouter();
 const goToSearch = () => {
   if (search.value) {
-    router.push({ path: "/", query: { search: search.value as string } });
+    router.push({ path: "/tienda", query: { search: search.value as string } });
   }
 };
 
