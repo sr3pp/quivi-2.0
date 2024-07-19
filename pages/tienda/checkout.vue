@@ -11,9 +11,9 @@
               CheckoutSteps
               ClientOnly
                 TransitionGroup(name="fade")
-                  CheckoutInfo(v-show="stepsState[0].active" key="1")
+                  CheckoutInfo(v-show="stepsState[0].active" :sat="sat" key="1")
                   CheckoutPayment(v-show="stepsState[1].active" key="2")
-                  CheckoutResume(v-show="stepsState[2].active" key="3")
+                  CheckoutResume(v-show="stepsState[2].active" :sat="sat" key="3")
                         
             SrGridColumn(:size="{mobile: '1', sm: '1/4'}")
               .cart-resume
@@ -57,12 +57,14 @@ const {
   paymentMethod,
   stepsState,
   paymentLock,
-  sat,
   syncData,
   clearCheckout,
 } = useCheckout();
 
-const [terms] = await Promise.all([$fetch("/api/content?page=_config/terms")]);
+const [terms, sat] = await Promise.all([
+  $fetch("/api/content?page=_config/terms"),
+  $fetch("/api/content?page=_config/sat"),
+]);
 
 const termsLegend: string =
   "Acepta los <span class='highlight'>términos y condiciones</span> para proceder al pago";

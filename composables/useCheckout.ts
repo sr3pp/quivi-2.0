@@ -114,9 +114,7 @@ function syncData(): void {
   }
 }
 
-export async function useCheckout() {
-  const sat = await $fetch("/api/content?page=_config/sat");
-
+export function useCheckout() {
   function handlePayment(kind: string, data: any) {
     console.log(kind, data);
   }
@@ -154,7 +152,6 @@ export async function useCheckout() {
     handlePayment,
     paymentLock,
     paymentMethod,
-    sat,
     setStep,
     shipping,
     stepsState: readonly(stepsState),

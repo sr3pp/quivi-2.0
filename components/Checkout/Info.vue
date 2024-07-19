@@ -8,7 +8,14 @@
 <script lang="ts" setup>
 import { validateForm, dataFromForm } from "sr-content-2/assets/ts/utilities";
 
-const { shipping, billing, billingSw, billingAddressSw, setStep, sat } =
+const props = defineProps({
+  sat: {
+    type: Object,
+    required: true,
+  },
+});
+
+const { shipping, billing, billingSw, billingAddressSw, setStep } =
   useCheckout();
 
 const { estados } = await $fetch("/api/content?page=_config/estados");
@@ -32,7 +39,7 @@ const processData = (data: any) => {
   }
 };
 
-const { usos, regimenes } = sat;
+const { usos, regimenes } = props.sat;
 
 const saleForm = ref([
   {

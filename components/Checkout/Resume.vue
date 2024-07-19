@@ -36,12 +36,18 @@
 
 <script lang="ts" setup>
 const {
-  sat,
   billing: billData,
   shipping: shippmentData,
   paymentMethod,
   billingSw,
 } = useCheckout();
+
+const props = defineProps({
+  sat: {
+    type: Object,
+    required: true,
+  },
+});
 
 const keyDict = {
   name: "Nombre",
@@ -65,7 +71,7 @@ const safeLegend = `Quivi.mx no almacena datos de tarjetas de crédito o débito
 const getSatValue = (key: string, value: string) => {
   if (["cfdi", "regime"].includes(key)) {
     const name = key == "cfdi" ? "usos" : "regimenes";
-    return sat[name].find((el: any) => el.value == value).name;
+    return props.sat[name].find((el: any) => el.value == value).name;
   }
 
   return value;
