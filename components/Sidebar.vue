@@ -33,6 +33,7 @@ const logout = async () => {
 <style lang="scss" scoped>
 .sidebar {
   position: relative;
+  z-index: 3;
   height: 100vh;
   width: pxToRem(50);
   display: flex;

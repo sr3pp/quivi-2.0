@@ -16,7 +16,7 @@ const cart = ref<Cart>({
   total: computed((): number => {
     return (
       cart.value.subtotal +
-      (cart.value.shipping.isFree ? 0 : cart.value.shipping.costo)
+      (cart.value.shipping.isFree ? 0 : Number(cart.value.shipping.costo))
     );
   }),
   shipping: {
@@ -30,9 +30,8 @@ const cart = ref<Cart>({
 
 const active: Ref<boolean> = ref(false);
 
-const { addNotification } = useNotification();
-
 export function useCart() {
+  const { addNotification } = useNotification();
   function addToCart(product: Product, qty: number) {
     const productExists: Product | undefined = cart.value.products.find(
       (p: any) => p.web === product.web,

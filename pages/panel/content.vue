@@ -35,54 +35,48 @@
     component(v-for="(component, i) in content"
       :is="component.component"
       :key="i"
-      @media-gallery="EmitHandler($event, component, editPicture)"
+      @media-gallery="EmitHandler($event, component, (data) => editPicture(data, mediaModal.toggle))"
       @icon-gallery="EmitHandler($event, component, editIcon)"
-      @edit-props="editComponent($event, component)"
-      @add-slide="addSlide($event, component)"
-      @delete-slide="deleteSlide($event, component)"
+      @edit-props="editComponent($event, component, propsModal.toggle)"
+      @add-slide="component.props.slides.push($event)"
+      @delete-slide="component.props.slides.splice($event, 1)"
+      @component-list="editComponent($event.component, component, componentsModal.toggle)"
       :options="options"
       v-bind="component.props")
 
   // This part shows the catalog content
-  template(v-if="currentCatalog.sw")
+  template(v-if="currentCatalog")
     SrContainer
       SrText(text="Catalogos" class="subtitle" alignment="center")
-      SrFormSelect(:options="currentCatalog.options" v-model="currentCatalog.name" @change="setCatalog")
+      CatalogList(
+        @set-catalog="currentCatalog = $event"
+        :catalogs="catalogs"
+        @delete-catalog="catalogs.splice(catalogs.findIndex((c: any) => c.slug == $event), 1)")
       br
-      div.catalog-card(v-if="currentCatalog.card")
-        SrPicture(:src="currentCatalog.card.thumb" alt="placeholder" :editable="true")
-        div  
-          SrFormInput(v-model="currentCatalog.card.label" label="Titulo")
-          SrFormInput(v-model="currentCatalog.card.order" label="Orden")
-        ul.catalog-card-list
-          li.catalog-card-item(v-for="(item, i) in currentCatalog.card.list" :key="i")
-            SrFormInput(v-model="currentCatalog.card.list[i]")
-            button(@click="deleteItem(i)")
-              SrIcon(name="trash-o")
-          li.catalog-card-item
-            button(@click="addItem")
-              SrIcon(name="plus-o")
-      template(v-if="currentCatalog.current")
-        component(v-for="(c, i) in currentCatalog.current" :is="c.component" v-bind="c.props" :key="i"
-          @media-gallery="EmitHandler($event, c, editPicture)"
-          @icon-gallery="EmitHandler($event, c, editIcon)"
-          @edit-props="editComponent($event, c)")
+      CatalogDetail(
+        :catalog="currentCatalog"
+        @media-modal="mediaModal.toggle()"
+        @highlight-product="highlightProduct"
+        @edit-props="propsModal.toggle"
+        @component-gallery="componentsModal.toggle()"
+        )
 
   SrModal(ref="seoModal")
     template(#body)
         SeoWizzard
   SrModal(ref="componentsModal")
     template(#body)
-        p list of components here
-  SrModal.media-modal(ref="mediaModal")
-    template(#body)
-      div(class="media-modal-container")
-        SrDirectory(:directory="mediaDir.children" @change="setMediaDir" :onlyDirs="true")
-        ul.media-modal-list(v-if="currentMedia")
-          template(v-for="(item, i) in currentMedia.children" :key="'media-item-'+new Date().getTime() + i")
-            li.media-modal-item(v-if="!item.children")
-              button(@click="setPicture(`/${item.path}`)")
-                SrPicture(:src="`/${item.path}`" alt="placeholder")
+        button(@click="() => insertComponent(componentsModal.toggle)") clickmme
+  ClientOnly
+    SrModal.media-modal(ref="mediaModal")
+      template(#body)
+        div(class="media-modal-container" v-if="mediaDir")
+          SrDirectory(:directory="mediaDir.children" @change="setMediaDir" :onlyDirs="true")
+          ul.media-modal-list(v-if="currentMedia")
+            template(v-for="(item, i) in currentMedia.children" :key="'media-item-'+new Date().getTime() + i")
+              li.media-modal-item(v-if="!item.children")
+                button(@click="setPicture(`/${item.path}`, mediaModal.toggle)")
+                  SrPicture(:src="`/${item.path}`" alt="placeholder")
   SrModal(ref="iconModal")
     template(#body)
         button
@@ -119,7 +113,6 @@
 import { proccessContent, EmitHandler } from "sr-content-2/assets/ts/utilities";
 import * as SrComponents from "sr-content-2/components";
 import SliderMain from "@/components/Slider/Main.vue";
-import type { Component } from "sr-content-2/types";
 
 const appComponents = {
   SliderMain,
@@ -137,18 +130,7 @@ const Components = {
   ...appComponents,
 };
 
-const catalogs = await $fetch("/api/catalogo");
-
-const currentCatalog = ref({
-  name: "",
-  options: catalogs.map((c: any) => ({
-    value: c.slug,
-    name: c.label,
-  })),
-  sw: false,
-  current: null,
-  card: null,
-});
+const currentCatalog: any = ref(null);
 
 definePageMeta({
   layout: "panel",
@@ -191,38 +173,37 @@ const breakpoints = [
   },
 ];
 
-const componentsModal: Ref<boolean> = ref(false);
+const content: any = ref([]);
+const componentsModal: Ref<HTMLElement | null> = ref(null);
 const seoModal: Ref<boolean> = ref(false);
 const previewModal: Ref<boolean> = ref(false);
 const mediaModal: Ref<boolean> = ref(false);
 const iconModal: Ref<boolean> = ref(false);
 const propsModal: Ref<boolean> = ref(false);
 
-const currentComponent: Ref<any> = ref(null);
 const previewSw: Ref<boolean> = ref(false);
 const responsive: Ref<string> = ref("");
 const page: Ref<string> = ref("/index");
-const currentPicture: Ref<any> = ref({ props: { src: "" } });
 const currentIcon: Ref<any> = ref({ props: { name: "" } });
 const currentMedia: Ref<any> = ref(null);
-const isBackground: Ref<boolean> = ref(false);
-const mediaDir: Ref<any> = ref(null);
-const { data: media } = await useAsyncData<any>("media", async () => {
+const { data } = await useAsyncData<any>(async () => {
   const promises = await Promise.all([
     $fetch("/api/admin/gallery?folder=slides"),
     $fetch("/api/admin/gallery?folder=catalogo"),
     $fetch("/api/admin/get-directory?folder=img"),
+    $fetch("/api/catalogo"),
   ]);
 
-  mediaDir.value = promises[2];
-
+  const mediaDir = promises[2];
   const media = {
     slides: promises[0],
     catalogo: promises[1],
   };
-  return media;
+  return { mediaDir, media, catalogs: promises[3] };
 });
 
+const { mediaDir, media } = data.value;
+const catalogs = ref(data.value.catalogs);
 const pagesOtions = [
   {
     value: "/index",
@@ -238,6 +219,10 @@ const pagesOtions = [
   },
 ];
 
+const { setPicture, editPicture, isBackground } = usePicture();
+const { editComponent, currentComponent, insertComponent } =
+  useComponent(content);
+
 onMounted(() => {
   setContent();
 });
@@ -250,8 +235,6 @@ const showPreview = () => {
   (previewModal.value as any).toggle();
 };
 
-const content: any = ref([]);
-
 const getContent = async () => {
   return await $fetch(`/api/content?page=${page.value}`);
 };
@@ -260,46 +243,46 @@ const setContent = async () => {
   const _content = proccessContent(await getContent(), true);
   content.value = _content;
   if (page.value == "catalogo/index") {
-    currentCatalog.value.sw = true;
+    currentCatalog.value = catalogs.value[0];
   } else {
-    currentCatalog.value.sw = false;
+    currentCatalog.value = null;
   }
 };
 
-const setCatalog = async (catalog: string) => {
-  const { content, card } = await $fetch(
-    `/api/content?page=catalogo/${currentCatalog.value.name}&section=content,card`,
-  );
-
-  (currentCatalog.value.current as any) = proccessContent(content, true);
-  currentCatalog.value.card = card;
-};
-
 const saveContent = async () => {
-  const res = await $fetch(`/api/content?page=${page.value}`, {
+  if (currentCatalog.value.isNew) {
+    if (!currentCatalog.value.card.label || !currentCatalog.value.brand) return;
+    currentCatalog.value.card.slug = currentCatalog.value.card.label
+      .toLowerCase()
+      .replace(/ /g, "_");
+
+    proccessContent(currentCatalog.value.content, false);
+    await $fetch(
+      `/api/content?page=catalogo/${currentCatalog.value.card.slug}`,
+      {
+        method: "POST",
+        body: currentCatalog.value,
+      },
+    );
+    catalogs.value.push(currentCatalog.value.card);
+    currentCatalog.value.isNew = false;
+    return;
+  }
+
+  await $fetch(`/api/content?page=${page.value}`, {
     method: "PUT",
     body: proccessContent(content.value, false),
   });
   proccessContent(content.value, true);
   if (currentCatalog.value.sw) {
-    await $fetch(`/api/content?page=${currentCatalog.value.name as string}`, {
-      method: "PUT",
-      body: proccessContent(currentCatalog.value?.current || [], false),
-    });
     await $fetch(
-      `/api/content?page=${currentCatalog.value.name as string}&section=card`,
+      `/api/content?page=catalogo/${currentCatalog.value.card.slug}&section=all`,
       {
         method: "PUT",
-        body: currentCatalog.value.card,
+        body: currentCatalog.value,
       },
     );
   }
-};
-
-const editPicture = (picture: any) => {
-  isBackground.value = false;
-  currentPicture.value = picture;
-  (mediaModal.value as any).toggle();
 };
 
 const editBackground = ($event: any) => {
@@ -307,70 +290,14 @@ const editBackground = ($event: any) => {
   (mediaModal.value as any).toggle();
 };
 
-const editComponent = ($event: any, _component: Component) => {
-  const component = $event || _component;
-  if (!("css" in component.props)) {
-    component.props.css = {
-      style: {},
-      class: "",
-    };
-  } else if (!("style" in (component.props as any).css)) {
-    (component.props as any).css.style = {};
-  } else if (!("class" in (component.props as any).css)) {
-    (component.props as any).css.class = "";
-  }
-
-  currentComponent.value = { component } || {
-    component: "SrContainer",
-    props: {
-      withPadding: true,
-      contained: true,
-      content: content.value,
-      css: {
-        style: {},
-      },
-    },
-  };
-
-  (propsModal.value as any).toggle();
-};
-
 const editIcon = (icon: any) => {
   currentIcon.value = icon;
   (iconModal.value as any).toggle();
 };
 
-const setPicture = (url: string) => {
-  if (isBackground.value) {
-    currentComponent.value.component.props.css.style.backgroundImage = `url(${url})`;
-  } else if (currentPicture.value.props) {
-    currentPicture.value.props.src = url;
-  } else {
-    const { bg, resolution }: any = currentPicture.value;
-    bg[resolution] = url;
-  }
-  (mediaModal.value as any).toggle();
-};
-
 const setIcon = (name: string) => {
   currentIcon.value.props.name = name;
   (iconModal.value as any).toggle();
-};
-
-const addSlide = (slide: any, component: any) => {
-  component.props.slides.push(slide);
-};
-
-const deleteSlide = (idx: number, component: any) => {
-  component.props.slides.splice(idx, 1);
-};
-
-const addItem = () => {
-  (currentCatalog.value.card as any).list.push("New item");
-};
-
-const deleteItem = (idx: number) => {
-  (currentCatalog.value.card as any).list.splice(idx, 1);
 };
 
 const setMediaDir = (item: any) => {
@@ -385,6 +312,16 @@ const clearBreakpoint = (resolution: string) => {
       delete (currentComponent as any).value.component.props.css.style[key];
     }
   });
+};
+
+const highlightProduct = (product: any) => {
+  if (currentCatalog.value.products.includes(product.web)) {
+    currentCatalog.value.products = currentCatalog.value.products.filter(
+      (p: any) => p != product.web,
+    );
+  } else {
+    currentCatalog.value.products.push(product.web);
+  }
 };
 
 watch(previewSw, () => {
@@ -441,44 +378,6 @@ watch(previewSw, () => {
       .media-modal-container {
         display: flex;
         gap: pxToRem(10);
-      }
-    }
-  }
-
-  .catalog-card {
-    display: flex;
-    align-items: center;
-    gap: pxToRem(10);
-    .sr-picture {
-      width: pxToRem(100);
-      img {
-        height: 100% !important;
-      }
-    }
-
-    &-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: pxToRem(10);
-      margin-bottom: pxToRem(20);
-    }
-
-    &-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: pxToRem(10);
-      button {
-        background: none;
-        border: none;
-        margin-top: auto;
-        margin-bottom: pxToRem(4);
-      }
-
-      .sr-icon {
-        color: $color-quivi-red;
-        width: pxToRem(20);
-        height: pxToRem(20);
       }
     }
   }

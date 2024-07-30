@@ -149,25 +149,31 @@ const resetStorage = () => {
 const proccesOrder = async (id: string, transaction?: string) => {
   const user = null;
 
+  const partidas = cart.value.products.map(
+    (product: any) => `${product.qty},${product.sae},${product.price}`,
+  );
+
+  const data: any = {
+    transactionId,
+    partidas,
+    shippmentData: shipping.value,
+    billSw: billingSw.value,
+    paymentMethod: paymentKeyDict[(paymentMethod.value as any).value] || "",
+    total: cart.value.total,
+    user,
+    order_id: id,
+  };
+  if (billingSw.value) {
+    data.billing = billing.value;
+  }
+
   try {
     const sae = await $fetch("/api/order/sae", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: {
-        transactionId,
-        partidas: cart.value.products.map((product: any) => {
-          return `${product.qty},${product.sae},${product.price}`;
-        }),
-        shippmentData: shipping.value,
-        billing: billing.value,
-        billSw: billingSw.value,
-        paymentMethod: paymentKeyDict[(paymentMethod.value as any).value] || "",
-        total: cart.value.total,
-        user,
-        order_id: id,
-      },
+      body: data,
     });
 
     const order: any = {
@@ -207,65 +213,69 @@ const proccesOrder = async (id: string, transaction?: string) => {
   }
 };
 
-if (transactionId) {
-  verifyingPayment.value = true;
-  const { status, payment_method, reference, barcode_url }: any = await $fetch(
-    "/api/payment/openpay/verify-transaction",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: {
-        transactionId,
-      },
-    },
-  );
+const transactionHandler = async () => {
+  if (transactionId) {
+    verifyingPayment.value = true;
+    const { status, payment_method, reference, barcode_url }: any =
+      await $fetch("/api/payment/openpay/verify-transaction", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          transactionId,
+        },
+      });
 
-  if (status === "completed") {
-    verifyingPayment.value = false;
+    if (status === "completed") {
+      verifyingPayment.value = false;
 
-    const { order }: any = await proccesOrder(
-      registeredOrder as string,
-      transactionId as string,
-    );
+      const { order }: any = await proccesOrder(
+        registeredOrder as string,
+        transactionId as string,
+      );
 
-    if (order) {
+      try {
+        if (order) {
+          saveOrder(order);
+          resetStorage();
+        }
+
+        //if payment method is not cash redirect to success page
+        if (payment_method.type !== "store") {
+          useRouter().push(`/tienda/order/success?order_id=${registeredOrder}`);
+        } else {
+          //if payment method is cash redirect to barcode page
+          useRouter().push(
+            `/tienda/order/barcode?order_id=${registeredOrder}&reference=${reference}`,
+          );
+        }
+      } catch (error: any) {
+        throw new Error(error);
+      }
+    } else {
+      //if not success, save order to unfinished orders.
+    }
+  } else if (paypal_order_id) {
+    //confirm paypal order
+    const paypal = new paypalHandler();
+    const confirm = await paypal.confirm(paypal_order_id as string);
+
+    if (confirm === "APPROVED") {
+      const { order }: any = await proccesOrder(
+        registeredOrder as string,
+        paypal_order_id as string,
+      );
       saveOrder(order);
       resetStorage();
-    }
-
-    //if payment method is not cash redirect to success page
-    if (payment_method.type !== "store") {
       useRouter().push(`/tienda/order/success?order_id=${registeredOrder}`);
-    } else {
-      //if payment method is cash redirect to barcode page
-      console.log(barcode_url);
-      useRouter().push(
-        `/tienda/order/barcode?order_id=${registeredOrder}&reference=${reference}`,
-      );
     }
-  } else {
-    //if not success, save order to unfinished orders.
   }
-} else if (paypal_order_id) {
-  //confirm paypal order
-  const paypal = new paypalHandler();
-  const confirm = await paypal.confirm(paypal_order_id as string);
-
-  if (confirm === "APPROVED") {
-    const { order }: any = await proccesOrder(
-      registeredOrder as string,
-      paypal_order_id as string,
-    );
-    saveOrder(order);
-    resetStorage();
-    useRouter().push(`/tienda/order/success?order_id=${registeredOrder}`);
-  }
-}
+};
 
 onMounted(() => {
   syncData();
+  transactionHandler();
 });
 </script>
 

@@ -25,7 +25,7 @@ await $fetch(`/api/send-mail`, {
   method: "POST",
   body: {
     template: "sale",
-    to: order.email,
+    to: order.shipment.email,
     subject: "Resumen de compra Quivi.mx",
     context: order,
   },

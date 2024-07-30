@@ -7,6 +7,7 @@
         SrFormInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar")
         QuiviButton(@click="searchProduct")
           SrIcon(name="lupa-o")
+      QuiviButton.new-product(@click="newProduct" variant="secondary" label="Nuevo producto")
       label.massive-file
         span Carga Massiva
         Spinner(v-if="uploading")
@@ -19,7 +20,7 @@
       @delete="deleteProduct"
       @edit="editProduct"
       @update:data="(val) => products = val"
-      :actions="['edit']"
+      :actions="['edit', 'delete']"
     )
 
     Pagination(:pagination="pagination")
@@ -59,9 +60,27 @@ const products: any = ref([]);
 const pagination = ref({});
 const currentProduct = ref("");
 
-const productForm = ref([
+const productForm: any = ref([
   {
     fields: [
+      {
+        component: "SrFormInput",
+        props: {
+          name: "sae",
+          label: "SAE",
+          required: true,
+          value: "",
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          name: "web",
+          label: "Web",
+          required: true,
+          value: "",
+        },
+      },
       {
         component: "ProductEditThumbs",
         props: {
@@ -271,6 +290,22 @@ const searchProduct = async () => {
   pagination.value = _prodcutData.pagination;
 };
 
+const newProduct = () => {
+  currentProduct.value = "";
+  productForm.value.forEach((fieldset: any) => {
+    fieldset.fields.forEach((field: any) => {
+      if (field.props.items) {
+        field.props.items = [];
+      } else if (field.props.name === "thumbs") {
+        field.props.thumbs = [];
+      } else {
+        field.props.value = "";
+      }
+    });
+  });
+  (productModal.value as any).toggle();
+};
+
 const editProduct = (_product: any) => {
   const product = products.value.find((p: any) => p.sae === _product.sae);
   currentProduct.value = product._id;
@@ -309,13 +344,17 @@ const editProduct = (_product: any) => {
         );
         field.props.productId = product._id;
       } else {
-        field.props.value = String(product[field.props.name]);
+        field.props.value =
+          product[field.props.name] &&
+          typeof product[field.props.name] === "object"
+            ? product[field.props.name]._id
+            : String(product[field.props.name]);
       }
     });
   });
 };
 
-const updateProduct = async (data: any) => {
+const fillLists = (data: any) => {
   productForm.value.forEach((fieldset: any) => {
     fieldset.fields.forEach((field: any) => {
       if (field.component === "ProductEditList") {
@@ -327,7 +366,13 @@ const updateProduct = async (data: any) => {
       }
     });
   });
+};
 
+const updateProduct = async (data: any) => {
+  if (!currentProduct.value) {
+    return saveProduct(data);
+  }
+  fillLists(data);
   data._id = currentProduct.value;
 
   try {
@@ -346,6 +391,16 @@ const deleteProduct = async (_product: any) => {
   const id = product._id;
   await $fetch(`/api/product/${id}`, {
     method: "DELETE",
+  });
+  const idx = products.value.findIndex((p: any) => p.sae === _product.sae);
+  products.value.splice(idx, 1);
+};
+
+const saveProduct = async (product: any) => {
+  fillLists(product);
+  await $fetch("/api/product", {
+    method: "POST",
+    body: product,
   });
 };
 
@@ -438,6 +493,9 @@ function addItem(item: any, key: string) {
       width: pxToRem(20);
       height: pxToRem(20);
     }
+  }
+  .new-product {
+    margin-right: pxToRem(10);
   }
   .massive-file {
     color: $color-white;
