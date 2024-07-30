@@ -1,10 +1,12 @@
 import nodemailer from "nodemailer";
 
+const { public: conf } = useRuntimeConfig();
+
 const config = {
   email: {
-    host: process.env.EMAIL_HOST,
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    host: conf.email.host,
+    user: conf.email.user,
+    pass: conf.email.pass,
   },
 };
 

@@ -257,8 +257,8 @@ watch(
     gap: pxToRem(20);
     padding-top: pxToRem(20);
     padding-bottom: pxToRem(20);
-    align-items: start;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: flex-start;
 
     .quivi-button {
       margin-left: 0;

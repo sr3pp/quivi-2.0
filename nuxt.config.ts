@@ -21,6 +21,8 @@ export default defineNuxtConfig({
         host: process.env.EMAIL_HOST,
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
+        //@ts-ignore
+        testMail: process.env.EMAIL_TEST_MAIL,
       },
       openpay: {
         url:
@@ -92,6 +94,7 @@ export default defineNuxtConfig({
       },
     },
   },
+  //@ts-ignore
   chatwoot: {
     init: {
       websiteToken: process.env.CHATWOOT_WEBSITE_TOKEN,

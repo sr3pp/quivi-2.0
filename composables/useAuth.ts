@@ -11,6 +11,13 @@ export const useAuth = () => {
     },
   };
 
+  const LoggedInCookie = useCookie("isLoggedIn", {
+    default: () => false,
+    secure: process.env.NODE_ENV === "production",
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
+    sameSite: "strict",
+  });
+
   const authCookie: CookieRef<typeof defaultLogin> = useCookie("auth", {
     default: () => defaultLogin,
     httpOnly: true,
@@ -32,13 +39,6 @@ export const useAuth = () => {
     authCookie.value = defaultLogin;
     LoggedInCookie.value = false;
   };
-
-  const LoggedInCookie = useCookie("isLoggedIn", {
-    default: () => false,
-    secure: process.env.NODE_ENV === "production",
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-    sameSite: "strict",
-  });
 
   const isLoggedIn = LoggedInCookie.value;
 
