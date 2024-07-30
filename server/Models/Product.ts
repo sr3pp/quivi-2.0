@@ -1,14 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import { Product } from "~/types";
-import {
-  ProductBrand,
-  Category,
-  Subcategory,
-  CarBrand,
-  CarModel,
-  Segment,
-  Motor,
-} from ".";
+import ProductBrand from "./ProductBrand";
+import Category from "./Category";
+import Subcategory from "./Subcategory";
+import CarBrand from "./CarBrand";
+import CarModel from "./CarModel";
+import Segment from "./Segment";
+import Motor from "./Motor";
 
 const schema: Schema<Product> = new mongoose.Schema(
   {

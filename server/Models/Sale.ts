@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
-import { Bill, Product, User, Shipment } from ".";
+import Bill from "./Bill";
+import Product from "./Product";
+import User from "./User";
+import Shipment from "./Shipment";
 
 const schema = new mongoose.Schema(
   {
