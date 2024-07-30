@@ -14,9 +14,11 @@ const cart = ref<Cart>({
     return subtotal;
   }),
   total: computed((): number => {
-    return (
-      cart.value.subtotal +
-      (cart.value.shipping.isFree ? 0 : Number(cart.value.shipping.costo))
+    return parseFloat(
+      (
+        cart.value.subtotal +
+        (cart.value.shipping.isFree ? 0 : Number(cart.value.shipping.costo))
+      ).toFixed(2),
     );
   }),
   shipping: {
