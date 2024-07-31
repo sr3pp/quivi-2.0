@@ -27,7 +27,11 @@ const myResults = computed(() => {
     : [];
 });
 
-const emit = defineEmits(["component-gallery"]);
+const emit = defineEmits([
+  "component-gallery",
+  "delete-product",
+  "highlight-product",
+]);
 
 const componentGallery = ({ component }: any) => {
   currentComponent.value = { component };
@@ -52,8 +56,7 @@ watch(search, () => {
 
 <template lang="pug">
 SrContainer
-  template(v-if="catalog.isNew")
-    SrFormSelect(v-model="catalog.brand" :options="brands" label="Marca")
+  SrFormSelect(v-model="catalog.brand" :options="brands" label="Marca")
   div.catalog-card(v-if="catalog.card")
     SrPicture(:src="catalog.card.thumb" alt="placeholder" :editable="true" @media-gallery="EmitHandler($event, catalog.card, (data) => editPicture(data, $emit('media-modal')))")
     div  
@@ -77,7 +80,9 @@ SrContainer
             | {{ product.name}} | {{ product.web}}
     ul
       li(v-for="(product, i) in catalog.products" :key="i")
-        p {{ product}}
+        button(@click="$emit('delete-product', i)")
+          span {{ product }}
+          span x
   SliderMain(
     :slides="catalog.slides"
     :editable="true" v-if="catalog.slides"
@@ -85,11 +90,13 @@ SrContainer
     @delete-slide="catalog.slides.splice($event, 1)"
     @media-gallery="EmitHandler($event, catalog, (data) => editPicture(data, $emit('media-modal')))"
   )
-  component(v-for="(c, i) in catalog.content" :is="c.component" v-bind="c.props" :key="i"
-  @media-gallery="EmitHandler($event, c, editPicture)"
-  @icon-gallery="EmitHandler($event, c, editIcon)"
-  @edit-props="editComponent($event, c, $emit('edit-props'))"
-  @component-list="componentGallery"
+  component(
+    v-for="(c, i) in catalog.content" :is="c.component"
+    v-bind="c.props" :key="i"
+    @media-gallery="EmitHandler($event, c, editPicture)"
+    @icon-gallery="EmitHandler($event, c, editIcon)"
+    @edit-props="editComponent($event, c, $emit('edit-props'))"
+    @component-list="componentGallery"
   )
 </template>
 

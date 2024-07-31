@@ -57,17 +57,19 @@
         :catalog="currentCatalog"
         @media-modal="mediaModal.toggle()"
         @highlight-product="highlightProduct"
+        @delete-product="deleteProduct"
         @edit-props="propsModal.toggle"
         @component-gallery="componentsModal.toggle()"
         )
 
-  SrModal(ref="seoModal")
-    template(#body)
-        SeoWizzard
-  SrModal(ref="componentsModal")
-    template(#body)
-        button(@click="() => insertComponent(componentsModal.toggle)") clickmme
-  ClientOnly
+    SrModal(ref="seoModal")
+      template(#body)
+          SeoWizzard
+          
+    SrModal(ref="componentsModal")
+      template(#body)
+          button(@click="() => insertComponent(componentsModal.toggle)") clickmme
+
     SrModal.media-modal(ref="mediaModal")
       template(#body)
         div(class="media-modal-container" v-if="mediaDir")
@@ -77,36 +79,37 @@
               li.media-modal-item(v-if="!item.children")
                 button(@click="setPicture(`/${item.path}`, mediaModal.toggle)")
                   SrPicture(:src="`/${item.path}`" alt="placeholder")
-  SrModal(ref="iconModal")
-    template(#body)
-        button
-          SrIcon(name="edit-o" @click="setIcon('edit-o')")
-
-
-  SrModal(class="component-props-modal"
-      ref="propsModal"
-      layout="bottom")
-      template(#close)
-        span X
+  
+    SrModal(ref="iconModal")
       template(#body)
-        template(v-if="currentComponent")
-          SrTextPropsForm(:responsive="responsive"
-            @clear-breakpoint="clearBreakpoint"
-            v-if="currentComponent.component.component == 'SrText'"
-            :text-element="currentComponent.component.props")
-          SrGridPropsForm(:responsive="responsive"
-            v-if="currentComponent.component.component == 'SrGrid'"
-            :grid-element="currentComponent.component.props")
-          SrGridColumnPropsForm(:responsive="responsive"
-            v-if="currentComponent.component.component == 'SrGridColumn'"
-            :column-element="currentComponent.component.props")
-          SrContainerPropsForm(:responsive="responsive"
-            v-if="currentComponent.component.component == 'SrContainer'"
-            :container-element="currentComponent.component.props"
-            @media-gallery="EmitHandler($event, currentComponent.component, editBackground)")
-          SrTabsPropsForm(:responsive="responsive"
-            v-if="currentComponent.component.component == 'SrTabs'"
-            :tabs-element="currentComponent.component.props")
+          button
+            SrIcon(name="edit-o" @click="setIcon('edit-o')")
+
+
+    SrModal(class="component-props-modal"
+        ref="propsModal"
+        layout="bottom")
+        template(#close)
+          span X
+        template(#body)
+          template(v-if="currentComponent")
+            SrTextPropsForm(:responsive="responsive"
+              @clear-breakpoint="clearBreakpoint"
+              v-if="currentComponent.component.component == 'SrText'"
+              :text-element="currentComponent.component.props")
+            SrGridPropsForm(:responsive="responsive"
+              v-if="currentComponent.component.component == 'SrGrid'"
+              :grid-element="currentComponent.component.props")
+            SrGridColumnPropsForm(:responsive="responsive"
+              v-if="currentComponent.component.component == 'SrGridColumn'"
+              :column-element="currentComponent.component.props")
+            SrContainerPropsForm(:responsive="responsive"
+              v-if="currentComponent.component.component == 'SrContainer'"
+              :container-element="currentComponent.component.props"
+              @media-gallery="EmitHandler($event, currentComponent.component, editBackground)")
+            SrTabsPropsForm(:responsive="responsive"
+              v-if="currentComponent.component.component == 'SrTabs'"
+              :tabs-element="currentComponent.component.props")
 </template>
 
 <script lang="ts" setup>
@@ -322,6 +325,10 @@ const highlightProduct = (product: any) => {
   } else {
     currentCatalog.value.products.push(product.web);
   }
+};
+
+const deleteProduct = (idx: number) => {
+  currentCatalog.value.products.splice(idx, 1);
 };
 
 watch(previewSw, () => {

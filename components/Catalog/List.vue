@@ -58,14 +58,15 @@ const setCatalog = async (_catalog: string) => {
     catalog.value.isNew = true;
     catalog.value.sw = true;
   } else {
-    const { content, card, slides, products } = await $fetch(
-      `/api/content?page=catalogo/${_catalog}&section=content,card,slides,products`,
+    const { content, card, slides, products, brand } = await $fetch(
+      `/api/content?page=catalogo/${_catalog}&section=content,card,slides,products,brand`,
     );
 
     (catalog.value.content as any) = proccessContent(content, true);
     catalog.value.card = card;
     catalog.value.slides = slides;
     catalog.value.products = products;
+    catalog.value.brand = brand;
   }
 
   emit("set-catalog", catalog.value);

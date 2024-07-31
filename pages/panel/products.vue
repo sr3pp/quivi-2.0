@@ -12,6 +12,7 @@
         span Carga Massiva
         Spinner(v-if="uploading")
         input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
+      QuiviButton.delete-all(@click="deleteAll" variant="secondary" label="Eliminar todos")
 
 
     DetailTable(
@@ -404,6 +405,16 @@ const saveProduct = async (product: any) => {
   });
 };
 
+const deleteAll = async () => {
+  if (confirm("Are you sure you want to delete all products?")) {
+    await $fetch("/api/admin/delete-all-products", {
+      method: "DELETE",
+    });
+    products.value = [];
+    pagination.value = {};
+  }
+};
+
 watch(
   () => route.query,
   async ({ search: _search, page, filters: _filters }) => {
@@ -496,6 +507,10 @@ function addItem(item: any, key: string) {
   }
   .new-product {
     margin-right: pxToRem(10);
+  }
+  .delete-all {
+    margin-left: pxToRem(10);
+    margin-right: 0;
   }
   .massive-file {
     color: $color-white;
