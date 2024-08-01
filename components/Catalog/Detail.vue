@@ -16,6 +16,20 @@ const brands = _brands.map((b: any) => ({
   name: b.name,
 }));
 
+const options = {
+  pagination: true,
+  navigation: true,
+  creative: {
+    prev: {
+      shadow: false,
+      translate: ["-20%", 0, -1],
+    },
+    next: {
+      translate: ["100%", 0, 0],
+    },
+  },
+};
+
 const { query: search, results, doSearch } = useSearch("/api/product/search");
 const myResults = computed(() => {
   return results.value.products
@@ -56,7 +70,7 @@ watch(search, () => {
 
 <template lang="pug">
 SrContainer
-  SrFormSelect(v-model="catalog.brand" :options="brands" label="Marca")
+  SrFormSelect(v-model="catalog.brand" v-if="catalog.card" :options="brands" label="Marca")
   div.catalog-card(v-if="catalog.card")
     SrPicture(:src="catalog.card.thumb" alt="placeholder" :editable="true" @media-gallery="EmitHandler($event, catalog.card, (data) => editPicture(data, $emit('media-modal')))")
     div  
@@ -78,16 +92,17 @@ SrContainer
         li(v-for="(product, i) in myResults" :key="i")
           button(@click="$emit('highlight-product', product)") 
             | {{ product.name}} | {{ product.web}}
-    ul
+    ul.catalog-products
       li(v-for="(product, i) in catalog.products" :key="i")
-        button(@click="$emit('delete-product', i)")
+        QuiviButton(@click="$emit('delete-product', i)" variant="secondary")
           span {{ product }}
-          span x
+          span.close x
   SliderMain(
     :slides="catalog.slides"
     :editable="true" v-if="catalog.slides"
     @add-slide="catalog.slides.push($event)"
     @delete-slide="catalog.slides.splice($event, 1)"
+    :options="options"
     @media-gallery="EmitHandler($event, catalog, (data) => editPicture(data, $emit('media-modal')))"
   )
   component(
@@ -102,6 +117,7 @@ SrContainer
 
 <style scoped lang="scss">
 .catalog-card {
+  padding: pxToRem(20) 0;
   display: flex;
   align-items: center;
   gap: pxToRem(10);
@@ -136,6 +152,28 @@ SrContainer
       width: pxToRem(20);
       height: pxToRem(20);
     }
+  }
+}
+.catalog-products {
+  padding: pxToRem(20) 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: pxToRem(10);
+
+  .quivi-button {
+    position: relative;
+    padding-right: pxToRem(30);
+  }
+
+  .close {
+    margin-left: pxToRem(10);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: calc(50% - pxToRem(2));
+    right: pxToRem(10);
+    transform: translateY(-50%);
   }
 }
 </style>

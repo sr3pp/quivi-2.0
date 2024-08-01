@@ -61,55 +61,63 @@
         @edit-props="propsModal.toggle"
         @component-gallery="componentsModal.toggle()"
         )
+      br
+      CatalogFiles(
+        v-if="currentCatalog.files"
+        :files="currentCatalog.files"
+        :catalog-name="currentCatalog.card.slug"
+        @add-file="$event.files.forEach((file: string) => currentCatalog.files[$event.key] ? currentCatalog.files[$event.key].push(file) : currentCatalog.files[$event.key] = [file])"
+        @remove-file="currentCatalog.files[$event.key].splice($event.idx, 1)"
+      )
 
-    SrModal(ref="seoModal")
-      template(#body)
-          SeoWizzard
-          
-    SrModal(ref="componentsModal")
-      template(#body)
-          button(@click="() => insertComponent(componentsModal.toggle)") clickmme
+  SrModal(ref="seoModal")
+    template(#body)
+        SeoWizzard
+        
+  SrModal(ref="componentsModal")
+    template(#body)
+        button(@click="() => insertComponent(componentsModal.toggle)") clickmme
 
-    SrModal.media-modal(ref="mediaModal")
-      template(#body)
-        div(class="media-modal-container" v-if="mediaDir")
-          SrDirectory(:directory="mediaDir.children" @change="setMediaDir" :onlyDirs="true")
-          ul.media-modal-list(v-if="currentMedia")
-            template(v-for="(item, i) in currentMedia.children" :key="'media-item-'+new Date().getTime() + i")
-              li.media-modal-item(v-if="!item.children")
-                button(@click="setPicture(`/${item.path}`, mediaModal.toggle)")
-                  SrPicture(:src="`/${item.path}`" alt="placeholder")
-  
-    SrModal(ref="iconModal")
-      template(#body)
-          button
-            SrIcon(name="edit-o" @click="setIcon('edit-o')")
+  SrModal.media-modal(ref="mediaModal")
+    template(#body)
+      div(class="media-modal-container" v-if="mediaDir")
+        SrDirectory(:directory="mediaDir.children" @change="setMediaDir" :onlyDirs="true")
+        ul.media-modal-list(v-if="currentMedia")
+          template(v-for="(item, i) in currentMedia.children" :key="'media-item-'+new Date().getTime() + i")
+            li.media-modal-item(v-if="!item.children")
+              button(@click="setPicture(`/${item.path}`, mediaModal.toggle)")
+                SrPicture(:src="`/${item.path}`" alt="placeholder")
+
+  SrModal(ref="iconModal")
+    template(#body)
+        button
+          SrIcon(name="edit-o" @click="setIcon('edit-o')")
 
 
-    SrModal(class="component-props-modal"
-        ref="propsModal"
-        layout="bottom")
-        template(#close)
-          span X
-        template(#body)
-          template(v-if="currentComponent")
-            SrTextPropsForm(:responsive="responsive"
-              @clear-breakpoint="clearBreakpoint"
-              v-if="currentComponent.component.component == 'SrText'"
-              :text-element="currentComponent.component.props")
-            SrGridPropsForm(:responsive="responsive"
-              v-if="currentComponent.component.component == 'SrGrid'"
-              :grid-element="currentComponent.component.props")
-            SrGridColumnPropsForm(:responsive="responsive"
-              v-if="currentComponent.component.component == 'SrGridColumn'"
-              :column-element="currentComponent.component.props")
-            SrContainerPropsForm(:responsive="responsive"
-              v-if="currentComponent.component.component == 'SrContainer'"
-              :container-element="currentComponent.component.props"
-              @media-gallery="EmitHandler($event, currentComponent.component, editBackground)")
-            SrTabsPropsForm(:responsive="responsive"
-              v-if="currentComponent.component.component == 'SrTabs'"
-              :tabs-element="currentComponent.component.props")
+  SrModal(class="component-props-modal"
+      ref="propsModal"
+      layout="bottom")
+      template(#close)
+        span X
+      template(#body)
+        template(v-if="currentComponent")
+          SrTextPropsForm(:responsive="responsive"
+            @clear-breakpoint="clearBreakpoint"
+            v-if="currentComponent.component.component == 'SrText'"
+            :text-element="currentComponent.component.props")
+          SrGridPropsForm(:responsive="responsive"
+            v-if="currentComponent.component.component == 'SrGrid'"
+            :grid-element="currentComponent.component.props")
+          SrGridColumnPropsForm(:responsive="responsive"
+            v-if="currentComponent.component.component == 'SrGridColumn'"
+            :column-element="currentComponent.component.props")
+          SrContainerPropsForm(:responsive="responsive"
+            v-if="currentComponent.component.component == 'SrContainer'"
+            :container-element="currentComponent.component.props"
+            @media-gallery="EmitHandler($event, currentComponent.component, editBackground)")
+          SrTabsPropsForm(:responsive="responsive"
+            v-if="currentComponent.component.component == 'SrTabs'"
+            :tabs-element="currentComponent.component.props")
 </template>
 
 <script lang="ts" setup>

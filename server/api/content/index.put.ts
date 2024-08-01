@@ -21,7 +21,7 @@ export default defineEventHandler(async (e) => {
     } else {
       jsonFile.content = data;
     }
-    console.log("the url: ", url);
+
     fs.writeFileSync(url, JSON.stringify(jsonFile, null, 2));
     return jsonFile;
   } catch (error) {

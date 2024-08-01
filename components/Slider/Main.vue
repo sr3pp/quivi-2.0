@@ -110,7 +110,6 @@ const emits = defineEmits([
 ]);
 
 const slideSettings = (slide: any) => {
-  console.log(slide);
   currentSlide.value = slide;
   if (!currentSlide.value.video) {
     currentSlide.value.video = {
@@ -161,6 +160,9 @@ const addSlide = () => {
       mobile: "https://picsum.photos/1100/322",
     },
   });
+  setTimeout(() => {
+    (mainSlider.value as any).$el.swiper.slideTo(props.slides.length);
+  }, 100);
 };
 
 const deleteSlide = (idx: number) => {

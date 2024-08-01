@@ -58,15 +58,20 @@ const setCatalog = async (_catalog: string) => {
     catalog.value.isNew = true;
     catalog.value.sw = true;
   } else {
-    const { content, card, slides, products, brand } = await $fetch(
-      `/api/content?page=catalogo/${_catalog}&section=content,card,slides,products,brand`,
-    );
+    const [{ content, card, slides, products, brand }, downloads] =
+      await Promise.all([
+        $fetch(
+          `/api/content?page=catalogo/${_catalog}&section=content,card,slides,products,brand`,
+        ),
+        $fetch(`/api/content/downloads?path=catalogo/${_catalog}`),
+      ]);
 
     (catalog.value.content as any) = proccessContent(content, true);
     catalog.value.card = card;
     catalog.value.slides = slides;
     catalog.value.products = products;
     catalog.value.brand = brand;
+    catalog.value.files = downloads;
   }
 
   emit("set-catalog", catalog.value);
@@ -86,8 +91,9 @@ ul.catalog-list
     SrFormBox(v-model="catalog.card.slug" type="radio" name="catalog" :value="c.slug" :label="c.label" @change="setCatalog(c.slug)")
     button(@click="deleteCatalog(c.slug)")
       SrIcon(name="trash-o")
-  li
-    button(@click="setCatalog('new')") New Catalog
+  li.catalog-list-item
+    button(@click="setCatalog('new')")
+      SrIcon(name="plus-o")
 </template>
 
 <style scoped lang="scss">
