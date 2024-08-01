@@ -2,16 +2,11 @@ import { Product } from "~/types";
 import { Product as ProductModel, ProductBrand } from "~/server/Models";
 
 export default defineEventHandler(async (event) => {
-  const { brand } = getQuery(event);
+  const { codes } = await readBody(event);
 
-  const Brand = await ProductBrand.findOne({
-    name: brand,
+  const products: Product[] = await ProductModel.find({
+    web: { $in: codes },
   });
-
-  const products = await ProductModel.find({
-    priority: 99,
-    brand: Brand._id,
-  }).limit(6);
 
   return products;
 });

@@ -23,6 +23,8 @@ export function usePicture() {
         `url(${url})`;
     } else if ("thumb" in currentPicture.value) {
       currentPicture.value.thumb = url;
+    } else if ("logo" in currentPicture.value) {
+      currentPicture.value.logo = url;
     } else if (currentPicture.value.props) {
       currentPicture.value.props.src = url;
     } else {

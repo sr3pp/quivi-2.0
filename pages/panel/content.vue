@@ -54,6 +54,7 @@
         @delete-catalog="catalogs.splice(catalogs.findIndex((c: any) => c.slug == $event), 1)")
       br
       CatalogDetail(
+        v-if="currentCatalog.sw"
         :catalog="currentCatalog"
         @media-modal="mediaModal.toggle()"
         @highlight-product="highlightProduct"
@@ -69,6 +70,19 @@
         @add-file="$event.files.forEach((file: string) => currentCatalog.files[$event.key] ? currentCatalog.files[$event.key].push(file) : currentCatalog.files[$event.key] = [file])"
         @remove-file="currentCatalog.files[$event.key].splice($event.idx, 1)"
       )
+    SrContainer(v-if="!currentCatalog.sw")
+      SrGrid(tag="ul")
+        SrGridColumn(v-for="brand in catalogBrands" :key="brand" tag="li" :size="{mobile: '1', sm: '1/5'}")
+          SrPicture(
+            :src="brand.logo"
+            alt="placeholder"
+            :editable="true"
+            @media-gallery="EmitHandler($event, brand, (data) => editPicture(data, mediaModal.toggle))"
+          )
+          SrFormInput(v-model="brand.name" @change="brand.label = $event")
+        SrGridColumn(tag="li" :size="{mobile: '1', sm: '1/5'}")
+          button(@click="addBrand")
+            SrIcon(name="plus-o")
 
   SrModal(ref="seoModal")
     template(#body)
@@ -197,6 +211,7 @@ const responsive: Ref<string> = ref("");
 const page: Ref<string> = ref("/index");
 const currentIcon: Ref<any> = ref({ props: { name: "" } });
 const currentMedia: Ref<any> = ref(null);
+const catalogBrands: Ref<any> = ref([]);
 const { data } = await useAsyncData<any>(async () => {
   const promises = await Promise.all([
     $fetch("/api/admin/gallery?folder=slides"),
@@ -255,6 +270,10 @@ const setContent = async () => {
   content.value = _content;
   if (page.value == "catalogo/index") {
     currentCatalog.value = catalogs.value[0];
+    const { brands } = await $fetch(
+      "/api/content?page=catalogo/index&section=brands",
+    );
+    catalogBrands.value = brands;
   } else {
     currentCatalog.value = null;
   }
@@ -293,6 +312,15 @@ const saveContent = async () => {
         body: currentCatalog.value,
       },
     );
+  }
+  if (page.value == "catalogo/index") {
+    await $fetch(`/api/content?page=catalogo/index&section=brands`, {
+      method: "PUT",
+      body: catalogBrands.value.map((brand: any) => ({
+        name: brand.name,
+        logo: brand.logo,
+      })),
+    });
   }
 };
 
@@ -337,6 +365,13 @@ const highlightProduct = (product: any) => {
 
 const deleteProduct = (idx: number) => {
   currentCatalog.value.products.splice(idx, 1);
+};
+
+const addBrand = () => {
+  catalogBrands.value.push({
+    name: "new",
+    logo: "https://via.placeholder.com/150",
+  });
 };
 
 watch(previewSw, () => {

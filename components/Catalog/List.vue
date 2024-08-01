@@ -57,7 +57,7 @@ const setCatalog = async (_catalog: string) => {
     catalog.value = getNewCatalog();
     catalog.value.isNew = true;
     catalog.value.sw = true;
-  } else {
+  } else if (_catalog) {
     const [{ content, card, slides, products, brand }, downloads] =
       await Promise.all([
         $fetch(
@@ -72,6 +72,9 @@ const setCatalog = async (_catalog: string) => {
     catalog.value.products = products;
     catalog.value.brand = brand;
     catalog.value.files = downloads;
+  } else {
+    catalog.value = getNewCatalog();
+    catalog.value.sw = false;
   }
 
   emit("set-catalog", catalog.value);
@@ -79,7 +82,7 @@ const setCatalog = async (_catalog: string) => {
 
 const deleteCatalog = async (catalog: string) => {
   if (confirm("Are you sure?")) {
-    //await $fetch(`/api/content?page=catalogo/${catalog}`, { method: "DELETE" });
+    await $fetch(`/api/content?page=catalogo/${catalog}`, { method: "DELETE" });
     emit("delete-catalog", catalog);
   }
 };
@@ -87,6 +90,9 @@ const deleteCatalog = async (catalog: string) => {
 
 <template lang="pug">
 ul.catalog-list
+  li.catalog-list-item()
+    SrFormBox(v-model="catalog.card.slug" type="radio" name="catalog" value="" label="index" @change="setCatalog('')")
+  li.catalog-list-item
   li.catalog-list-item(v-for="(c, i) in catalogs" :key="i")
     SrFormBox(v-model="catalog.card.slug" type="radio" name="catalog" :value="c.slug" :label="c.label" @change="setCatalog(c.slug)")
     button(@click="deleteCatalog(c.slug)")

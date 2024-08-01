@@ -3,7 +3,7 @@
     SliderMain(:slides="json.slides" :options="options")
     SrContainer(:with-padding="true")
         SrText(:html="sellerLabel" class="title")
-    SliderProducts(:products="hightlights" :options="product_options")
+    SliderProducts(:products="highlights" :options="product_options")
     component(v-for="(component, i) in json.content" :is="component.component" :key="i" v-bind="component.props")
     SrContainer(:with-padding="true")
         DownloadsList(:downloads="downloads" :path="path")
@@ -13,13 +13,16 @@
 const { path } = useRoute();
 
 const [json, downloads] = await Promise.all([
-  $fetch(`/api/content?page=${path}&section=brand,slides,content`),
+  $fetch(`/api/content?page=${path}&section=brand,slides,content,products`),
   $fetch(`/api/content/downloads?path=${path}`),
 ]);
 
-const hightlights = await $fetch(
-  `/api/product/hightlights?brand=${(json as any).brand}`,
-);
+const highlights = await $fetch(`/api/product/hightlights`, {
+  method: "POST",
+  body: {
+    codes: (json as any).products,
+  },
+});
 
 const sellerLabel =
   "Nuestros Productos <span class='text-quivi-light-red'>mas vendidos</span>";

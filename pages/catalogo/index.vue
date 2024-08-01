@@ -25,12 +25,12 @@
 </template>
 
 <script lang="ts" setup>
-const [catalogo, catalogoContent, { brands: productBrands }] =
+const [catalogo, { content: catalogoContent, brands: productBrands }] =
   await Promise.all([
     $fetch("/api/catalogo"),
-    $fetch("/api/content?page=catalogo/index"),
-    $fetch("/api/content?page=catalogo/_brands"),
+    $fetch("/api/content?page=catalogo/index&section=brands,content"),
   ]);
+
 const ourBrandsLabel =
   "Conoce Todas <span class='text-quivi-light-red font-bold'>Nuestras Marcas</span>";
 </script>
