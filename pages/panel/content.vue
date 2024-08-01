@@ -72,7 +72,7 @@
       )
     SrContainer(v-if="!currentCatalog.sw")
       SrGrid(tag="ul")
-        SrGridColumn(v-for="brand in catalogBrands" :key="brand" tag="li" :size="{mobile: '1', sm: '1/5'}")
+        SrGridColumn(v-for="(brand, i) in catalogBrands" :key="brand.name" tag="li" :size="{mobile: '1', sm: '1/5'}")
           SrPicture(
             :src="brand.logo"
             alt="placeholder"
@@ -80,8 +80,10 @@
             @media-gallery="EmitHandler($event, brand, (data) => editPicture(data, mediaModal.toggle))"
           )
           SrFormInput(v-model="brand.name" @change="brand.label = $event")
+          button.icon-button(@click="deleteBrand(i)")
+            SrIcon(name="trash-o")
         SrGridColumn(tag="li" :size="{mobile: '1', sm: '1/5'}")
-          button(@click="addBrand")
+          button.icon-button(@click="addBrand")
             SrIcon(name="plus-o")
 
   SrModal(ref="seoModal")
@@ -374,6 +376,10 @@ const addBrand = () => {
   });
 };
 
+const deleteBrand = (idx: number) => {
+  catalogBrands.value.splice(idx, 1);
+};
+
 watch(previewSw, () => {
   if (!previewSw.value) {
     proccessContent(content.value, true);
@@ -435,6 +441,18 @@ watch(previewSw, () => {
   .sr-preview-controls-resolutions {
     display: flex;
     gap: pxToRem(10);
+  }
+  .icon-button {
+    padding: pxToRem(5);
+    background: none;
+    color: $color-white;
+    border: none;
+    margin: auto;
+    .sr-icon {
+      width: pxToRem(20);
+      height: pxToRem(20);
+      color: $color-quivi-red;
+    }
   }
 }
 </style>
