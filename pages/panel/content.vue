@@ -282,7 +282,7 @@ const setContent = async () => {
 };
 
 const saveContent = async () => {
-  if (currentCatalog.value.isNew) {
+  if (currentCatalog.value && currentCatalog.value.isNew) {
     if (!currentCatalog.value.card.label || !currentCatalog.value.brand) return;
     currentCatalog.value.card.slug = currentCatalog.value.card.label
       .toLowerCase()
@@ -306,7 +306,7 @@ const saveContent = async () => {
     body: proccessContent(content.value, false),
   });
   proccessContent(content.value, true);
-  if (currentCatalog.value.sw) {
+  if (currentCatalog.value && currentCatalog.value.sw) {
     await $fetch(
       `/api/content?page=catalogo/${currentCatalog.value.card.slug}&section=all`,
       {
