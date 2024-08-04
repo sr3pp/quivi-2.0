@@ -11,7 +11,7 @@ const { _id } = params;
 const { data: product }: any = await useFetch<Product>(`/api/product/${_id}`);
 
 const relatedProducts = await $fetch(
-  `/api/product/hightlights?brand=${product.value?.brand.name}`,
+  `/api/product/related?brand=${product.value?.brand._id}`,
 );
 
 const { data: existences }: any = await $fetch(
