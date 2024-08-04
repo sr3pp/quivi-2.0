@@ -33,7 +33,7 @@ footer.quivi-footer
           NuxtLink(to="/pdf/aviso_de_privacidad.pdf" target="_blank")
             SrText(text="Aviso de privacidad")
         SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
-          button(@click="console.log('ir terminos y condiciones')")
+          button(@click="$emit('termsModal')")
             SrText(text="Términos y Condiciones")
 </template>
 
