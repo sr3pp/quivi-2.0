@@ -1,4 +1,84 @@
+import { SrAccordionGroup } from "#build/components";
+
 const currentComponent: Ref<any> = ref(null);
+
+const componentDefaults: any = {
+  SrContainer: {
+    withPadding: true,
+    contained: true,
+    editable: true,
+  },
+  SrText: {
+    editable: true,
+    text: "Text",
+  },
+  SrAccordion: {
+    content: [
+      {
+        component: "SrText",
+        props: {
+          editable: true,
+          text: "Text",
+        },
+      },
+    ],
+    label: "Accordion",
+  },
+  SrAccordionGroup: {
+    content: [
+      {
+        label: "Accordion",
+        content: [
+          {
+            component: "SrText",
+            props: {
+              editable: true,
+              text: "Text",
+            },
+          },
+        ],
+      },
+    ],
+    label: "Accordion Group",
+  },
+  SrGrid: {
+    content: [
+      {
+        component: "SrGridColumn",
+        props: {
+          size: {
+            mobile: "1",
+          },
+          editable: true,
+          content: [
+            {
+              component: "SrText",
+              editable: true,
+              props: {
+                text: "Text",
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
+  SrGridColumn: {
+    size: {
+      mobile: "1",
+    },
+    editable: true,
+    content: [
+      {
+        component: "SrText",
+        props: {
+          editable: true,
+          text: "Text",
+        },
+      },
+    ],
+  },
+};
 
 export function useComponent(content: any) {
   const editComponent = (
@@ -33,16 +113,12 @@ export function useComponent(content: any) {
     callback?.();
   };
 
-  const insertComponent = (callback?: () => void) => {
+  const insertComponent = (_component: string, callback?: () => void) => {
     const component = {
-      component: "SrText",
+      component: _component,
       props: {
+        ...componentDefaults[_component],
         editable: true,
-        css: {
-          class: "",
-          style: {},
-        },
-        text: "Text",
       },
     };
     currentComponent.value.component.props.content.push(component);

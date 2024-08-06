@@ -95,6 +95,7 @@ const pagesOtions = [
 
 const emits = defineEmits([
   "add-slide",
+  "component-event",
   "delete-slide",
   "update:slide",
   "edit-props",
@@ -149,7 +150,7 @@ const updateSlide = (
 };
 
 const addSlide = () => {
-  emits("add-slide", {
+  const slide = {
     title: "",
     description: "",
     link: {
@@ -159,6 +160,10 @@ const addSlide = () => {
     background: {
       mobile: "https://picsum.photos/1100/322",
     },
+  };
+  emits("component-event", {
+    type: "add-slide",
+    data: slide,
   });
   setTimeout(() => {
     (mainSlider.value as any).$el.swiper.slideTo(props.slides.length);

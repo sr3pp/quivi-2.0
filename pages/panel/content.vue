@@ -38,7 +38,7 @@
       @media-gallery="EmitHandler($event, component, (data) => editPicture(data, mediaModal.toggle))"
       @icon-gallery="EmitHandler($event, component, editIcon)"
       @edit-props="editComponent($event, component, propsModal.toggle)"
-      @add-slide="component.props.slides.push($event)"
+      @component-event="componentEventHandler($event, component)"
       @delete-slide="component.props.slides.splice($event, 1)"
       @component-list="editComponent($event.component, component, componentsModal.toggle)"
       :options="options"
@@ -92,7 +92,10 @@
         
   SrModal(ref="componentsModal")
     template(#body)
-        button(@click="() => insertComponent(componentsModal.toggle)") clickmme
+      ClientOnly
+        ul
+          li(v-for="(component, i) in Components" :key="i")
+            button(@click="insertComponent(i, componentsModal.toggle)") {{ i }}
 
   SrModal.media-modal(ref="mediaModal")
     template(#body)
@@ -380,6 +383,14 @@ const deleteBrand = (idx: number) => {
   catalogBrands.value.splice(idx, 1);
 };
 
+const componentEventHandler = ($event: any, component: any) => {
+  if ($event.type == "add-slide") {
+    component.props.slides.push($event.data);
+  } else if ($event.$event) {
+    componentEventHandler($event.$event, $event.component);
+  }
+};
+
 watch(previewSw, () => {
   if (!previewSw.value) {
     proccessContent(content.value, true);
@@ -436,6 +447,12 @@ watch(previewSw, () => {
         gap: pxToRem(10);
       }
     }
+  }
+
+  .component-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pxToRem(10);
   }
 
   .sr-preview-controls-resolutions {

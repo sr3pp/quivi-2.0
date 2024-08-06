@@ -100,7 +100,7 @@ SrContainer
   SliderMain(
     :slides="catalog.slides"
     :editable="true" v-if="catalog.slides"
-    @add-slide="catalog.slides.push($event)"
+    @component-event="$event.type == 'add-slide' ? catalog.slides.push($event.data) : ''"
     @delete-slide="catalog.slides.splice($event, 1)"
     :options="options"
     @media-gallery="EmitHandler($event, catalog, (data) => editPicture(data, $emit('media-modal')))"
