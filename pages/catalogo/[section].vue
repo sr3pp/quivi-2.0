@@ -92,6 +92,14 @@ const product_options = {
     }
   }
 
+  .sr-container {
+    > * {
+      &:not(:last-child) {
+        margin-bottom: pxToRem(40);
+      }
+    }
+  }
+
   .product-slider {
     margin-bottom: pxToRem(40);
   }

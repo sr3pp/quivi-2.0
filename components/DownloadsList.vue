@@ -33,6 +33,7 @@ defineProps({
       flex-direction: column;
 
       max-width: 25%;
+      width: 100%;
       flex-shrink: 0;
       padding: pxToRem(20);
 

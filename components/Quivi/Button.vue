@@ -64,6 +64,7 @@ a.quivi-button {
   }
 }
 .quivi-button {
+  display: flex;
   position: relative;
   margin: auto;
   color: $color-white;

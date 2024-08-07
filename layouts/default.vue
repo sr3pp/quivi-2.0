@@ -65,9 +65,6 @@ hook("page:start", () => {
 hook("page:transition:finish", () => {
   loading.value = false;
 });
-hook("page:finish", () => {
-  //loading.value = false;
-});
 
 watch(loading, () => {
   if (!loading.value && cartSwitch.value) {
@@ -78,6 +75,7 @@ watch(loading, () => {
 onMounted(() => {
   if (process.client) {
     getCart();
+    loading.value = false;
   }
 });
 </script>
