@@ -308,8 +308,9 @@ const saveContent = async () => {
     method: "PUT",
     body: proccessContent(content.value, false),
   });
-  proccessContent(content.value, true);
+
   if (currentCatalog.value && currentCatalog.value.sw) {
+    proccessContent(currentCatalog.value.content, false);
     await $fetch(
       `/api/content?page=catalogo/${currentCatalog.value.card.slug}&section=all`,
       {
@@ -317,6 +318,7 @@ const saveContent = async () => {
         body: currentCatalog.value,
       },
     );
+    proccessContent(currentCatalog.value.content, true);
   }
   if (page.value == "catalogo/index") {
     await $fetch(`/api/content?page=catalogo/index&section=brands`, {
@@ -327,6 +329,8 @@ const saveContent = async () => {
       })),
     });
   }
+
+  proccessContent(content.value, true);
 };
 
 const editBackground = ($event: any) => {
