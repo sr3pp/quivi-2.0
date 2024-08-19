@@ -20,7 +20,7 @@ const schema = new mongoose.Schema(
     status: { type: Boolean, required: true, default: false },
     shipment: { type: mongoose.Schema.Types.ObjectId, ref: Shipment },
     payment: {
-      transaction: { type: String },
+      transaction: { type: String, default: null },
       method: {
         type: String,
         required: true,
