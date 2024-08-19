@@ -1,6 +1,7 @@
 const { public: config } = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
-  console.log("event", event);
+  const data = await readBody(event);
+  console.log("the webhook index: -------------", data);
   return true;
 });
