@@ -28,6 +28,17 @@ const paymentStepsText = [
   "Realiza la transferencia o deposito a alguna de estas cuentas: <br><small>(Usar número de orden como referencia de pago)</small>",
   `Envia un correo con tu <strong>número de orden</strong> en el <strong>asunto</strong> y el comprobante de pago a esta dirección: <strong>${contactMail}</strong>`,
 ];
+
+const order = await $fetch(`/api/sales/${order_id}`);
+await $fetch(`/api/send-mail`, {
+  method: "POST",
+  body: {
+    template: "sale",
+    to: order.shipment.email,
+    subject: "Resumen de compra Quivi.mx",
+    context: order,
+  },
+});
 </script>
 
 <style lang="scss" scoped>

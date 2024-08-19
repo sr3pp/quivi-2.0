@@ -15,6 +15,11 @@ defineProps({
 section.sale-detail
   SrText(:text="`Order: ${sale.order_no}`" class="title")
   SrText(:text="`Metodo de pago: ${getInvertedKey(sale.payment.method)}`" class="subtitle")
+  
+  template(v-if="sale.payment.method === 'EFE'")
+    SrFormInput(label="No. de Transaccion" v-model="sale.payment.transaction")
+    button(type="button" @click="console.log('aprove order')") Autorizar
+    
   SrGrid
     SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
       SrText(:text="`Sae: ${sale.sae_order}`" class="subtitle")

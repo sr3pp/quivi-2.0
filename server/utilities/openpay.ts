@@ -59,4 +59,20 @@ export class Openpay {
       return error;
     }
   };
+
+  createWebhook = async (data: any) => {
+    const endpoint = `${this.baseUrl}/webhooks`;
+
+    try {
+      const response = await $fetch(endpoint, {
+        method: "POST",
+        headers: this.headers,
+        body: JSON.stringify(data),
+      });
+
+      return response;
+    } catch (error) {
+      return error;
+    }
+  };
 }
