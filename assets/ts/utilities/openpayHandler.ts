@@ -7,7 +7,11 @@ export class openpayHandler {
     const orderId = buildOrderId();
     const { paymentMethod, total, shippmentData, paymentPlan } = data;
     const dataObj: any = {
-      method: paymentMethod.value.includes("card") ? "card" : "store", // switch to store if cash
+      method: paymentMethod.value.includes("card")
+        ? "card"
+        : paymentMethod.value === "spei"
+          ? "bank_account"
+          : "store", // switch to store if cash
       amount: total,
       description: `Compra en Quivi.mx. Orden: ${orderId}`,
       order_id: orderId,
@@ -46,6 +50,9 @@ export class openpayHandler {
 
     if (payment_method.url) {
       window.location.href = payment_method.url;
+    } else if (payment_method.url_spei && callback) {
+      window.open(payment_method.url_spei, "_blank");
+      callback(orderId);
     } else if (payment_method.type == "store" && callback) {
       callback(orderId, payment_method.reference);
     }

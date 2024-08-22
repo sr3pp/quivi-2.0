@@ -6,6 +6,9 @@
 </template>
 
 <script lang="ts" setup>
+const content = await $fetch("/api/content?page=_config/contact");
+const contactEmail = content.email;
+
 const contactForm: any = ref([
   {
     fields: [
@@ -45,7 +48,7 @@ const sendContactForm = async (contact: any) => {
   const data = {
     context: contact,
     template: "contact",
-    to: "asistente@quivi.mx",
+    to: contactEmail,
     subject: "Mensaje de formulario de contacto",
   };
 

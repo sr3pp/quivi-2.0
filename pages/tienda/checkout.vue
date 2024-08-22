@@ -98,8 +98,7 @@ const storePayment = async (orderId: string, reference: string) => {
   );
 };
 
-const speiHandler = async () => {
-  const orderId = buildOrderId();
+const speiHandler = async (orderId: string) => {
   const { order }: any = await proccesOrder(orderId);
   saveOrder(order);
   resetStorage();
@@ -113,7 +112,9 @@ const processPayment = async () => {
   loadingPayment.value = true;
 
   if (
-    ["credit-card", "debit-card", "cash"].includes(paymentMethod.value.value)
+    ["credit-card", "debit-card", "cash", "spei"].includes(
+      paymentMethod.value.value,
+    )
   ) {
     const data = {
       paymentMethod: paymentMethod.value,
@@ -132,12 +133,14 @@ const processPayment = async () => {
     */
 
     const openpay = new openpayHandler();
-    openpay.pay(data, storePayment);
+    if (paymentMethod.value.value == "cash") {
+      openpay.pay(data, storePayment);
+    } else {
+      openpay.pay(data, speiHandler);
+    }
   } else if (paymentMethod.value.value == "paypal") {
     const paypal = new paypalHandler();
     paypal.pay(cart.value.products, cart.value.total);
-  } else if (paymentMethod.value.value == "spei") {
-    speiHandler();
   }
 };
 
