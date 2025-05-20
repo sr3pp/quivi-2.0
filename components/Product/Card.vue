@@ -2,14 +2,14 @@
 .quivi-product-card
   .quivi-product-card-container
     figure.quivi-product-card-img
-        img(:src="`/products/${product._id}/${product.thumbs[0]}`" :alt="product.name")
+        img(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
     .quivi-product-card-body
         SrText(:text="product.name" class="title")
         SrText.sae(:text="`Clave: ${product.sae}`")
         SrText(:text="toPrice(processDiscount(product))" class="title")
         SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
     .quivi-product-card-footer
-        QuiviButton(:href="`/producto/${product.web}`" label="Ver Mas" :loading="false" :disabled="false")
+        QuiviButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
         Tooltip(position="top-right")
             SrText(:text="product.extra")
                 
