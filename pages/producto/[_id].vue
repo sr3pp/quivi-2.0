@@ -111,7 +111,7 @@ const setTotal = (value: number) => {
                           QuiviButton(label="Solicitar información" size="lg" variant="secondary")
                         .product-detail-existences(v-else)
                           Incrementor(:qty="qty" :max="product.existences" @updateQty="($event) => qty += $event")
-                          QuiviButton(v-if="product.qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
+                          QuiviButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
                         QuiviButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
                         QuiviButton(href="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")

@@ -8,7 +8,7 @@ ul.quivi-cart-list
             SrText(:text="`Web: ${product.web}`")
             Incrementor(v-if="editable" :qty="product.qty" @updateQty="updateQty(product, $event)" :max="product.existences")
             span.quivi-cart-list-product-max-label(v-if="product.qty == product.existences") Limite de stock, contactanos si necesitas más
-            SrText(v-else :text="`Qty: ${String(product.qty)}`")
+            SrText(:text="`Qty: ${String(product.qty)}`")
             .price-container
                 SrText(:text="toPrice(product.price)" :class="{discount: product.discount && product.discount > 0}")
                 SrText.price(:text="toPrice(processDiscount(product))" class="subtitle" v-if="product.discount && product.discount > 0")
