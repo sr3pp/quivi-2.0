@@ -17,6 +17,8 @@ ul.quivi-cart-list
 </template>
 
 <script lang="ts" setup>
+import { toPrice, processDiscount } from "~/assets/ts/utilities";
+import type { Product } from "~/types";
 defineProps({
   products: {
     type: Array,
