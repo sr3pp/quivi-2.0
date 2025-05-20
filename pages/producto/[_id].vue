@@ -104,8 +104,8 @@ const setTotal = (value: number) => {
 
                     .product-detail-price
                         .price-container
-                          SrText(:text="toPrice(processDiscount(product))" class="title" v-if="product.discount")
-                          SrText.discount(:text="toPrice(product.price)" class="subtitle")
+                          SrText(:text="toPrice(processDiscount(product))" class="title" v-if="product.discount && product.discount > 0")
+                          SrText(:text="toPrice(product.price)" class="subtitle" :class="{discount: product.discount && product.discount > 0}")
                         .product-detail-no-existences(v-if="!existences")
                           SrText(text="Producto no disponible")
                           QuiviButton(label="Solicitar información" size="lg" variant="secondary")
