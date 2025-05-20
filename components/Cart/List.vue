@@ -7,19 +7,16 @@ ul.quivi-cart-list
             SrText(:text="`Marca: ${product.brand.name}`")
             SrText(:text="`Web: ${product.web}`")
             Incrementor(v-if="editable" :qty="product.qty" @updateQty="updateQty(product, $event)" :max="product.existences")
+            span.quivi-cart-list-product-max-label(v-if="product.qty == product.existences") Limite de stock, contactanos si necesitas más
             SrText(v-else :text="`Qty: ${String(product.qty)}`")
             .price-container
-                SrText.discount(:text="toPrice(product.price)")
-                SrText.price(:text="toPrice(processDiscount(product))" class="subtitle" v-if="product.discount")
+                SrText(:text="toPrice(product.price)" :class="{discount: product.discount && product.discount > 0}")
+                SrText.price(:text="toPrice(processDiscount(product))" class="subtitle" v-if="product.discount && product.discount > 0")
         button(@click="removeFromCart(product)" v-if="editable")
             SrIcon(name="trash-o")
 </template>
 
 <script lang="ts" setup>
-import { h } from "vue";
-import { toPrice, processDiscount } from "~/assets/ts/utilities";
-import type { Product } from "~/types";
-
 defineProps({
   products: {
     type: Array,
@@ -67,6 +64,14 @@ const { removeFromCart, updateQty } = useCart();
       flex-shrink: 0;
       margin-right: pxToRem(20);
       margin-bottom: auto;
+    }
+
+    &-max-label {
+      font-size: pxToRem(10);
+      color: $color-quivi-red;
+      margin-left: auto;
+      margin-right: pxToRem(10);
+      margin-top: auto;
     }
 
     &-info {
