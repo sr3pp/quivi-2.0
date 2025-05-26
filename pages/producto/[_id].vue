@@ -33,6 +33,8 @@ const detailExcludes = [
   "web",
   "priority",
   "sae",
+  "qty",
+  "existences",
   "createdAt",
   "updatedAt",
 ];
@@ -87,6 +89,24 @@ const printValue = (value: any) => {
 const setTotal = (value: number) => {
   product.value.qty = value;
 };
+
+const getLabel = (key: string) => {
+  const labels: Record<string, string> = {
+    brand: "Marca",
+    car_brands: "Marcas de autos",
+    category: "Categoría",
+    extra: "Extra",
+    line: "Línea",
+    meassure_unity: "Unidad de medida",
+    models: "Modelos",
+    motors: "Motores",
+    segment: "Segmento",
+    subcategory: "Subcategoría",
+    years: "Años",
+    existences: "Existencias",
+  };
+  return labels[key] || key.charAt(0).toUpperCase() + key.slice(1);
+};
 </script>
 
 <template lang="pug">
@@ -99,13 +119,13 @@ const setTotal = (value: number) => {
             SrGridColumn(:size="{mobile: '1', sm: '3/5'}")
                 .product-detail-info(v-if="product")
                     SrText(:text="product.name" class="title")
-                    SrText(:text="`Refaccion: ${product.web}`" class="subtitle")
+                    SrText(:text="`Refaccion: ${product.web}`" class="title")
                     SrText(:text="product.extra")
 
                     .product-detail-price
                         .price-container
                           SrText(:text="toPrice(processDiscount(product))" class="title" v-if="product.discount && product.discount > 0")
-                          SrText(:text="toPrice(product.price)" class="subtitle" :class="{discount: product.discount && product.discount > 0}")
+                          SrText(:text="toPrice(product.price)" :class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}")
                         .product-detail-no-existences(v-if="!existences")
                           SrText(text="Producto no disponible")
                           QuiviButton(label="Solicitar información" size="lg" variant="secondary")
@@ -120,7 +140,7 @@ const setTotal = (value: number) => {
                 ul.product-detail-details
                     template(v-for="([key, value], i) in Object.entries(product)")
                         li.product-detail-detail(v-if="!detailExcludes.includes(key)" :key="i")
-                            SrText.label(:text="`${key}:`")
+                            SrText.label(:text="`${getLabel(key)}:`")
                             SrText(:text="printValue(value)")
             SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
                 SrText(text="DESCRIPCION DEL PRODUCTO" class="title")

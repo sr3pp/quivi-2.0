@@ -28,7 +28,6 @@ const changeThumb = (thumb: any) => {
       template(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i")
         li.quivi-product-thumbs-item(v-if="thumb !== currentThumb")
           button(@click="changeThumb(thumb)")
-            p {{ thumb }}
             SrPicture(:src="`/products/${productId}/${thumb}`" :alt="productName")
 </template>
 

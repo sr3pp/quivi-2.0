@@ -59,13 +59,13 @@ defineProps({
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-grow: 1;
   position: relative;
   justify-content: center;
   width: 100%;
   border: none;
   border-radius: pxToRem(10);
   margin-bottom: pxToRem(20);
-  padding: pxToRem(4);
   background: $color-white;
   transition: transform 0.35s ease-in-out;
 
@@ -76,6 +76,9 @@ defineProps({
     background: $color-white;
     border-radius: pxToRem(10);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
   }
 
   &::before {
@@ -137,15 +140,28 @@ defineProps({
     padding-right: pxToRem(20);
     padding-left: pxToRem(20);
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
 
     .sr-text,
     .sae {
       margin-bottom: pxToRem(10);
     }
 
+    .sae {
+      display: none;
+    }
+
+    .title {
+      margin-top: auto;
+      --text-size-sm: #{pxToRem(24)};
+    }
+
     .discount {
       color: $color-quivi-red;
       text-decoration: line-through;
+      --text-size-sm: #{pxToRem(16)};
     }
   }
 
@@ -164,6 +180,7 @@ defineProps({
     justify-content: space-between;
     align-items: center;
     padding: pxToRem(20);
+    margin-top: auto;
 
     .quivi-button {
       min-width: pxToRem(120);
