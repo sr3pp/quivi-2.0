@@ -21,7 +21,7 @@ export const modelPagination = async (
   } else {
     items = await model
       .find(query)
-      .sort(order ? { [order]: -1 } : {})
+      .sort(order ? { [order]: 1 } : {})
       .populate(populations)
       .skip((page - 1) * perPage)
       .limit(perPage);

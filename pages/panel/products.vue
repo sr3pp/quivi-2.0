@@ -345,11 +345,18 @@ const editProduct = (_product: any) => {
         );
         field.props.productId = product._id;
       } else {
-        field.props.value =
-          product[field.props.name] &&
-          typeof product[field.props.name] === "object"
-            ? product[field.props.name]._id
-            : String(product[field.props.name]);
+        if (field.props.name === "discount") {
+          field.props.value =
+            product.discount === null || product.discount === undefined
+              ? 0
+              : product.discount;
+        } else {
+          field.props.value =
+            product[field.props.name] &&
+            typeof product[field.props.name] === "object"
+              ? product[field.props.name]._id
+              : String(product[field.props.name]);
+        }
       }
     });
   });

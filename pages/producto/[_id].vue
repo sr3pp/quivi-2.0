@@ -189,6 +189,7 @@ const getLabel = (key: string) => {
 
   &-detail {
     display: flex;
+    text-transform: uppercase;
 
     &:not(:last-child) {
       margin-bottom: pxToRem(10);
