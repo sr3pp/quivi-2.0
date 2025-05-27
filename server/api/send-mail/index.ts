@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     html: info,
   };
 
-  await new Promise((resolve, reject) => {
+  const response = await new Promise((resolve, reject) => {
     mailHandler.sendMail(mailOptions, (error: any, info: any) => {
       if (error) {
         console.log("Error occurred:", error.message);
@@ -32,4 +32,6 @@ export default defineEventHandler(async (event) => {
       }
     });
   });
+
+  return response;
 });

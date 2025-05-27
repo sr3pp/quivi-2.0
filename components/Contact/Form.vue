@@ -1,13 +1,18 @@
 <template lang="pug">
 .contact-form
-    SrForm(:fieldsets="contactForm" @submit="sendContactForm" submit="hidden")
+    SrForm(v-if="!sent" :fieldsets="contactForm" @submit="sendContactForm" submit="hidden")
       template(#submit)
-        QuiviButton(type="submit" label="Enviar" variant="secondary")
+        QuiviButton(type="submit" label="Enviar" variant="secondary" :disabled="sending")
+    .success(v-else)
+      SrText(text="¡Mensaje enviado con éxito!" class="subtitle" alignment="center")
 </template>
 
 <script lang="ts" setup>
 const content = await $fetch("/api/content?page=_config/contact");
 const contactEmail = content.email;
+
+const sending: Ref<boolean> = ref(false);
+const sent = ref<boolean>(true);
 
 const contactForm: any = ref([
   {
@@ -45,6 +50,7 @@ const contactForm: any = ref([
   },
 ]);
 const sendContactForm = async (contact: any) => {
+  sending.value = true;
   const data = {
     context: contact,
     template: "contact",
@@ -52,10 +58,18 @@ const sendContactForm = async (contact: any) => {
     subject: "Mensaje de formulario de contacto",
   };
 
-  await $fetch("/api/send-mail", {
-    method: "POST",
-    body: data,
-  });
+  try {
+    await $fetch("/api/send-mail", {
+      method: "POST",
+      body: data,
+    });
+    sent.value = true;
+  } catch (error) {
+    console.error("Error sending contact form:", error);
+    sent.value = false;
+  }
+
+  sending.value = false;
 };
 </script>
 
@@ -77,6 +91,13 @@ const sendContactForm = async (contact: any) => {
     .quivi-button {
       margin-right: 0;
     }
+  }
+
+  .success {
+    min-height: pxToRem(200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 </style>
