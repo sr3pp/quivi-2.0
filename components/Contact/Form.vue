@@ -12,7 +12,7 @@ const content = await $fetch("/api/content?page=_config/contact");
 const contactEmail = content.email;
 
 const sending: Ref<boolean> = ref(false);
-const sent = ref<boolean>(true);
+const sent = ref<boolean>(false);
 
 const contactForm: any = ref([
   {
