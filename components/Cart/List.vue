@@ -1,7 +1,7 @@
 <template lang="pug">
 ul.quivi-cart-list 
     li.quivi-cart-list-product(v-for="(product, i) in products" :key="i")
-        SrPicture(:src="`/products/${product.brand._id}/${product.thumbs[0]}`" :alt="product.name")
+        SrPicture(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
         .quivi-cart-list-product-info
             SrText(:text="product.name" class="subtitle")
             SrText(:text="`Marca: ${product.brand.name}`")
