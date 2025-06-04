@@ -110,7 +110,6 @@ defineProps({
     transition: box-shadow 0.35s ease;
     img {
       width: 100%;
-      height: 100%;
       object-fit: cover;
       transition: transform 0.35s ease;
     }
