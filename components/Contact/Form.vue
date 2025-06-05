@@ -29,6 +29,26 @@ const contactForm: any = ref([
       {
         component: "SrFormInput",
         props: {
+          label: "Teléfono",
+          value: "",
+          type: "tel",
+          name: "tel",
+          required: false,
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
+          label: "Whatsapp",
+          value: "",
+          type: "tel",
+          name: "whatsapp",
+          required: false,
+        },
+      },
+      {
+        component: "SrFormInput",
+        props: {
           label: "Correo Electronico",
           value: "",
           name: "email",

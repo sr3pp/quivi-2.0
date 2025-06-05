@@ -18,9 +18,10 @@ export default defineNuxtConfig({
         url: process.env.MONGO_URL,
       },
       email: {
-        host: process.env.EMAIL_HOST,
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        host: process.env.NODE_ENV === 'production' ? process.env.EMAIL_HOST : process.env.TRAP_HOST,
+        port: process.env.NODE_ENV === 'production' ? process.env.EMAIL_PORT : process.env.TRAP_PORT,
+        user: process.env.NODE_ENV === 'production' ? process.env.EMAIL_USER : process.env.TRAP_USER,
+        pass: process.env.NODE_ENV === 'production' ? process.env.EMAIL_PASS : process.env.TRAP_PASS,
         //@ts-ignore
         testMail: process.env.EMAIL_TEST_MAIL,
       },

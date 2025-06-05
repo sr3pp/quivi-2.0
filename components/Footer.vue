@@ -17,7 +17,7 @@ footer.quivi-footer
                     li.quivi-footer-menu-item
                         button(@click="toggleCart") Carrito
                     li.quivi-footer-menu-item
-                        NuxtLink(to="/") Tienda
+                        NuxtLink(to="/tienda") Tienda
                     li.quivi-footer-menu-item
                         button(@click="$emit('loginModal')") Registro
             SrGridColumn(:size="{mobile: '1', sm: '3/5'}" class="column")
@@ -43,7 +43,7 @@ const { toggleCart } = useCart();
 const footer = {
   navegacion: [
     {
-      label: "Tienda",
+      label: "Home",
       url: "/",
     },
     {

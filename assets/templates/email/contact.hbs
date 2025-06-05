@@ -8,10 +8,23 @@
     <p>
       {{name}}
       se puso en contacto.
-      <br />
+    </p>
+    <p>
       E-mail:
       {{email}}
     </p>
+    {{#if tel}}
+    <p>
+      Tel:
+      {{tel}}
+    </p>
+    {{/if}}
+    {{#if whatsapp}}
+    <p>
+      Whatsapp:
+      {{whatsapp}}
+    </p>
+    {{/if}}
     <p>
       <strong>Mensaje:</strong>
       {{message}}

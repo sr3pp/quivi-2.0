@@ -19,7 +19,7 @@ const getCarBrands = async (): Promise<any[]> => {
 const carBrands = await getCarBrands();
 
 const carBrandsOptions = carBrands.map((brand: any) => ({
-  label: brand.name,
+  label: brand.name.toUpperCase(),
   value: brand._id,
   models: brand.models,
 }));
@@ -30,7 +30,7 @@ const getCategories = async (): Promise<any[]> => {
 };
 const categories = await getCategories();
 const categoryOptions = categories.map((category: any) => ({
-  label: category.name,
+  label: category.name.toUpperCase(),
   value: category._id,
 }));
 
@@ -42,7 +42,7 @@ const getMotors = async (): Promise<any[]> => {
 const motors = await getMotors();
 const motorsOptions = ref(
   motors.map((motor: any) => ({
-    label: motor.name,
+    label: motor.name.toUpperCase(),
     value: motor._id,
   })),
 );
@@ -121,7 +121,7 @@ const setChildren = (item: any) => {
     const { models } = item.options.find((opt: any) => opt.label == item.value);
 
     filtersForm.value[1].options = models.map((model: any) => ({
-      label: model.name,
+      label: model.name.toUpperCase(),
       value: model._id,
     }));
   } else if (item.label == "Submarca") {
@@ -138,7 +138,7 @@ const setChildren = (item: any) => {
     }
 
     filtersForm.value[3].options = newMotors.map((motor: any) => ({
-      label: motor.name,
+      label: motor.name.toUpperCase(),
       value: motor._id,
     }));
   }
