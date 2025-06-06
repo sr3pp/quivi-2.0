@@ -14,7 +14,7 @@ const config = {
 export const mailHandler = nodemailer.createTransport({
   host: config.email.host,
   port: config.email.port, // Add this line
-  secure: process.env.NODE_ENV === 'production', // true for 465, false for 587
+  secure: process.env.NODE_ENV === "production", // true for 465, false for 587
   auth: {
     user: config.email.user,
     pass: config.email.pass,

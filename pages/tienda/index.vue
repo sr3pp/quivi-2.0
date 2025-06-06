@@ -3,14 +3,13 @@
     SrGrid
         SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column store-filters")
           SrText(text="Encuentra lo que necesitas." class="subtitle")
-          ProductFilters(@filter="filterProducts")
+          ProductFilters(@filter="filterProducts" :isFiltered="search || filters")
         SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column products")
           SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.limite} MXN`")
           template(v-for="component in content" :key="component.component")
             component(v-bind:is="component.component" v-bind="component.props")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
-              QuiviButton(href="/tienda" label="Limpiar Filtros")
           SrGrid(tag="ul" class="product-grid")
               SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
@@ -141,7 +140,7 @@ const filterProducts = async (filters: any) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: pxToRem(20);
+    padding: pxToRem(20);
 
     .quivi-button {
       margin-right: pxToRem(20);

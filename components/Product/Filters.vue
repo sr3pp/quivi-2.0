@@ -8,9 +8,15 @@ ul.quivi-product-filters
                 option(v-for="(opt, j) in item.options" :key="j" :id="opt.value" :value="opt.label")
     li.quivi-product-filters-item
       QuiviButton(@click="filter" label="Filtrar")
+    li.quivi-product-filters-item
+      QuiviButton(v-if="isFiltered" href="/tienda" label="Limpiar Filtros")
 </template>
 
 <script lang="ts" setup>
+defineProps<{
+  isFiltered?: boolean;
+}>();
+
 const getCarBrands = async (): Promise<any[]> => {
   const { data: brands }: any = await useFetch("/api/car-brand");
   return brands.value;
@@ -92,7 +98,7 @@ const filtersForm: any = ref([
     key: "motors",
   },
   {
-    label: "Categoria",
+    label: "Refacción",
     value: "",
     placeholder: "Selecciona la categoria",
     options: categoryOptions,

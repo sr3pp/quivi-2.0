@@ -48,7 +48,12 @@ defineProps({
           style: solid;
         }
       }
-      &-item {
+    }
+  }
+  &-submenu {
+    &-item {
+      a {
+        word-break: break-all;
       }
     }
   }
