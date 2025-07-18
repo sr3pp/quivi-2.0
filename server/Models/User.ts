@@ -11,6 +11,7 @@ const schema: Schema<User> = new mongoose.Schema(
       name: { type: String, required: true },
       lastname: { type: String, required: true },
       phone: { type: String, required: true },
+      rfc: { type: String, required: true, unique: true },
     },
   },
   { timestamps: true, strict: true, strictQuery: true },
