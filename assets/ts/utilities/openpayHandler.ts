@@ -23,7 +23,8 @@ export class openpayHandler {
       },
       confirm: "false",
       send_email: "false",
-      redirect_url: `${window.location.host}/tienda/checkout?order_id=${orderId}`,
+      // Use full origin to avoid protocol/host mismatches in redirects
+      redirect_url: `${window.location.origin}/tienda/checkout?order_id=${orderId}`,
     };
 
     //TODO add payment plan (MSI)
@@ -49,6 +50,14 @@ export class openpayHandler {
     const { payment_method, status, id }: any = response;
 
     if (payment_method.url) {
+      // For card payments: pre-register order before redirecting
+      if (callback) {
+        try {
+          callback(orderId, id);
+        } catch (e) {
+          // swallow callback errors to not block redirect
+        }
+      }
       window.location.href = payment_method.url;
     } else if (payment_method.url_spei && callback) {
       window.open(payment_method.url_spei, "_blank");

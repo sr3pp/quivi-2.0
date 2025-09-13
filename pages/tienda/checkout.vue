@@ -105,6 +105,14 @@ const speiHandler = async (orderId: string) => {
   useRouter().push(`/tienda/order/spei?order_id=${order.order_no}`);
 };
 
+// Pre-register card payments so sales always exist before redirect
+const cardPendingHandler = async (orderId: string, transactionId: string) => {
+  const result: any = await proccesOrder(orderId, transactionId, false);
+  if (result && result.order) {
+    await saveOrder(result.order);
+  }
+};
+
 const processPayment = async () => {
   if (termsSw.value) {
     termsModalSw.value = false;
@@ -133,10 +141,13 @@ const processPayment = async () => {
     */
 
     const openpay = new openpayHandler();
-    if (paymentMethod.value.value == "cash") {
+    if (paymentMethod.value.value === "cash") {
       openpay.pay(data, storePayment);
-    } else {
+    } else if (paymentMethod.value.value === "spei") {
       openpay.pay(data, speiHandler);
+    } else {
+      // credit/debit card: pre-register, then redirect handled by Openpay
+      openpay.pay(data, cardPendingHandler);
     }
   } else if (paymentMethod.value.value == "paypal") {
     const paypal = new paypalHandler();
@@ -149,7 +160,11 @@ const resetStorage = () => {
   emptyCart();
 };
 
-const proccesOrder = async (id: string, transaction?: string) => {
+const proccesOrder = async (
+  id: string,
+  transaction?: string,
+  paid: boolean = false,
+) => {
   const user = null;
 
   const partidas = cart.value.products.map(
@@ -189,14 +204,12 @@ const proccesOrder = async (id: string, transaction?: string) => {
       })),
       order_no: id,
       sae_order: sae ? sae : null,
-      status: ["cash", "spei"].includes(paymentMethod.value.value as string)
-        ? false
-        : true,
+      status: paid,
       shipping: shipping.value,
       payment: {
         method: paymentKeyDict[(paymentMethod.value as any).value] || "",
         transaction: transaction || "",
-        status: true,
+        status: paid,
         installments: 1,
       },
       discount: 0,
@@ -233,16 +246,32 @@ const transactionHandler = async () => {
     if (status === "completed") {
       verifyingPayment.value = false;
 
-      const { order }: any = await proccesOrder(
-        registeredOrder as string,
-        transactionId as string,
-      );
-
       try {
-        if (order) {
-          saveOrder(order);
-          resetStorage();
+        // Update existing sale payment status if already pre-registered
+        const updated: any = await $fetch("/api/sales/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: {
+            order_no: registeredOrder,
+            status: true,
+            payment: { status: true, transaction: transactionId },
+          },
+        }).catch(() => null);
+
+        if (!updated) {
+          // Fallback: create the order now if it wasn't pre-registered
+          const { order }: any = await proccesOrder(
+            registeredOrder as string,
+            transactionId as string,
+            true,
+          );
+          if (order) {
+            await saveOrder(order);
+          }
         }
+        resetStorage();
 
         //if payment method is not cash redirect to success page
         if (payment_method.type !== "store") {
@@ -268,6 +297,7 @@ const transactionHandler = async () => {
       const { order }: any = await proccesOrder(
         registeredOrder as string,
         paypal_order_id as string,
+        true,
       );
       saveOrder(order);
       resetStorage();
