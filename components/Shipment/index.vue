@@ -1,4 +1,3 @@
-import type shipment from '~/server/api/order/shipment';
 <script lang="ts" setup>
 import { toPrice } from "~/assets/ts/utilities";
 defineProps({

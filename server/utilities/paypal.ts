@@ -18,7 +18,7 @@ export class Paypal {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${btoa(`${this.client}:${this.secret}`)}`,
+          Authorization: `Basic ${Buffer.from(`${this.client}:${this.secret}`).toString("base64")}`,
         },
         body: "grant_type=client_credentials",
       },
