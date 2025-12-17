@@ -20,20 +20,21 @@ const getNav = (url: string) => {
 
 const getData = (file: any, url: string) => {
   const stats = fs.statSync(url);
-  if (!stats.isDirectory() && file !== "index.json") {
-    const read = fs.readFileSync(url, "utf-8");
-    const data = JSON.parse(read);
+  // Skip if it's a directory, index.json, or not a JSON file
+  if (stats.isDirectory() || file === "index.json" || !file.endsWith(".json")) {
     return {
-      label: data.card?.label || data.navigation?.label || data.label,
-      url: url.replace(dir, "").replace("/content", "").replace(".json", ""),
-      order: data.card?.order || data.order,
+      label: "",
+      url: "",
+      order: 0,
     };
   }
 
+  const read = fs.readFileSync(url, "utf-8");
+  const data = JSON.parse(read);
   return {
-    label: "",
-    url: "",
-    order: 0,
+    label: data.card?.label || data.navigation?.label || data.label,
+    url: url.replace(dir, "").replace("/content", "").replace(".json", ""),
+    order: data.card?.order || data.order,
   };
 };
 
