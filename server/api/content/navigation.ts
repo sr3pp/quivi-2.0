@@ -39,35 +39,71 @@ const getData = (file: any, url: string) => {
 };
 
 export default defineEventHandler((e: any) => {
-  const navigation: any = [];
-
-  const getNames = (url: any, obj: any) => {
-    const files = fs.readdirSync(url);
-    files.forEach((file) => {
-      const newUrl = join(url, file);
-
-      if (fs.statSync(newUrl).isDirectory() && !["_", "."].includes(file[0])) {
-        obj.push({
-          ...getNav(join(newUrl, "index.json")),
-          url: "/" + file,
-          items: fs
-            .readdirSync(newUrl)
-            .map((f: string) => getData(f, join(newUrl, f)))
-            .filter(
-              (el: any) => el.label !== file && el.label && el.label[0] !== "_",
-            )
-            .sort((a: any, b: any) => a.order - b.order),
-        });
-        //getNames(newUrl, obj[file]);
-      } else if (!["_", "."].includes(file[0])) {
-        obj.push({
-          ...getNav(newUrl),
-          url: "/" + parseJsonName(file),
-        });
-      }
-    });
-  };
-
-  getNames(join(dir, "content"), navigation);
-  return navigation.sort((a: any, b: any) => a.order - b.order);
+  return [
+    {
+      order: 0,
+      label: "Home",
+      url: "/",
+    },
+    {
+      order: 2,
+      label: "Catalogo",
+      url: "/catalogo",
+      items: [
+        {
+          label: "Acumuladores",
+          url: "/catalogo/acumuladores",
+          order: 1,
+        },
+        {
+          label: "Filtros Sakura",
+          url: "/catalogo/filtros",
+          order: 2,
+        },
+        {
+          label: "Plafones Record",
+          url: "/catalogo/plafones",
+          order: 3,
+        },
+        {
+          label: "Productos Luk",
+          url: "/catalogo/luk",
+          order: 4,
+        },
+        {
+          label: "Rodamientos FAG",
+          url: "/catalogo/rodamientos_fag",
+          order: 5,
+        },
+        {
+          label: "Productos INA",
+          url: "/catalogo/ina",
+          order: 6,
+        },
+        {
+          label: "Frenos FAG",
+          url: "/catalogo/frenos_fag",
+          order: 7,
+        },
+        {
+          label: "Bases y Soportes Eagle",
+          url: "/catalogo/bases_soportes_eagle",
+          order: 8,
+        },
+      ],
+    },
+    {
+      order: 3,
+      label: "Nosotros",
+      url: "/nosotros",
+      items: [],
+    },
+    {
+      order: 3,
+      label: "Compra Aqui",
+      highLight: true,
+      url: "/tienda",
+      items: [],
+    },
+  ];
 });
