@@ -1,4 +1,4 @@
-import { modelPagination } from "~/server/utilities";
+import { modelPagination } from "../../utilities";
 import { Shipment } from "../../Models";
 
 export default defineEventHandler(async (event) => {

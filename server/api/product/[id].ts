@@ -1,5 +1,4 @@
-import { Product } from "~/types";
-import { Product as ProductModel } from "~/server/Models";
+import { Product as ProductModel } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const params = getRouterParams(event);
@@ -15,5 +14,5 @@ export default defineEventHandler(async (event) => {
     "segment",
   ]);
 
-  return product as Product;
+  return product;
 });

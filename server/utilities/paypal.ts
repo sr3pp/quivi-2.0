@@ -1,5 +1,3 @@
-import { Product } from "~/types";
-
 export class Paypal {
   baseUrl = "";
   client = "";
@@ -26,7 +24,7 @@ export class Paypal {
     this.token = access_token;
   }
 
-  async createOrder(products: Product[], order_id: string, total: number) {
+  async createOrder(products: any[], order_id: string, total: number) {
     const return_url = `${process.env.APP_URL}/tienda/checkout?order_id=${order_id}`;
 
     const order = {

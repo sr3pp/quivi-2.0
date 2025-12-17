@@ -1,4 +1,4 @@
-import { Openpay } from "~/server/utilities";
+import { Openpay } from "../../../utilities";
 
 const { public: config } = useRuntimeConfig();
 

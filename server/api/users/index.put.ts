@@ -1,4 +1,4 @@
-import { User as UserModel } from "~/server/Models";
+import { User as UserModel } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const data = await readBody(event);

@@ -1,7 +1,6 @@
-import { User } from "~/types";
-import { User as UserModel } from "~/server/Models";
+import { User as UserModel } from "../../Models";
 
 export default defineEventHandler(async () => {
-  const users: User[] = await UserModel.find();
+  const users = await UserModel.find();
   return users;
 });

@@ -1,7 +1,7 @@
 import fs from "fs";
 import { join } from "pathe";
 
-import { Product as ProductModel } from "~/server/Models";
+import { Product as ProductModel } from "../../Models";
 
 const baseDir = process.cwd();
 const productsDir = join(baseDir, "public", "products");

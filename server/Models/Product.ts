@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { Product } from "~/types";
 import ProductBrand from "./ProductBrand";
 import Category from "./Category";
 import Subcategory from "./Subcategory";
@@ -8,7 +7,7 @@ import CarModel from "./CarModel";
 import Segment from "./Segment";
 import Motor from "./Motor";
 
-const schema: Schema<Product> = new mongoose.Schema(
+const schema: Schema<any> = new mongoose.Schema(
   {
     name: { type: String, required: true, maxlength: 40 },
     web: { type: String, required: true, unique: true },

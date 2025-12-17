@@ -1,4 +1,4 @@
-import { Sale } from "~/server/Models";
+import { Sale } from "../../Models";
 
 export default defineEventHandler(async () => {
   const sales: any = await Sale.find()

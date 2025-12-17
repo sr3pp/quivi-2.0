@@ -1,4 +1,4 @@
-import { Subcategory } from "~/server/Models";
+import { Subcategory } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const categories = await Subcategory.find();

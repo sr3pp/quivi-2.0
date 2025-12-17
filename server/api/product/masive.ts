@@ -1,4 +1,3 @@
-import { Product } from "~/types";
 import readXlsxFile from "read-excel-file/node";
 import {
   Category,
@@ -9,7 +8,7 @@ import {
   ProductBrand,
   Segment,
   Product as ProductModel,
-} from "~/server/Models";
+} from "../../Models";
 
 const processName = (name: string) => {
   return String(name).toLowerCase().trim();

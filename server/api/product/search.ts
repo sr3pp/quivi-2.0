@@ -1,4 +1,4 @@
-import { searchHandler } from "~/server/utilities";
+import { searchHandler } from "../../utilities";
 
 export default defineEventHandler(async (event) => {
   const { limit = 10, perPage = 16, query }: any = getQuery(event);

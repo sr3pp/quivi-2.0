@@ -1,3 +1,5 @@
+import { resolve } from "pathe";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
@@ -79,33 +81,36 @@ export default defineNuxtConfig({
     dirs: ["~/components"],
   },
   modules: [
-    "sr-content-2",
     "@vueuse/nuxt",
     "nuxt-swiper",
     "@nuxtjs/eslint-module",
+    "@nuxt/content",
+    "@nuxt/ui",
     // "@productdevbook/chatwoot",
   ],
   css: [
+    "@/assets/css/main.css",
     "@/assets/scss/main.scss",
     "@/assets/scss/transitions/index.scss",
     "@/assets/scss/components.scss",
     "normalize.css/normalize.css",
   ],
   nitro: {
-    plugins: ["@/server/DB.ts"],
+    plugins: [resolve(process.cwd(), "server/DB.ts")],
   },
   vite: {
     css: {
       preprocessorOptions: {
         scss: {
           additionalData: ` 
-            @import "sr-content-2/assets/scss/utilities/index.scss";
-            @import "sr-content-2/assets/scss/main.scss";
-            @import "@/assets/fonts/index.scss";
-            @import "@/assets/scss/tokens.scss";`,
+            @use "@/assets/fonts/index.scss" as *;
+            @use "@/assets/scss/tokens.scss" as *;`,
         },
       },
     },
+  },
+  content: {
+    documentDriven: false,
   },
   //@ts-ignore
   chatwoot: {

@@ -1,0 +1,17 @@
+@use "./pxToRem.scss";
+
+@mixin responsiveVars() {
+  $breakpoints: (
+    "": pxToRem(320),
+    "-sm": pxToRem(768),
+    "-md": pxToRem(1024),
+    "-lg": pxToRem(1280),
+    "-xl": pxToRem(1920),
+  );
+
+  @each $breakpoint, $min-width in $breakpoints {
+    @media (min-width: $min-width) {
+      @content ($breakpoint);
+    }
+  }
+}

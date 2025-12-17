@@ -1,4 +1,4 @@
-import { ProductBrand } from "~/server/Models";
+import { ProductBrand } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const productBrands = await ProductBrand.find().sort({ name: 1 });

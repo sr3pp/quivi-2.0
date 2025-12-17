@@ -1,6 +1,5 @@
 import fs from "fs";
 import { join } from "pathe";
-import { getContent } from "~/server/utilities";
 const dir = process.cwd();
 export default defineEventHandler(async (e) => {
   const { page, section } = getQuery(e);
@@ -8,7 +7,16 @@ export default defineEventHandler(async (e) => {
 
   if (!page) return [];
 
-  const url = join(dir, `content/${String(page).replace(/\./g, "")}.json`);
+  const contentDir = join(dir, "content");
+  if (!fs.existsSync(contentDir)) {
+    fs.mkdirSync(contentDir, { recursive: true });
+  }
+
+  const url = join(contentDir, `${String(page).replace(/\./g, "")}.json`);
+
+  if (!fs.existsSync(url)) {
+    fs.writeFileSync(url, JSON.stringify({ content: [] }, null, 2));
+  }
 
   try {
     let jsonFile = JSON.parse(fs.readFileSync(url, "utf-8"));

@@ -1,6 +1,5 @@
 import fs from "fs";
 import { join } from "pathe";
-import { Directory } from "sr-content-2/types";
 
 const basePath = process.cwd();
 
@@ -13,7 +12,7 @@ const readAsync = (path: string) => {
   });
 };
 
-const getDirectory = async (directory: Directory, path: string) => {
+const getDirectory = async (directory: any, path: string) => {
   const dir = fs.statSync(path);
 
   if (dir.isDirectory()) {

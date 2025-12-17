@@ -1,4 +1,4 @@
-import { filterHandler } from "~/server/utilities/filterHandler";
+import { filterHandler } from "../../utilities/filterHandler";
 
 export default defineEventHandler(async (event) => {
   const { page = 1, limit = 10, perPage = 16 }: any = getQuery(event);

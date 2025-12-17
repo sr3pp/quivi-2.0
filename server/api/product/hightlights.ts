@@ -1,10 +1,9 @@
-import { Product } from "~/types";
-import { Product as ProductModel, ProductBrand } from "~/server/Models";
+import { Product as ProductModel, ProductBrand } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const { codes } = await readBody(event);
 
-  const products: Product[] = await ProductModel.find({
+  const products = await ProductModel.find({
     web: { $in: codes },
   });
 

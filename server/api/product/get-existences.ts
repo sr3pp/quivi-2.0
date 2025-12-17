@@ -1,4 +1,4 @@
-import { saeHelper } from "~/server/utilities";
+import { saeHelper } from "../../utilities";
 
 export default defineEventHandler(async (event) => {
   const { sae, type }: { sae: string; type: string } = getQuery(event);

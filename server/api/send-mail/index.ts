@@ -1,7 +1,7 @@
-import { renderTemplate } from "~/server/utilities";
-import { mailHandler } from "~/server/utilities/mailHandler";
+import { renderTemplate } from "../../utilities";
+import { mailHandler } from "../../utilities/mailHandler";
 
-const templateDir = "assets/templates/email/";
+const templateDir = "app/assets/templates/email/";
 
 export default defineEventHandler(async (event) => {
   const { context, template, to, subject } = await readBody(event);

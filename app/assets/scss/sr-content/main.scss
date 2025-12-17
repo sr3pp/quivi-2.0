@@ -1,0 +1,50 @@
+* {
+  &.editable {
+    padding-top: pxToRem(30) !important;
+    padding-bottom: pxToRem(30) !important;
+    position: relative;
+    border: {
+      style: none;
+      width: pxToRem(3);
+      color: var(--highlight-color);
+      radius: pxToRem(4);
+    }
+
+    &:hover {
+      border-style: solid;
+      > .sr-action-box,
+      > .append-btn,
+      > .prepend-btn {
+        display: block;
+      }
+    }
+
+    > .prepend-btn,
+    > .append-btn {
+      display: none;
+      position: absolute;
+      left: 50%;
+      width: 40%;
+      transform: translateX(-50%);
+      min-width: pxToRem(100);
+      height: pxToRem(20);
+      border: none;
+      background-color: var(--highlight-color);
+      cursor: pointer;
+      border-radius: pxToRem(20);
+      z-index: 3;
+      color: var(--highlight-foreground);
+      font-size: pxToRem(16);
+      font-weight: bold;
+      &:hover {
+        background-color: var(--highlight-hover-background);
+      }
+    }
+    .prepend-btn {
+      top: pxToRem(-10);
+    }
+    .append-btn {
+      bottom: pxToRem(-10);
+    }
+  }
+}

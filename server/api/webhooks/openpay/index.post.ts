@@ -1,6 +1,6 @@
-import { getContent } from "~/server/utilities";
-import { mailHandler } from "~/server/utilities/mailHandler";
-import { Sale } from "~/server/Models";
+import { getContent } from "../../../utilities";
+import { mailHandler } from "../../../utilities/mailHandler";
+import { Sale } from "../../../Models";
 import { join } from "pathe";
 
 const baseDir = process.cwd();

@@ -1,5 +1,4 @@
-import { saeHelper } from "~/server/utilities";
-import { saeOrder } from "~/types";
+import { saeHelper } from "../../utilities";
 
 export default defineEventHandler(async (event) => {
   const { public: config } = useRuntimeConfig();
@@ -14,7 +13,7 @@ export default defineEventHandler(async (event) => {
     paymentMethod,
   } = await readBody(event);
 
-  const saeData: saeOrder = {
+  const saeData = {
     calle: billing ? billing.address.street : "",
     codigoPostal: billing ? billing.address.zip : "",
     colonia: billing ? billing.address.neighborhood : "",

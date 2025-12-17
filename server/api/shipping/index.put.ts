@@ -1,4 +1,4 @@
-import { Shipment } from "~/server/Models";
+import { Shipment } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const data = await readBody(event);

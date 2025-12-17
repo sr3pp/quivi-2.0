@@ -1,20 +1,24 @@
 import fs from "node:fs";
 import path from "node:path";
 const __dirname = process.cwd();
-const dir: string = path.join(__dirname, "assets");
+const dir: string = path.join(__dirname, "app/assets");
 
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir);
 }
 
 //------Import Tokens
+const loadJson = (name: string) =>
+  JSON.parse(
+    fs.readFileSync(new URL(`./src/${name}.json`, import.meta.url), "utf-8"),
+  );
 
-import color from "./src/color.json" assert { type: "json" };
-import breakpoint from "./src/breakpoint.json" assert { type: "json" };
-import font from "./src/font.json" assert { type: "json" };
-import size from "./src/size.json" assert { type: "json" };
-
-const inputs: any[] = [color, breakpoint, font, size];
+const inputs: any[] = [
+  loadJson("color"),
+  loadJson("breakpoint"),
+  loadJson("font"),
+  loadJson("size"),
+];
 
 //-----Utilities
 

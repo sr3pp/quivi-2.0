@@ -1,8 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "mongoose-bcrypt";
-import { User } from "~/types";
 
-const schema: Schema<User> = new mongoose.Schema(
+const schema: Schema<any> = new mongoose.Schema(
   {
     email: { type: String, unique: true },
     password: { type: String, bcrypt: true, select: false },

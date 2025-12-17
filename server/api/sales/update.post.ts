@@ -1,4 +1,4 @@
-import { Sale } from "~/server/Models";
+import { Sale } from "../../Models";
 
 export default defineEventHandler(async (event) => {
   const { order_no, status, payment } = await readBody(event);
