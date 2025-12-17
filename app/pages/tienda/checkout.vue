@@ -61,10 +61,12 @@ const {
   clearCheckout,
 } = useCheckout();
 
-const [terms, sat] = await Promise.all([
-  $fetch("/api/content?page=_config/terms"),
-  $fetch("/api/content?page=_config/sat"),
+const [{ page: termsPage }, { page: satPage }] = await Promise.all([
+  usePageContent("/_config/terms", { collection: "config" }),
+  usePageContent("/_config/sat", { collection: "config" }),
 ]);
+const terms = computed(() => termsPage.value ?? {});
+const sat = computed(() => satPage.value ?? {});
 
 const termsLegend: string =
   "Acepta los <span class='highlight'>términos y condiciones</span> para proceder al pago";

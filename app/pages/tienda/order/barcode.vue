@@ -16,7 +16,10 @@ const merchId = config.openpay.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
-const { email } = await $fetch("/api/content?page=_config/contact");
+const { page: contactPage } = await usePageContent("/_config/contact", {
+  collection: "config",
+});
+const email = contactPage.value?.email ?? "";
 
 const iframe: Ref<HTMLIFrameElement | null> = ref(null);
 

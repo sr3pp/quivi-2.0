@@ -1,10 +1,12 @@
 <template lang="pug">
 .quivi-nosotros
-    component(v-for="(component, i) in content" :is="component.component" :key="i" v-bind="component.props")
+  ContentRenderer(v-if="page?.body" :value="page")
+  p(v-else) Cargando contenido...
 </template>
 
 <script lang="ts" setup>
-const { data: content } = await useFetch("/api/content?page=nosotros/index");
+const route = useRoute();
+const { page } = await usePageContent(route.path);
 </script>
 
 <style lang="scss">

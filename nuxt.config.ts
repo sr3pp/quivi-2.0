@@ -109,9 +109,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  content: {
-    documentDriven: false,
-  },
   //@ts-ignore
   chatwoot: {
     init: {

@@ -1,10 +1,10 @@
 <template lang="pug">
 .catalogo-detail
-    SliderMain(:slides="json.slides" :options="options")
+    SliderMain(:slides="page?.slides || []" :options="options")
     SrContainer(:with-padding="true")
         SrText(:html="sellerLabel" class="title")
     SliderProducts(:products="highlights" :options="product_options")
-    component(v-for="(component, i) in json.content" :is="component.component" :key="i" v-bind="component.props")
+    ContentRenderer(v-if="page?.body" :value="page")
     SrContainer(:with-padding="true")
         DownloadsList(:downloads="downloads" :path="path")
 </template>
@@ -12,15 +12,15 @@
 <script lang="ts" setup>
 const { path } = useRoute();
 
-const [json, downloads] = await Promise.all([
-  $fetch(`/api/content?page=${path}&section=brand,slides,content,products`),
+const [{ page }, downloads] = await Promise.all([
+  usePageContent(path),
   $fetch(`/api/content/downloads?path=${path}`),
 ]);
 
 const highlights = await $fetch(`/api/product/hightlights`, {
   method: "POST",
   body: {
-    codes: (json as any).products,
+    codes: page.value?.products ?? [],
   },
 });
 

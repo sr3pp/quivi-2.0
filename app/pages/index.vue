@@ -1,11 +1,10 @@
 <template lang="pug">
 .main
-  component(v-for="(component, i) in content" :is="component.component" :key="i" v-bind="component.props")
-
+  ContentRenderer(v-if="page?.body" :value="page")
 </template>
 
 <script lang="ts" setup>
-const { data: content } = await useFetch("/api/content?page=index");
+const { page } = await usePageContent("/");
 </script>
 
 <style lang="scss">

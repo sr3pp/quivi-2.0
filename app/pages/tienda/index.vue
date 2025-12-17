@@ -6,8 +6,7 @@
           ProductFilters(@filter="filterProducts" :isFiltered="search || filters")
         SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column products")
           SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.limite} MXN`")
-          template(v-for="component in content" :key="component.component")
-            component(v-bind:is="component.component" v-bind="component.props")
+          ContentRenderer(v-if="contentPage?.body" :value="contentPage")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
           SrGrid(tag="ul" class="product-grid")
@@ -20,15 +19,16 @@
 <script lang="ts" setup>
 import { fetchProducts } from "@/assets/ts/utilities";
 const route = useRoute();
-const { search: _search, page = 1, filters: _filters } = route.query;
+const { search: _search, page: pageQuery = 1, filters: _filters } = route.query;
 
 const search = ref(_search as string);
 const filters = ref(_filters as string);
 
-const [content, shipment]: any = await Promise.all([
-  $fetch("/api/content?page=/tienda/index"),
-  $fetch("/api/content?page=_config/shipping"),
+const [{ page: contentPage }, { page: shipmentPage }] = await Promise.all([
+  usePageContent(route.path),
+  usePageContent("/_config/shipping", { collection: "config" }),
 ]);
+const shipment = computed(() => shipmentPage.value ?? {});
 
 const options = {
   pagination: true,
@@ -46,14 +46,14 @@ const options = {
 
 const { setShippingConfig } = useCart();
 
-setShippingConfig(shipment);
+setShippingConfig(shipment.value);
 
 const products = ref([]);
 const pagination = ref({});
 
 const { products: _products, pagination: _pagination } = await fetchProducts(
   route.path,
-  page as string,
+  pageQuery as string,
   search.value as string,
   filters.value as string,
 );
@@ -63,11 +63,11 @@ pagination.value = _pagination;
 
 watch(
   () => route.query,
-  async ({ search: _search, page, filters: _filters }) => {
+  async ({ search: _search, page: nextPage, filters: _filters }) => {
     const { products: _products, pagination: _pagination } =
       await fetchProducts(
         route.path,
-        page as string,
+        nextPage as string,
         _search as string,
         _filters,
       );

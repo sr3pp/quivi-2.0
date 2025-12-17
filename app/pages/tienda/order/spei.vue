@@ -18,12 +18,12 @@
 
 <script lang="ts" setup>
 const { order_id } = useRoute().query;
-const promises = await Promise.all([
-  $fetch("/api/content?page=_config/business"),
-  $fetch("/api/content?page=_config/contact"),
+const [{ page: businessPage }, { page: contactPage }] = await Promise.all([
+  usePageContent("/_config/business", { collection: "config" }),
+  usePageContent("/_config/contact", { collection: "config" }),
 ]);
-const { bank_accounts: accounts } = promises[0];
-const { email: contactMail } = promises[1];
+const accounts = businessPage.value?.bank_accounts ?? [];
+const contactMail = contactPage.value?.email ?? "";
 const paymentStepsText = [
   "Realiza la transferencia o deposito a alguna de estas cuentas: <br><small>(Usar número de orden como referencia de pago)</small>",
   `Envia un correo con tu <strong>número de orden</strong> en el <strong>asunto</strong> y el comprobante de pago a esta dirección: <strong>${contactMail}</strong>`,

@@ -1,6 +1,6 @@
 <template lang="pug">
 .catalogo
-    component(v-for="(component, i) in catalogoContent" :is="component.component" :key="i" v-bind="component.props")
+    ContentRenderer(v-if="page?.body" :value="page")
 
     SrContainer(:with-padding="true")
         SrGrid
@@ -25,11 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-const [catalogo, { content: catalogoContent, brands: productBrands }] =
-  await Promise.all([
-    $fetch("/api/catalogo"),
-    $fetch("/api/content?page=catalogo/index&section=brands,content"),
-  ]);
+const route = useRoute();
+const [catalogo, { page }] = await Promise.all([
+  $fetch("/api/catalogo"),
+  usePageContent(route.path),
+]);
+
+const productBrands = computed(() => page.value?.brands ?? []);
 
 const ourBrandsLabel =
   "Conoce Todas <span class='text-quivi-light-red font-bold'>Nuestras Marcas</span>";
