@@ -13,21 +13,29 @@ const buildName = (url: string): string => {
 };
 
 const getNav = (url: string) => {
-  const read = fs.readFileSync(url, "utf-8");
-  const { navigation: nav } = JSON.parse(read);
-  return nav;
+  try {
+    const read = fs.readFileSync(url, "utf-8");
+    const data = JSON.parse(read);
+    return data.navigation || {};
+  } catch (error) {
+    return {};
+  }
 };
 
 const getData = (file: any, url: string) => {
-  const stats = fs.statSync(url);
-  if (!stats.isDirectory() && file !== "index.json") {
-    const read = fs.readFileSync(url, "utf-8");
-    const data = JSON.parse(read);
-    return {
-      label: data.card?.label || data.navigation?.label || data.label,
-      url: url.replace(dir, "").replace("/content", "").replace(".json", ""),
-      order: data.card?.order || data.order,
-    };
+  try {
+    const stats = fs.statSync(url);
+    if (!stats.isDirectory() && file !== "index.json") {
+      const read = fs.readFileSync(url, "utf-8");
+      const data = JSON.parse(read);
+      return {
+        label: data.card?.label || data.navigation?.label || data.title || "",
+        url: url.replace(dir, "").replace("/content", "").replace(".json", ""),
+        order: data.card?.order || data.navigation?.order || 0,
+      };
+    }
+  } catch (error) {
+    console.error(`Error reading file ${url}:`, error);
   }
 
   return {
