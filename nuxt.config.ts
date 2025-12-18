@@ -76,10 +76,6 @@ export default defineNuxtConfig({
     },
   },
   devtools: { enabled: true },
-  components: {
-    global: true,
-    dirs: ["~/components"],
-  },
   modules: [
     "@vueuse/nuxt",
     "nuxt-swiper",
@@ -104,7 +100,8 @@ export default defineNuxtConfig({
         scss: {
           additionalData: ` 
             @use "@/assets/fonts/index.scss" as *;
-            @use "@/assets/scss/tokens.scss" as *;`,
+            @use "@/assets/scss/tokens.scss" as *;
+            @use "@/assets/scss/sr-content/utilities/pxToRem.scss" as *;`,
         },
       },
     },

@@ -1,6 +1,6 @@
 <template lang="pug">
 .quivi-searchbar
-    input(type="text" placeholder="Buscar" v-model="search" @input="runSearch")
+    input.p-2.rounded-sm(type="text" placeholder="Buscar" v-model="search" @input="runSearch")
     button.quivi-searchbar-clearbtn(v-if="results.length" @click="results = []")
       span x
     button(@click="goToSearch")

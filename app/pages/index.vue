@@ -5,8 +5,6 @@
 
 <script lang="ts" setup>
 const { page } = await usePageContent("/");
-
-console.log("the fetched page", page);
 </script>
 
 <style lang="scss">
