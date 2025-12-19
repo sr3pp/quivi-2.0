@@ -24,8 +24,29 @@ defineProps({
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .sr-text {
   display: block;
+
+  &.title {
+    font-family: Bebas;
+
+    font-size: pxToRem(16);
+
+    @media (min-width: #{$breakpoint-md}) {
+      font-size: pxToRem(36);
+    }
+  }
+
+  &.subtitle {
+    font-family: Bebas;
+    font-weight: bold;
+
+    font-size: pxToRem(16);
+
+    @media (min-width: #{$breakpoint-md}) {
+      font-size: pxToRem(22);
+    }
+  }
 }
 </style>

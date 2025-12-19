@@ -1,17 +1,13 @@
 <template lang="pug">
 footer.quivi-footer
     SrContainer(:with-padding="true")
-        SrGrid
-            SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column")
+        SrGrid.gap-2
+            SrGridColumn(class="flex flex-col col-span-12 sm:col-span-2 gap-4")
                 SrText(text="NAVEGACIÓN" class="subtitle")
                 ul.quivi-footer-menu
                     li.quivi-footer-menu-item(v-for="(item, i) in footer.navegacion" :key="i")
                         NuxtLink(:to="item.url" :aria-label="item.label" :title="item.label") {{ item.label }}
-                ul.quivi-footer-social
-                    li.quivi-footer-social-item(v-for="(item, i) in social" :key="i")
-                        a(:href="item.url" target="_blank" :aria-label="item.label" :title="item.label")
-                            SrIcon(:name="item.icon")
-            SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column")
+            SrGridColumn(class="flex flex-col col-span-12 sm:col-span-2 gap-4")
                 SrText(text="Cliente" class="subtitle")
                 ul.quivi-footer-menu
                     li.quivi-footer-menu-item
@@ -20,19 +16,24 @@ footer.quivi-footer
                         NuxtLink(to="/tienda") Tienda
                     li.quivi-footer-menu-item
                         button(@click="$emit('loginModal')") Registro
-            SrGridColumn(:size="{mobile: '1', sm: '3/5'}" class="column")
+            SrGridColumn(class="flex flex-col col-span-12 sm:col-span-8 gap-4")
                 SrText(text="Distribuidor Autorizado" class="subtitle")
                 ul.quivi-footer-distribuidores
                     li.quivi-footer-distribuidores-item(v-for="(item, i) in distribuidores" :key="i")
                       SrPicture(:src="item.logo" :alt="item.name")
+            SrGridColumn(class="flex flex-col col-span-12 gap-4")
+              ul.quivi-footer-social
+                  li.quivi-footer-social-item(v-for="(item, i) in social" :key="i")
+                      a(:href="item.url" target="_blank" :aria-label="item.label" :title="item.label")
+                          SrIcon(:name="item.icon")
     SrGrid.quivi-footer-bottom
-        SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
+        SrGridColumn(class="flex flex-col col-span-12 sm:col-span-1/3 md:col-span-4 justify-center items-center")
           NuxtLink(to="/")
             SrText(text="Quivi.mx")
-        SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
+        SrGridColumn(class="flex flex-col col-span-12 sm:col-span-1/3 md:col-span-4 justify-center items-center")
           NuxtLink(to="/pdf/aviso_de_privacidad.pdf" target="_blank")
             SrText(text="Aviso de privacidad")
-        SrGridColumn(:size="{mobile: '1', sm: '1/3'}" class="column")
+        SrGridColumn(class="flex flex-col col-span-12 sm:col-span-1/3 md:col-span-4 justify-center items-center")
           button(@click="$emit('termsModal')")
             SrText(text="Términos y Condiciones")
 </template>

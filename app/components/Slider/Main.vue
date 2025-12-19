@@ -136,6 +136,7 @@ const updateSlide = (
   if (key.includes(".")) {
     const readObj = (keys: string, obj: any) => {
       const [k, ...rest] = keys.split(".");
+      if (!k) return;
       if (rest.length) {
         readObj(rest.join("."), obj[k]);
       } else {
@@ -189,6 +190,7 @@ watch(
   &-slide {
     display: flex;
     min-height: pxToRem(400);
+    height: auto;
     overflow: hidden;
     position: relative;
 

@@ -17,6 +17,8 @@ const [{ page }, downloads] = await Promise.all([
   $fetch(`/api/content/downloads?path=${path}`),
 ]);
 
+console.log(page.value);
+
 const highlights = await $fetch(`/api/product/hightlights`, {
   method: "POST",
   body: {

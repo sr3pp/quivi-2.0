@@ -1,10 +1,5 @@
 <template>
-  <UPageGrid
-    :as="tag"
-    class="sr-grid"
-    :class="{ [css.class]: css.class }"
-    :style="css.style"
-  >
+  <UPageGrid :as="tag" :ui="ui">
     <slot />
   </UPageGrid>
 </template>
@@ -12,11 +7,10 @@
 <script lang="ts" setup>
 defineProps({
   tag: { type: String, default: "div" },
-  css: {
+  ui: {
     type: Object,
     default: () => ({
-      class: "",
-      style: {},
+      base: "relative !grid !grid-cols-1 sm:!grid-cols-6 md:!grid-cols-12 lg:!grid-cols-12 gap-8",
     }),
   },
 });

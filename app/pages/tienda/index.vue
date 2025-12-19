@@ -1,11 +1,11 @@
 <template lang="pug">
 .store
     SrGrid
-        SrGridColumn(:size="{mobile: '1', sm: '1/5'}" class="column store-filters")
+        SrGridColumn(class="flex flex-col p-6 store-filters col-span-12 sm:col-span-2 md:col-span-3 lg:col-span-3")
           SrText(text="Encuentra lo que necesitas." class="subtitle")
           ProductFilters(@filter="filterProducts" :isFiltered="search || filters")
-        SrGridColumn(:size="{mobile: '1', sm: '4/5'}" class="column products")
-          SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.limite} MXN`")
+        SrGridColumn(class="column products col-span-12 sm:col-span-4 md:col-span-9 lg:col-span-9")
+          SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.meta.content.limite} MXN`")
           ContentRenderer(v-if="contentPage?.body" :value="contentPage")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
@@ -26,9 +26,12 @@ const filters = ref(_filters as string);
 
 const [{ page: contentPage }, { page: shipmentPage }] = await Promise.all([
   usePageContent(route.path),
-  usePageContent("/_config/shipping", { collection: "config" }),
+  usePageContent("_config/shipping", "config"),
 ]);
-const shipment = computed(() => shipmentPage.value ?? {});
+
+const shipment = computed(
+  () => shipmentPage.value || { meta: { content: { limite: 0, costo: 0 } } },
+);
 
 const options = {
   pagination: true,
@@ -46,7 +49,9 @@ const options = {
 
 const { setShippingConfig } = useCart();
 
-setShippingConfig(shipment.value);
+setShippingConfig(
+  shipment.value.meta.content as { limite: number; costo: number },
+);
 
 const products = ref([]);
 const pagination = ref({});

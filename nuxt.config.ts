@@ -120,5 +120,4 @@ export default defineNuxtConfig({
     // If this is loaded you can make it true, https://github.com/nuxt-modules/partytown
     partytown: false,
   },
-  compatibilityDate: "2024-08-19",
 });

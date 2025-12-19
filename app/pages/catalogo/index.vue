@@ -4,8 +4,8 @@
 
     SrContainer(:with-padding="true")
         SrGrid
-          SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="catalogo-item" v-for="(item, i) in catalogo" :key="i")
-            NuxtLink(:to="`/catalogo/${item.slug}`")
+          SrGridColumn(class="catalogo-item col-span-12 sm:col-span-6 flex gap-2" v-for="(item, i) in catalogo" :key="i")
+            NuxtLink.w-full(:to="`/catalogo/${item.slug}`")
               SrPicture(:src="item.thumb" :alt="item.label" class="catalogo-banner")
               div.catalogo-item-description
                 SrText(:text="item.label" class="title")
@@ -15,9 +15,9 @@
                     SrText(:text="el")
     SrContainer(:with-padding="true")
       SrGrid.catalogo-brands(tag="ul" style="--justify-content: center;")
-        SrGridColumn(:size="{mobile: '1'}")
+        SrGridColumn(class="col-span-12")
           SrText(:html="ourBrandsLabel" class="subtitle")
-        SrGridColumn.catalogo-brands-item(v-for="(brand, i) in productBrands" tag="li" :size="{mobile: '1', sm: '1/6'}" :key="i")
+        SrGridColumn.catalogo-brands-item(v-for="(brand, i) in productBrands" tag="li" class="col-span-12 sm:col-span-6" :key="i")
           SrPicture(:src="brand.logo" :alt="brand.nombre")
         
       SrText.and-more(text="Y muchos más..." style="--text-align: center;")
@@ -66,9 +66,10 @@ const ourBrandsLabel =
   }
 
   &-banner {
-    width: 40%;
+    width: 40% !important;
     border-radius: pxToRem(20);
     margin-right: pxToRem(10);
+    overflow: hidden;
   }
 
   &-brands {

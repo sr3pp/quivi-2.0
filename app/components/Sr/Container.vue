@@ -3,7 +3,6 @@
     :as="tag"
     class="sr-container"
     :class="{ contained, withPadding, [css.class]: css.class }"
-    :style="css.style"
   >
     <slot />
   </UContainer>

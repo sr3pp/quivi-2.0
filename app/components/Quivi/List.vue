@@ -1,17 +1,26 @@
 <script lang="ts" setup>
-defineProps({
+import { computed } from "vue";
+
+const props = defineProps({
   title: {
     type: String,
     default: "",
   },
   items: {
-    type: Array,
-    default: () => [],
+    type: String,
+    default: "",
   },
   alignment: {
     type: String,
     default: "left",
   },
+});
+
+const processedItems = computed(() => {
+  if (typeof props.items === "string" && props.items.length > 0) {
+    return props.items.split(";;");
+  }
+  return [];
 });
 </script>
 
@@ -19,7 +28,7 @@ defineProps({
 .quivi-list
   SrText(:text="title" :style="{ '--text-align': alignment }" class="subtitle")
   ul.quivi-list-list(:style="{ '--text-align': alignment }")
-    li.quivi-list-item(v-for="(item, i) in items" :key="i")
+    li.quivi-list-item(v-for="(item, i) in processedItems" :key="i")
       SrIcon(name="Q-o")
       SrText(:text="item" :style="{ '--text-align': alignment }")
 </template>

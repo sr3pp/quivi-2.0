@@ -21,10 +21,13 @@ defineProps({
 });
 </script>
 
-<style scoped>
-.sr-picture img {
+<style scoped lang="scss">
+.sr-picture {
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
 }
 </style>
