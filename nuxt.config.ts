@@ -81,8 +81,9 @@ export default defineNuxtConfig({
     "nuxt-swiper",
     "@nuxtjs/eslint-module",
     "@nuxt/content",
-    "@nuxt/ui",
     // "@productdevbook/chatwoot",
+    "@nuxt/ui",
+    "nuxt-studio",
   ],
   css: [
     "@/assets/css/main.css",
@@ -120,4 +121,12 @@ export default defineNuxtConfig({
     // If this is loaded you can make it true, https://github.com/nuxt-modules/partytown
     partytown: false,
   },
+  studio: {
+    repository: {
+      provider: 'github', // 'github' or 'gitlab'
+      owner: 'sr3pp',
+      repo: 'quivi-2.0',
+      branch: 'main'
+    }
+  }
 });
