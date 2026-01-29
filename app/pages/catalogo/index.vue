@@ -1,40 +1,10 @@
 <template lang="pug">
-.catalogo
-    ContentRenderer(v-if="page?.body" :value="page")
-
-    SrContainer(:with-padding="true")
-        SrGrid
-          SrGridColumn(class="catalogo-item col-span-12 sm:col-span-6 flex gap-2" v-for="(item, i) in catalogo" :key="i")
-            NuxtLink.w-full(:to="`/catalogo/${item.slug}`")
-              SrPicture(:src="item.thumb" :alt="item.label" class="catalogo-banner")
-              div.catalogo-item-description
-                SrText(:text="item.label" class="title")
-                ol.catalogo-item-description-list
-                  li.catalogo-item-description-list-item(v-for="(el, i) in item.list" :key="i")
-                    SrIcon(name="quivi-check-o")
-                    SrText(:text="el")
-    SrContainer(:with-padding="true")
-      SrGrid.catalogo-brands(tag="ul" style="--justify-content: center;")
-        SrGridColumn(class="col-span-12")
-          SrText(:html="ourBrandsLabel" class="subtitle")
-        SrGridColumn.catalogo-brands-item(v-for="(brand, i) in productBrands" tag="li" class="col-span-12 sm:col-span-6" :key="i")
-          SrPicture(:src="brand.logo" :alt="brand.nombre")
-        
-      SrText.and-more(text="Y muchos más..." style="--text-align: center;")
-    
+  ContentRenderer(v-if="page?.body" :value="page")
 </template>
 
 <script lang="ts" setup>
 const route = useRoute();
-const [catalogo, { page }] = await Promise.all([
-  $fetch("/api/catalogo"),
-  usePageContent(route.path),
-]);
-
-const productBrands = computed(() => page.value?.brands ?? []);
-
-const ourBrandsLabel =
-  "Conoce Todas <span class='text-quivi-light-red font-bold'>Nuestras Marcas</span>";
+const { page } = await usePageContent(route.path);
 </script>
 
 <style lang="scss" scoped>

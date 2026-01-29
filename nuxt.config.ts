@@ -123,10 +123,10 @@ export default defineNuxtConfig({
   },
   studio: {
     repository: {
-      provider: 'github', // 'github' or 'gitlab'
-      owner: 'sr3pp',
-      repo: 'quivi-2.0',
-      branch: 'main'
-    }
-  }
+      provider: "github", // 'github' or 'gitlab'
+      owner: "sr3pp",
+      repo: "quivi-2.0",
+      branch: "main",
+    },
+  },
 });

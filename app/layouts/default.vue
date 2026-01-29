@@ -29,15 +29,22 @@ const faqModal = ref(null);
 const termsModal = ref(null);
 const loading = ref(false);
 
-const [business, distribuidores, faqs, navigation, contact] = await Promise.all(
-  [
-    $fetch("/api/content?page=_config/business"),
-    $fetch("/api/content?page=_config/distribuidores"),
-    $fetch("/api/content?page=_config/faqs"),
-    $fetch("/api/content/navigation"),
-    $fetch("/api/content?page=_config/contact"),
-  ],
+const { data: dataNav } = await useAsyncData("navigation", () =>
+  queryCollectionNavigation("pages", ["order"]),
 );
+
+const navigation = dataNav.value!.sort((a, b) => {
+  let orderA = a.order ?? a.children?.[0]?.order ?? 9999;
+  let orderB = b.order ?? b.children?.[0]?.order ?? 9999;
+  return (orderA as number) - (orderB as number);
+});
+
+const [business, distribuidores, faqs, contact] = await Promise.all([
+  $fetch("/api/content?page=_config/business"),
+  $fetch("/api/content?page=_config/distribuidores"),
+  $fetch("/api/content?page=_config/faqs"),
+  $fetch("/api/content?page=_config/contact"),
+]);
 
 const { social } = business;
 

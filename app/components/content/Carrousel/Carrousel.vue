@@ -11,7 +11,7 @@ const props = withDefaults(
     autoplay: false,
     arrows: true,
     dots: true,
-  }
+  },
 );
 
 const slots = useSlots();
@@ -27,10 +27,9 @@ const slotItems = computed(() =>
   slotSlides.value.map((vnode, index) => ({
     vnode,
     key: vnode.key ?? `slide-${index}`,
-  }))
+  })),
 );
 const useSlotSlides = computed(() => slotItems.value.length > 0);
-
 </script>
 
 <template>

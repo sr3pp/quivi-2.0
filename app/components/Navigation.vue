@@ -32,10 +32,10 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
   ul.quivi-navbar-menu(:class="{active: menuActive}")
     li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active, 'highlight': item.highLight}" :key="i")
       .link-container  
-        NuxtLink(:to="item.url")
-          span {{ item.label }}
-          SrIcon(name="ir-o" v-if="!item.items || (item.items && !item.items.length)")
-        button.collapse(@click="item.active = !Boolean(item.active)" v-if="item.items && item.items.length")
+        NuxtLink(:to="item.path")
+          span {{ item.title }}
+          SrIcon(name="ir-o" v-if="!item.children || (item.children && !item.children.length)")
+        button.collapse(@click="item.active = !Boolean(item.active)" v-if="item.children && item.children.length")
           SrIcon(name="desplazamientoabajo-o")
       
         svg.bg
@@ -53,9 +53,9 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
               stop(offset="0%" :stop-color="btnColor3")
               stop(offset="100%" :stop-color="btnColor4")
           use(href="/icons/botonmenu-o.svg#s")
-      ol.quivi-navbar-submenu(v-if="item.items && item.items.length" role="list")
-        li.quivi-navbar-submenu-item(v-for="(el, e) in item.items" :key="e")
-          NuxtLink(:to="el.url") {{ el.label }}
+      ol.quivi-navbar-submenu(v-if="item.children && item.children.length" role="list")
+        li.quivi-navbar-submenu-item(v-for="(el, e) in item.children.filter(child => child.stem !== item.stem && !child.stem.endsWith('/index'))" :key="e")
+          NuxtLink(:to="el.path") {{ el.title }}
 </template>
 
 <script lang="ts" setup>
@@ -66,7 +66,7 @@ import {
   colorQuiviDarkYellow,
 } from "~/assets/ts/tokens";
 
-defineProps({
+const props = defineProps({
   navigation: {
     type: Array,
     required: true,

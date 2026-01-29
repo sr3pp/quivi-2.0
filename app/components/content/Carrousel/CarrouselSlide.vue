@@ -24,14 +24,10 @@ const props = defineProps<{
 }>();
 
 const desktopImage = computed(
-  () => props.image?.desktop || props.image?.mobile
+  () => props.image?.desktop || props.image?.mobile,
 );
-const mobileImage = computed(
-  () => props.image?.mobile || desktopImage.value
-);
-const alt = computed(
-  () => props.image?.alt || props.title || "Slide"
-);
+const mobileImage = computed(() => props.image?.mobile || desktopImage.value);
+const alt = computed(() => props.image?.alt || props.title || "Slide");
 </script>
 
 <template>
@@ -45,8 +41,14 @@ const alt = computed(
       <img :src="mobileImage || desktopImage" :alt="alt" loading="lazy" />
     </picture>
 
-    <UContainer class="py-12 relative z-10 absolute top-0 left-0 w-full h-full flex flex-col justify-center" :class="{'items-center': alignment === 'center'}">
-      <p v-if="eyebrow" class="uppercase tracking-widest text-sm text-gray-500 mb-2">
+    <UContainer
+      class="py-12 relative z-10 absolute top-0 left-0 w-full h-full flex flex-col justify-center"
+      :class="{ 'items-center': alignment === 'center' }"
+    >
+      <p
+        v-if="eyebrow"
+        class="uppercase tracking-widest text-sm text-gray-500 mb-2"
+      >
         {{ eyebrow }}
       </p>
       <h3 v-if="title" class="font-bold text-3xl mb-4">
@@ -71,6 +73,4 @@ const alt = computed(
   </article>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

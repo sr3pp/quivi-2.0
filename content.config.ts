@@ -9,6 +9,13 @@ export default defineContentConfig({
         .object({
           title: z.string().optional(),
           description: z.string().optional(),
+          navigation: z
+            .object({
+              title: z.string().optional(),
+              description: z.string().optional(),
+            })
+            .optional(),
+          order: z.number().optional(),
           carrousel: z
             .object({
               autoplay: z.boolean().optional(),
@@ -16,14 +23,44 @@ export default defineContentConfig({
               dots: z.boolean().optional(),
             })
             .optional(),
-            welcome: z.object({
+          welcome: z
+            .object({
               title: z.string().optional(),
               description: z.string().optional(),
-              images: z.object({
-                primary: z.string().optional(),
-                secondary: z.string().optional(),
-              }).optional(),
-            }).optional(),
+              images: z
+                .object({
+                  primary: z.string().optional(),
+                  secondary: z.string().optional(),
+                })
+                .optional(),
+            })
+            .optional(),
+          showcase: z
+            .object({
+              title: z.string().optional(),
+              items: z
+                .array(
+                  z.object({
+                    title: z.string().optional(),
+                    image: z.string().optional(),
+                  }),
+                )
+                .optional(),
+            })
+            .optional(),
+          brands: z.object({
+            title: z.string().optional(),
+            items: z.array(
+              z.object({
+                image: z
+                  .object({
+                    src: z.string().optional(),
+                    alt: z.string().optional(),
+                  })
+                  .optional(),
+              }),
+            ),
+          }),
         })
         .passthrough(),
     }),
