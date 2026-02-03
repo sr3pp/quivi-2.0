@@ -1,9 +1,5 @@
 <template lang="pug">
 .catalogo-detail
-    SliderMain(:slides="page?.slides || []" :options="options")
-    SrContainer(:with-padding="true")
-        SrText(:html="sellerLabel" class="title")
-    SliderProducts(:products="highlights" :options="product_options")
     ContentRenderer(v-if="page?.body" :value="page")
     SrContainer(:with-padding="true")
         DownloadsList(:downloads="downloads" :path="path")
@@ -17,17 +13,12 @@ const [{ page }, downloads] = await Promise.all([
   $fetch(`/api/content/downloads?path=${path}`),
 ]);
 
-console.log(page.value);
-
 const highlights = await $fetch(`/api/product/hightlights`, {
   method: "POST",
   body: {
     codes: page.value?.products ?? [],
   },
 });
-
-const sellerLabel =
-  "Nuestros Productos <span class='text-quivi-light-red'>mas vendidos</span>";
 
 const options = {
   pagination: true,
@@ -68,42 +59,3 @@ const product_options = {
   },
 };
 </script>
-
-<style lang="scss">
-.catalogo-detail {
-  &-description {
-    .sr-text {
-      &:not(:last-of-type) {
-        margin-bottom: pxToRem(20);
-      }
-    }
-    .sr-picture.limit-height {
-      display: flex;
-      max-height: pxToRem(250);
-      img {
-        width: auto;
-        height: 100%;
-        object-fit: contain;
-        margin: auto;
-      }
-    }
-    > * {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(20);
-      }
-    }
-  }
-
-  .sr-container {
-    > * {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(40);
-      }
-    }
-  }
-
-  .product-slider {
-    margin-bottom: pxToRem(40);
-  }
-}
-</style>

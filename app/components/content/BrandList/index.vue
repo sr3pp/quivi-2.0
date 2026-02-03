@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <section>
-    <SrContainer>
+    <UContainer>
       <h2 class="text-black">
         {{ title }}
       </h2>
@@ -15,6 +15,6 @@ defineProps<{
       >
         <slot name="items" />
       </div>
-    </SrContainer>
+    </UContainer>
   </section>
 </template>

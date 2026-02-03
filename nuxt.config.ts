@@ -85,13 +85,7 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "nuxt-studio",
   ],
-  css: [
-    "@/assets/css/main.css",
-    "@/assets/scss/main.scss",
-    "@/assets/scss/transitions/index.scss",
-    "@/assets/scss/components.scss",
-    "normalize.css/normalize.css",
-  ],
+  css: ["@/assets/css/main.css", "@/assets/scss/transitions/index.scss"],
   nitro: {
     plugins: [resolve(process.cwd(), "server/DB.ts")],
   },

@@ -61,6 +61,32 @@ export default defineContentConfig({
               }),
             ),
           }),
+          heading: z
+            .object({
+              tag: z.string().optional(),
+              text: z.string().optional(),
+              highlight: z.string().optional(),
+            })
+            .optional(),
+          brandDetail: z
+            .object({
+              title: z.string().optional(),
+              description: z.string().optional(),
+              backgroundImage: z.string().optional(),
+              mainImage: z
+                .object({
+                  src: z.string().optional(),
+                  alt: z.string().optional(),
+                })
+                .optional(),
+              cta: z
+                .object({
+                  text: z.string().optional(),
+                  link: z.string().optional(),
+                })
+                .optional(),
+            })
+            .optional(),
         })
         .passthrough(),
     }),
