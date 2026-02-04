@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-const loginModal = ref(null);
+const modalSw = ref(false);
 
 const toggleLoginModal = () => {
-  (loginModal.value as any).toggle();
+  modalSw.value = !modalSw.value;
 };
 
 defineExpose({
@@ -11,11 +11,11 @@ defineExpose({
 </script>
 
 <template lang="pug">
-SrModal.quivi-modal-login(ref="loginModal")
+UModal.quivi-modal-login(v-model:open="modalSw")
     template(#header)
       .sr-modal-header
-        SrText(value="Login" class="title")
-    template(#body)
+        p.title Login
+    template(#content)
       .sr-modal-body
         LoginForm
 

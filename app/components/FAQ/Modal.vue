@@ -6,24 +6,24 @@ defineProps({
   },
 });
 
-const faqModal: any = ref(null);
+const modalSw = ref(false);
 
 defineExpose({
   toggleFaqModal: () => {
-    faqModal.value.toggle();
+    modalSw.value = !modalSw.value;
   },
 });
 </script>
 
 <template lang="pug">
-SrModal.faq-modal(ref="faqModal")
+UModal.faq-modal(v-model:open="modalSw")
   template(#header)
-      SrText(text="FAQ's" class="title")
-  template(#body)
+      p FAQ's
+  template(#content)
     ul.faq-list
       li.faq-list-item(v-for="(faq, i) in faqs" :key="'faq-'+ i + new Date().getTime()")
-        SrText(:text="faq.question" class="subtitle")
-        SrText.answer(:html="faq.answer")
+        p.faq-question {{ faq.question }}
+        p.faq-answer(v-html="faq.answer")
 </template>
 
 <style lang="scss" scoped>

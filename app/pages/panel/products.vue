@@ -26,11 +26,11 @@
 
     Pagination(:pagination="pagination")
 
-    SrModal(ref="productModal")
+    UModal.product-modal(v-model:open="modalSw")
       template(#header)
-          SrText(text="Edit product" class="title text-center")
-      template(#body)
-          SrForm.product-form(:fieldsets="productForm" @submit="updateProduct")
+          p.title Edit product
+      template(#content)
+          UForm.product-form(:fieldsets="productForm" @submit="updateProduct")
 </template>
 
 <script lang="ts" setup>

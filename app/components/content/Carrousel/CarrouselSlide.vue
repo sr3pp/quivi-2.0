@@ -15,7 +15,7 @@ type ResponsiveImage = {
 };
 
 const props = defineProps<{
-  title: string;
+  title?: string;
   description?: string;
   eyebrow?: string;
   image?: ResponsiveImage;

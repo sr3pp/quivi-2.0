@@ -7,10 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <UContainer>
-    <h2 class="text-4xl font-bold mb-6">
-      {{ text }}
-      <span v-if="highlight" class="text-primary"> {{ highlight }} </span>
-    </h2>
+  <UContainer class="py-10">
+    <TitleHighlight :tag="tag" :text="text" :highlight="highlight || ''" />
   </UContainer>
 </template>

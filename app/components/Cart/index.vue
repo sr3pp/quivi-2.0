@@ -8,7 +8,7 @@
         CartList(:products="cart.products" :editable="true" @remove="removeFromCart")
         CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
       template(v-else)
-        SrText.quivi-cart-empty(text="Tu carrito está vacío" class="title text-center")
+        p.quivi-cart-empty Tu carrito está vacío
     .quivi-cart-backdrop(@click="toggleCart")
 </template>
 

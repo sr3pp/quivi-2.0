@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-const modal = ref(null);
+const modalSw = ref(false);
 
 const toggleTermsModal = () => {
-  (modal.value as any).toggle();
+  modalSw.value = !modalSw.value;
 };
 
 defineExpose({
@@ -13,16 +13,16 @@ const terms = await $fetch("/api/content?page=_config/terms");
 </script>
 
 <template lang="pug">
-SrModal.terms-modal(ref="modal")
+UModal.terms-modal(v-model:open="modalSw")
   template(#header)
     .terms-modal-header
-      SrText(:text="terms.title" class="title")
+      p {{ terms.title }}
       span {{ terms.fecha }}
-  template(#body)
+  template(#content)
     ul.terms-modal-list
       li.terms-modal-item(v-for="(section, i) in terms.sections" :key="`${Date.now()}-terms-section-${i}`")
-        SrText(:text="section.title" class="subtitle")
-        SrText(:text="section.content")
+        p {{ section.title }}
+        p {{ section.content }}
 </template>
 
 <style scoped lang="scss">

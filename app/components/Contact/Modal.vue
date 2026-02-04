@@ -6,10 +6,10 @@ defineProps({
   },
 });
 
-const contactModal = ref(null);
+const modalSw = ref(false);
 
 const toggleContactModal = () => {
-  (contactModal.value as any).toggle();
+  modalSw.value = !modalSw.value;
 };
 
 defineExpose({
@@ -18,15 +18,15 @@ defineExpose({
 </script>
 
 <template lang="pug">
-SrModal.modal-contact-form(ref="contactModal")
-    template(#body)
+UModal.modal-contact-form(v-model:open="modalSw")
+    template(#content)
         UPageGrid
           div(class="col-span-1 sm:col-span-2")
-            SrText(text="Contacto" class="title")
+            p Contacto
             ContactForm
             NuxtLink.modal-contact-form-whats(to="tel:5574763104" class="quivi-button")
               SvgIcon(name="whatsapp-o")
-              SrText(text="55 7476 3104")
+              p 55 7476 3104
             ul.modal-contact-form-social
               li.modal-contact-form-social-item(v-for="(item, i) in social" :key="i")
                 NuxtLink(:href="item.url" target="_blank" :aria-label="item.label")

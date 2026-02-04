@@ -11,9 +11,9 @@
           NuxtLink(:to="result.url" :prefetch="false")
             NuxtImg(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
             .quivi-searchbar-result-description
-              SrText(:text="result.name" class="subtitle")
-              SrText(:text="result.brand.name")
-              SrText.small(:text="result.web")
+              p {{ result.name }}
+              p {{ result.brand.name }}
+              p {{ result.web }}
       .quivi-searchbar-result.full
           NuxtLink(:to="`/tienda?search=${search}`") Ver todos los resultados
 </template>

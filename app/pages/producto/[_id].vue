@@ -118,25 +118,25 @@ const getLabel = (key: string) => {
               ProductThumbs(:thumbs="product.thumbs" :productName="product.name" :productId="product.web")
             div(class="col-span-1 sm:col-span-3/5")
                 .product-detail-info(v-if="product")
-                    SrText(:text="product.name" class="title")
-                    SrText(:text="`Refaccion: ${product.web}`" class="title")
-                    SrText(:text="product.extra")
+                    p {{ product.name }}
+                    p {{ `Refaccion: ${product.web}` }}
+                    p {{ product.extra }}
 
                     .product-detail-price
                         .price-container
-                          SrText(:text="toPrice(processDiscount(product))" class="title" v-if="product.discount && product.discount > 0")
-                          SrText(:text="toPrice(product.price)" :class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}")
+                          p(v-if="product.discount && product.discount > 0" class="title") {{ toPrice(processDiscount(product)) }}
+                          p(:class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}") {{ toPrice(product.price) }}
                         .product-detail-no-existences(v-if="!existences")
-                          SrText(text="Producto no disponible")
+                          p PRODUCTO NO DISPONIBLE
                           UButton(label="Solicitar información" size="lg" variant="secondary")
                         .product-detail-existences(v-else)
-                          Incrementor(:qty="qty" :max="product.existences" @updateQty="($event) => qty += $event")
+                          UInputNumber(v-model="qty" :max="product.existences" @updateQty="($event) => qty += $event")
                           UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
                         UButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
                         UButton(href="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
             div(class="col-span-1 sm:col-span-2")
-                SrText(text="ESPECIFICACIONES DEL PRODUCTO" class="title")
+                p ESPECIFICACIONES DEL PRODUCTO
                 ul.product-detail-details
                     template(v-for="([key, value], i) in Object.entries(product)")
                         li.product-detail-detail(v-if="!detailExcludes.includes(key)" :key="i")
@@ -147,7 +147,7 @@ const getLabel = (key: string) => {
                 p {{ product.description }}
 
     UContainer(:with-padding="true")
-        SrText(value="PRODUCTOS RELACIONADOS" class="title")
+        p PRODUCTOS RELACIONADOS
     SliderProducts(:options="sliderOptions" :products="relatedProducts")
 </template>
 
