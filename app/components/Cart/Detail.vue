@@ -15,7 +15,7 @@
       SrText(text="Total:" class="title")
       SrText(:text="toPrice(total)" class="title")
 
-    QuiviButton.quivi-cart-pay-button(href="/tienda/checkout" label="pagar")
+    UButton.quivi-cart-pay-button(href="/tienda/checkout" label="pagar")
 </template>
 
 <script lang="ts" setup>

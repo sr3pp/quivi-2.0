@@ -1,6 +1,6 @@
 <template lang="pug">
 .users
-  SrContainer(:with-padding="true")
+  UContainer(:with-padding="true")
     SrText(value="Panel users" class="title" alignment="center")
 
     button(@click="newUser") Create user

@@ -4,12 +4,12 @@
     button.quivi-searchbar-clearbtn(v-if="results.length" @click="results = []")
       span x
     button(@click="goToSearch")
-        SrIcon(name="lupa-o")
+        SvgIcon(name="lupa-o")
     .quivi-searchbar-results-container(:class="{ active: results.length > 0 }")
       ul.quivi-searchbar-results
         li.quivi-searchbar-result(v-for="(result, i) in results" :key="i")
           NuxtLink(:to="result.url" :prefetch="false")
-            SrPicture(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
+            NuxtImg(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
             .quivi-searchbar-result-description
               SrText(:text="result.name" class="subtitle")
               SrText(:text="result.brand.name")

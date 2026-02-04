@@ -1,11 +1,11 @@
 <template lang="pug">
 .quivi-shipping
-  SrContainer(:with-padding="true")
+  UContainer(:with-padding="true")
     .header-title
         SrText(text="Panel Envios" class="title text-center")
         SrFormInput(v-model="search" @keyup.enter="searchShipping" placeholder="Buscar")
-        QuiviButton(@click="searchShipping")
-          SrIcon(name="lupa-o")
+        UButton(@click="searchShipping")
+          SvgIcon(name="lupa-o")
 
     DetailTable(
       v-if="shipping"
@@ -26,35 +26,35 @@
       .shipp-modal-header
         SrText(text="Envio" class="title")
     template(#body v-if="currentShipping")
-      SrGrid
-        SrGridColumn(:size="{mobile: '1/2'}")
+      UPageGrid
+        div(class="col-span-'")
           SrText(v-if="currentShipping.sale.length" :text="`orden no. ${currentShipping.sale.at(0)._id}`" class="subtitle")
-        SrGridColumn(:size="{mobile: '1/2'}")
+        div(class="col-span-2")
           p.status-box 
             span {{ currentShipping.status }}
             Status(:status="currentShipping.status == 'delivered' ? 2 : currentShipping.status == 'shipping' ? 1 : 0")
         template(v-if="currentShipping.tracking.number")
-          SrGridColumn(:size="{mobile: '1'}")
+          div(class="col-span-1 sm:col-span-2")
             SrText(text="Tracking" class="subtitle")
-          SrGridColumn(:size="{mobile: '1/2', sm: '1/4'}")
+          div(class="col-span-1/2 sm:col-span-1/4")
             SrText(:text="currentShipping.tracking.store")
-          SrGridColumn(:size="{mobile: '1/2', sm: '1/4'}")
+          div(class="col-span-1/2 sm:col-span-1/4")
             SrText(:text="currentShipping.tracking.number")
-          SrGridColumn(:size="{mobile: '1/2', sm: '1/4'}")
+          div(class="col-span-1/2 sm:col-span-1/4")
             SrText(:text="currentShipping.tracking.url")
-          SrGridColumn(:size="{mobile: '1/2', sm: '1/4'}")
+          div(class="col-span-1/2 sm:col-span-1/4")
             div
-              QuiviButton(@click="sendTrackingMail" variant="secondary" label="Enviar al cliente" :loading="sending")
+              UButton(@click="sendTrackingMail" variant="secondary" label="Enviar al cliente" :loading="sending")
         template(v-else)
-          SrGridColumn(:size="{mobile: '1', sm: '1/3'}")
+          div(class="col-span-1 sm:col-span-1/3")
             SrFormInput(v-model="newTracking.number" label="Numero de Rastreo")
-          SrGridColumn(:size="{mobile: '1', sm: '1/3'}")
+          div(class="col-span-1 sm:col-span-1/3")
             SrFormInput(v-model="newTracking.store" label="Tienda")
-          SrGridColumn(:size="{mobile: '1', sm: '1/3'}")
+          div(class="col-span-1 sm:col-span-1/3")
             SrFormInput(v-model="newTracking.url" label="Url")
-          SrGridColumn(:size="{mobile: '1'}" class="flex-row justify-between" style="--flex-direction-sm: row")
-            QuiviButton(variant="secondary" label="Guardar" @click="saveTracking()" :loading="fetching")
-            QuiviButton(variant="secondary" label="Obtener Rastreo" @click="getTracking(currentShipping.sale.at(0).sae_order)" :loading="fetching")
+          div(class="col-span-1" class="flex-row justify-between" style="--flex-direction-sm: row")
+            UButton(variant="secondary" label="Guardar" @click="saveTracking()" :loading="fetching")
+            UButton(variant="secondary" label="Obtener Rastreo" @click="getTracking(currentShipping.sale.at(0).sae_order)" :loading="fetching")
 
       br
       SrText(text="Destinatario" class="subtitle")

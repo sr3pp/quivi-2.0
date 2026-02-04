@@ -23,12 +23,12 @@ const changeThumb = (thumb: any) => {
 
 <template lang="pug">
 .quivi-product-thumbs
-    SrPicture(:src="`/products/${productId}/${currentThumb}`" :alt="productName"  width="100%" height="100%")
+    NuxtImg(:src="`/products/${productId}/${currentThumb}`" :alt="productName"  width="100%" height="100%")
     ul.quivi-product-thumbs-list
       template(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i")
         li.quivi-product-thumbs-item(v-if="thumb !== currentThumb")
           button(@click="changeThumb(thumb)")
-            SrPicture(:src="`/products/${productId}/${thumb}`" :alt="productName")
+            NuxtImg(:src="`/products/${productId}/${thumb}`" :alt="productName")
 </template>
 
 <style lang="scss">

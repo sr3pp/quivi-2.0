@@ -1,23 +1,23 @@
 <template lang="pug">
 .catalogo
-    SrContainer(:with-padding="true")
+    UContainer(:with-padding="true")
         SrText(:text="`Order: ${order_id}`" class="title")
         SrText(:text="order.payment.transaction")
         SrText(:text="getPaymentMethod(order.payment.method)")
         SaleProducts(:products="order.products")
 
-        SrGrid(:style="{marginTop: '0!important'}")
-            SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+        UPageGrid(:style="{marginTop: '0!important'}")
+            div(class="col-span-1 sm:col-span-2")
                 Shipment(:shipment="order.shipment")
-            SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+            div(class="col-span-1 sm:col-span-2")
                 Bill(:bill="order.bill" v-if="order.bill")
 
-        QuiviButton(label="Ir a Tienda" href="/")
+        UButton(label="Ir a Tienda" href="/")
 
 </template>
 
 <script lang="ts" setup>
-import { paymentKeyDict } from "assets/ts/utilities";
+import { paymentKeyDict } from "@/assets/ts/utilities";
 const { order_id } = useRoute().query;
 const order = await $fetch(`/api/sales/${order_id}`);
 

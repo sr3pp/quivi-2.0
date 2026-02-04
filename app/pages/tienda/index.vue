@@ -1,16 +1,16 @@
 <template lang="pug">
 .store
-    SrGrid
-        SrGridColumn(class="flex flex-col p-6 store-filters col-span-12 sm:col-span-2 md:col-span-3 lg:col-span-3")
+    UPageGrid
+        div(class="flex flex-col p-6 store-filters col-span-12 sm:col-span-2 md:col-span-3 lg:col-span-3")
           SrText(text="Encuentra lo que necesitas." class="subtitle")
           ProductFilters(@filter="filterProducts" :isFiltered="search || filters")
-        SrGridColumn(class="column products col-span-12 sm:col-span-4 md:col-span-9 lg:col-span-9")
+        div(class="column products col-span-12 sm:col-span-4 md:col-span-9 lg:col-span-9")
           SrText.store-shipping(class="subtitle" :text="`Envios gratis en compras superiores a: ${shipment.meta.content.limite} MXN`")
           ContentRenderer(v-if="contentPage?.body" :value="contentPage")
           .search-label(v-if="search || filters")
               SrText(text="Resultados de la busqueda" class="subtitle")
-          SrGrid(tag="ul" class="product-grid")
-              SrGridColumn(:size="{mobile: '1', sm: '1/4'}" v-for="(product, i) in products" :key="i")
+          ul(class="product-grid")
+              div(class="col-span-1 sm:col-span-1/4" v-for="(product, i) in products" :key="i")
                 ProductCard(:product="product")
           Pagination(:pagination="pagination")
 

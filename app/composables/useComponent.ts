@@ -1,9 +1,7 @@
-import { SrAccordionGroup } from "#build/components";
-
 const currentComponent: Ref<any> = ref(null);
 
 const componentDefaults: any = {
-  SrContainer: {
+  UContainer: {
     withPadding: true,
     contained: true,
     editable: true,
@@ -41,10 +39,10 @@ const componentDefaults: any = {
     ],
     label: "Accordion Group",
   },
-  SrGrid: {
+  UPageGrid: {
     content: [
       {
-        component: "SrGridColumn",
+        component: "div",
         props: {
           size: {
             mobile: "1",
@@ -63,7 +61,7 @@ const componentDefaults: any = {
       },
     ],
   },
-  SrGridColumn: {
+  div: {
     size: {
       mobile: "1",
     },
@@ -98,8 +96,8 @@ export function useComponent(content: any) {
       (component.props as any).css.class = "";
     }
 
-    currentComponent.value = { component } || {
-      component: "SrContainer",
+    currentComponent.value = {
+      component: "UContainer",
       props: {
         withPadding: true,
         contained: true,

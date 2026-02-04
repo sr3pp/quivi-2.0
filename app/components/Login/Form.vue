@@ -3,7 +3,7 @@
     SrText(text="Login" class="title")
     SrForm.login-form(:fieldsets="loginForm" @submit="login" submit="hidden")
         template(#submit)
-            QuiviButton(type="submit" label="Enviar" variant="secondary")
+            UButton(type="submit" label="Enviar" variant="secondary")
 </template>
 
 <script lang="ts" setup>

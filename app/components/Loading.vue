@@ -1,6 +1,6 @@
 <template lang="pug">
 .quivi-loader
-    SrContainer
+    UContainer
         SrText(text="Cargando..." class="title" alignment="center")
 </template>
 

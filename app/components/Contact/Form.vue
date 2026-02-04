@@ -2,7 +2,7 @@
 .contact-form
     SrForm(v-if="!sent" :fieldsets="contactForm" @submit="sendContactForm" submit="hidden")
       template(#submit)
-        QuiviButton(type="submit" label="Enviar" variant="secondary" :disabled="sending")
+        UButton(type="submit" label="Enviar" variant="secondary" :disabled="sending")
     .success(v-else)
       SrText(text="¡Mensaje enviado con éxito!" class="subtitle" alignment="center")
 </template>

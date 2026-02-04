@@ -35,12 +35,12 @@ const addThumb = () => {
 </script>
 
 <template lang="pug">
-SrGrid(tag="ul").quivi-product-edit-thumbs
-  SrGridColumn.quivi-product-edit-thumbs-item(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i" tag="li" :size="{mobile: '1', sm: '1/4'}")
+UPageGrid(tag="ul").quivi-product-edit-thumbs
+  li.quivi-product-edit-thumbs-item(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i" class="col-span-1 sm:col-span-1/4")
     button.delete-thumb(@click="removeThumb(i)" type="button")
-      SrIcon(name="trash-o")
-    SrPicture(:src="`/products/${productId}/${thumb}`" :alt="thumb" width="100%" height="100%")
-  SrGridColumn(tag="li").quivi-product-edit-thumbs-item
+      SvgIcon(name="trash-o")
+    NuxtImg(:src="`/products/${productId}/${thumb}`" :alt="thumb" width="100%" height="100%")
+  li.quivi-product-edit-thumbs-item(class="col-span-1 sm:col-span-1/4")
     SrFormInput(v-model="newThumb" placeholder="New thumb")
     button(@click="addThumb" type="button") Add Thumb
 </template>

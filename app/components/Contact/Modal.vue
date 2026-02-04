@@ -20,19 +20,19 @@ defineExpose({
 <template lang="pug">
 SrModal.modal-contact-form(ref="contactModal")
     template(#body)
-        SrGrid
-          SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+        UPageGrid
+          div(class="col-span-1 sm:col-span-2")
             SrText(text="Contacto" class="title")
             ContactForm
             NuxtLink.modal-contact-form-whats(to="tel:5574763104" class="quivi-button")
-              SrIcon(name="whatsapp-o")
+              SvgIcon(name="whatsapp-o")
               SrText(text="55 7476 3104")
             ul.modal-contact-form-social
               li.modal-contact-form-social-item(v-for="(item, i) in social" :key="i")
                 NuxtLink(:href="item.url" target="_blank" :aria-label="item.label")
-                  SrIcon(:name="item.icon")
-          SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
-            SrPicture(src="/img/contacto.jpg" alt="Assesor trabajando")
+                  SvgIcon(:name="item.icon")
+          div(class="col-span-1 sm:col-span-2")
+            NuxtImg(src="/img/contacto.jpg" alt="Assesor trabajando")
 </template>
 
 <style lang="scss">

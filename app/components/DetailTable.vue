@@ -75,9 +75,9 @@ const sortBy = (field: string) => {
           td.actions
             button(@click="$emit('detail', row)" v-if="actions.includes('detail')") Detail
             button(@click="$emit('edit', row)" v-if="actions.includes('edit')")
-              SrIcon(name="edit-o")
+              SvgIcon(name="edit-o")
             button(@click="deleteItem(row)" v-if="actions.includes('delete')")
-              SrIcon(name="trash-o")
+              SvgIcon(name="trash-o")
 </template>
 
 <style lang="scss">

@@ -69,10 +69,10 @@ watch(search, () => {
 </script>
 
 <template lang="pug">
-SrContainer
+UContainer
   SrFormSelect(v-model="catalog.brand" v-if="catalog.card" :options="brands" label="Marca")
   div.catalog-card(v-if="catalog.card")
-    SrPicture(:src="catalog.card.thumb" alt="placeholder" :editable="true" @media-gallery="EmitHandler($event, catalog.card, (data) => editPicture(data, $emit('media-modal')))")
+    NuxtImg(:src="catalog.card.thumb" alt="placeholder" :editable="true" @media-gallery="EmitHandler($event, catalog.card, (data) => editPicture(data, $emit('media-modal')))")
     div  
       SrFormInput(v-model="catalog.card.label" label="Titulo")
       SrFormInput(v-model="catalog.card.order" label="Orden")
@@ -80,10 +80,10 @@ SrContainer
       li.catalog-card-item(v-for="(item, i) in catalog.card.list" :key="i")
         SrFormInput(v-model="catalog.card.list[i]")
         button(@click="deleteItem(i)")
-          SrIcon(name="trash-o")
+          SvgIcon(name="trash-o")
       li.catalog-card-item
         button(@click="addItem")
-          SrIcon(name="plus-o")
+          SvgIcon(name="plus-o")
   template(v-if="catalog.content")
     h2 Productos Destacados
     div.search-bar
@@ -94,7 +94,7 @@ SrContainer
             | {{ product.name}} | {{ product.web}}
     ul.catalog-products
       li(v-for="(product, i) in catalog.products" :key="i")
-        QuiviButton(@click="$emit('delete-product', i)" variant="secondary")
+        UButton(@click="$emit('delete-product', i)" variant="secondary")
           span {{ product }}
           span.close x
   SliderMain(

@@ -1,11 +1,11 @@
 <template lang="pug">
 .quivi-business
-  SrContainer(:with-padding="true")
-    SrGrid.quivi-business-header
-      SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
-        SrText(text="Panel Bussines" class="title")
-      SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
-        QuiviButton(@click="updateBusiness" class="sr-button--primary" variant="secondary" label="Guardar cambios")
+  UContainer(:with-padding="true")
+    UPageGrid.quivi-business-header
+      div(class="col-span-1 sm:col-span-2")
+        p(class="title") Configuración de la Empresa
+      div(class="col-span-1 sm:col-span-2")
+        UButton(@click="updateBusiness" class="sr-button--primary" variant="secondary" label="Guardar cambios")
     SrText(text="Direccion" class="subtitle")
     ul.data-list.wrapped
       li.data-list-item(v-for="(value, key) in business.address" :key="key")

@@ -2,7 +2,7 @@
 .quivi-checkout-info
   SrForm.quivi-checkout-form(:fieldsets="saleForm" @submit="processData" submit="hidden")
     template(#submit)
-      QuiviButton(label="Continuar")
+      UButton(label="Continuar")
 </template>
 
 <script lang="ts" setup>

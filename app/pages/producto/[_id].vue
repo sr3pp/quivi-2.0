@@ -112,11 +112,11 @@ const getLabel = (key: string) => {
 <template lang="pug">
 .product-detail
 
-    SrContainer(:with-padding="true")
-        SrGrid
-            SrGridColumn(:size="{mobile: '1', sm: '2/5'}")
+    UContainer(:with-padding="true")
+        UPageGrid
+            div(class="col-span-1 sm:col-span-2/5")
               ProductThumbs(:thumbs="product.thumbs" :productName="product.name" :productId="product.web")
-            SrGridColumn(:size="{mobile: '1', sm: '3/5'}")
+            div(class="col-span-1 sm:col-span-3/5")
                 .product-detail-info(v-if="product")
                     SrText(:text="product.name" class="title")
                     SrText(:text="`Refaccion: ${product.web}`" class="title")
@@ -128,25 +128,25 @@ const getLabel = (key: string) => {
                           SrText(:text="toPrice(product.price)" :class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}")
                         .product-detail-no-existences(v-if="!existences")
                           SrText(text="Producto no disponible")
-                          QuiviButton(label="Solicitar información" size="lg" variant="secondary")
+                          UButton(label="Solicitar información" size="lg" variant="secondary")
                         .product-detail-existences(v-else)
                           Incrementor(:qty="qty" :max="product.existences" @updateQty="($event) => qty += $event")
-                          QuiviButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
+                          UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
-                        QuiviButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
-                        QuiviButton(href="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
-            SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
+                        UButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
+                        UButton(href="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
+            div(class="col-span-1 sm:col-span-2")
                 SrText(text="ESPECIFICACIONES DEL PRODUCTO" class="title")
                 ul.product-detail-details
                     template(v-for="([key, value], i) in Object.entries(product)")
                         li.product-detail-detail(v-if="!detailExcludes.includes(key)" :key="i")
                             SrText.label(:text="`${getLabel(key)}:`")
                             SrText(:text="printValue(value)")
-            SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
-                SrText(text="DESCRIPCION DEL PRODUCTO" class="title")
-                SrText(:text="product.description")
+            div(class="col-span-1 sm:col-span-2")
+                p.title DESCRIPCION DEL PRODUCTO
+                p {{ product.description }}
 
-    SrContainer(:with-padding="true")
+    UContainer(:with-padding="true")
         SrText(value="PRODUCTOS RELACIONADOS" class="title")
     SliderProducts(:options="sliderOptions" :products="relatedProducts")
 </template>

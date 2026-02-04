@@ -1,12 +1,12 @@
 <template lang="pug">
 .sales
-  SrContainer(:with-padding="true")
+  UContainer(:with-padding="true")
     .sales-header
       .header-title
         SrText(text="Panel Ventas" class="title text-center")
         SrFormInput(v-model="search" @keyup.enter="searchSale" placeholder="Buscar")
-        QuiviButton(@click="searchSale")
-          SrIcon(name="lupa-o")
+        UButton(@click="searchSale")
+          SvgIcon(name="lupa-o")
 
     SrText(value="Panel ventas" class="title" alignment="center")
     //button(@click="salesModal.toggle()") Create venta

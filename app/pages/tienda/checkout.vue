@@ -1,13 +1,13 @@
 <template lang="pug">
 .checkout
     .checkout-loading(v-if="verifyingPayment")
-        SrContainer
+        UContainer
             SrText(text="Verificando Pago..." class="title" alignment="center")
-    SrContainer(:with-padding="true")
+    UContainer(:with-padding="true")
         SrText(text="Checkout" class="title" alignment="center")
 
-        SrGrid
-            SrGridColumn(:size="{mobile: '1', sm: '3/4'}" class="column")
+        UPageGrid
+            div(class="col-span-1 sm:col-span-3/4" class="column")
               CheckoutSteps
               ClientOnly
                 TransitionGroup(name="fade")
@@ -15,12 +15,12 @@
                   CheckoutPayment(v-show="stepsState[1].active" key="2")
                   CheckoutResume(v-show="stepsState[2].active" :sat="sat" key="3")
                         
-            SrGridColumn(:size="{mobile: '1', sm: '1/4'}")
+            div(class="col-span-1 sm:col-span-1/4")
               .cart-resume
                 ClientOnly
                     CartList(:products="cart.products" :editable="false")
                     CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
-                QuiviButton(label="Pagar" :disabled="!paymentLock" kind="primary" @click="termsModal.toggle()")
+                UButton(label="Pagar" :disabled="!paymentLock" kind="primary" @click="termsModal.toggle()")
     SrModal(ref="termsModal" class="modal-terms")
         template(#body)
             QuiviTerms(:terms="terms" )
@@ -31,7 +31,7 @@
           SrText(text="Para continuar acepta los términos y condiciones")
           SrText(:html="termsLegend2")
           br
-          QuiviButton(label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
+          UButton(label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
 </template>
 
 <script lang="ts" setup>
@@ -62,8 +62,8 @@ const {
 } = useCheckout();
 
 const [{ page: termsPage }, { page: satPage }] = await Promise.all([
-  usePageContent("/_config/terms", { collection: "config" }),
-  usePageContent("/_config/sat", { collection: "config" }),
+  usePageContent("/_config/terms", "config"),
+  usePageContent("/_config/sat", "config"),
 ]);
 const terms = computed(() => termsPage.value ?? {});
 const sat = computed(() => satPage.value ?? {});

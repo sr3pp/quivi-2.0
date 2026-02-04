@@ -4,11 +4,11 @@ aside.sidebar
         ul.sidebar-menu
             li.sidebar-menu-item(v-for="(item, i) in items" :key="i")
                 NuxtLink(:to="item.url")
-                    SrIcon(:name="item.icon")
+                    SvgIcon(:name="item.icon")
                     span {{ item.label }}
             li.sidebar-menu-item
                 button(@click="logout")
-                    SrIcon(name="logout-o")
+                    SvgIcon(name="logout-o")
                     span Logout
 </template>
 

@@ -1,7 +1,6 @@
 <template lang="pug">
-.quivi-checkout-resume
-  SrGrid
-    SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
+UPageGrid.quivi-checkout-resume
+    div(class="col-span-1 sm:col-span-2")
         SrText(text="Datos de Personales" class="subtitle")
         template(v-for="(value, key) in shippmentData")
             p(v-if="typeof value == 'string'")
@@ -15,7 +14,7 @@
                 strong {{ keyDict[k] }}: 
                 span {{ v }}
 
-    SrGridColumn(:size="{mobile: '1', sm: '1/2'}" class="column")
+    div(class="col-span-1 sm:col-span-2")
         SrText(text="Metodo de pago" class="subtitle")
         SrText(:text="paymentMethod.name")
         br

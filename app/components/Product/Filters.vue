@@ -7,9 +7,9 @@ ul.quivi-product-filters
             datalist(:id="item.label")
                 option(v-for="(opt, j) in item.options" :key="j" :id="opt.value" :value="opt.label")
     li.quivi-product-filters-item
-      QuiviButton(@click="filter" label="Filtrar")
+      UButton(@click="filter" label="Filtrar")
     li.quivi-product-filters-item
-      QuiviButton(v-if="isFiltered" href="/tienda" label="Limpiar Filtros")
+      UButton(v-if="isFiltered" href="/tienda" label="Limpiar Filtros")
 </template>
 
 <script lang="ts" setup>

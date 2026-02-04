@@ -1,9 +1,18 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@import "./fonts";
+@import "./theme";
 
-@theme {
-  --color-primary: #f22435;
-  --color-primary-dark: #c54643;
+body {
+  font-family: Inria, sans-serif;
+}
 
-  --color-secondary: #1c8741;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Bebas, sans-serif;
+  text-wrap: balance;
 }

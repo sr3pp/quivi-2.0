@@ -15,6 +15,7 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@nuxt/image": "2.0.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@types/jsonwebtoken": "^9.0.10",

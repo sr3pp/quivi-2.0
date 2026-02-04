@@ -1,26 +1,26 @@
 <template lang="pug">
 .checkout-spei
-  SrContainer(:with-padding="true")
+  UContainer(:with-padding="true")
     SrText(:text="`Order: ${order_id}`" class="title")
     SrText(text="Siguientes pasos" class="subtitle")
     
-    SrGrid(tag="ul")
-      SrGridColumn(tag="li" :size="{mobile: '1'}")
+    UPageGrid(tag="ul")
+      div(tag="li" class="col-span-1")
         SrText(:html="paymentStepsText[0]")
-      SrGridColumn(tag="li" v-for="(account, i) in accounts" :key="i" :size="{mobile: '1', sm: '1/3'}")
+      div(tag="li" v-for="(account, i) in accounts" :key="i" class="col-span-1 sm:col-span-1/3")
         SrText(:text="`Banco: ${account.bank_name}`" class="subtitle")
         SrText(:text="`Número de cuenta: ${account.account_number}`")
         SrText(:text="`Clabe: ${account.CLABE}`")
-      SrGridColumn(tag="li" :size="{mobile: '1'}")
-        SrText(:html="paymentStepsText[1]")
-    QuiviButton(href="/" label="Ir a la tienda")
+      div(tag="li" class="col-span-1")
+        p(v-html="paymentStepsText[1]")
+    UButton(href="/" label="Ir a la tienda")
 </template>
 
 <script lang="ts" setup>
 const { order_id } = useRoute().query;
 const [{ page: businessPage }, { page: contactPage }] = await Promise.all([
-  usePageContent("/_config/business", { collection: "config" }),
-  usePageContent("/_config/contact", { collection: "config" }),
+  usePageContent("/_config/business", "config"),
+  usePageContent("/_config/contact", "config"),
 ]);
 const accounts = businessPage.value?.bank_accounts ?? [];
 const contactMail = contactPage.value?.email ?? "";
@@ -34,7 +34,7 @@ await $fetch(`/api/send-mail`, {
   method: "POST",
   body: {
     template: "sale",
-    to: order.shipment.email,
+    to: order.shipping.email,
     subject: "Resumen de compra Quivi.mx",
     context: order,
   },

@@ -2,7 +2,7 @@
 .quivi-checkout-payment
   SrFormSelect(:options="paymentOptions" v-model="method" label="Método de pago")
   br
-  QuiviButton(label="Continuar" @click="setPaymentMethod(method)")
+  UButton(label="Continuar" @click="setPaymentMethod(method)")
 </template>
 
 <script lang="ts" setup>

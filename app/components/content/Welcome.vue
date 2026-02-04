@@ -6,19 +6,17 @@ type WelcomeImages = {
 
 defineProps<{
   title: String;
-  subtitle: String;
   images: WelcomeImages;
 }>();
 </script>
 
 <template>
   <section>
-    <UContainer class="py-20 text-center">
-      <h2 class="font-bold text-4xl mb-6">{{ title }}</h2>
+    <UContainer class="py-10">
       <div class="grid grid-cols-[12]">
-        <p class="text-lg text-gray-700 mb-8 col-span-12">
-          {{ subtitle }}
-        </p>
+        <h3 class="text-xl font-bebas text-gray-700 mb-8 col-span-12">
+          {{ title }}
+        </h3>
         <figure class="col-span-8">
           <img :src="images!.primary" alt="Welcome Image 1" />
         </figure>

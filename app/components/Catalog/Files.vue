@@ -51,11 +51,11 @@ const handleDeleteFile = async (key: string, file: string, idx: number) => {
         li.catalog-files-list-item(v-for="file in files[section]" :key="file.name")
           span {{ file }}
           button(@click="handleDeleteFile(section, file)")
-            SrIcon(name="trash-o")
+            SvgIcon(name="trash-o")
         li.catalog-files-list-item.new
           label
             input(type="file" accept=".pdf" @change="handleFileChange($event, section)" multiple)
-            SrIcon(name="plus-o")
+            SvgIcon(name="plus-o")
 </template>
 
 <style lang="scss" scoped>

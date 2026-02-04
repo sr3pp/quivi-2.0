@@ -1,42 +1,42 @@
 <template lang="pug">
 nav.quivi-navbar(:class="{'active-search': searchActive}")
-  SrContainer
+  UContainer(class="grid grid-cols-12 items-center gap-4")
     button.quivi-navbar-burguer(@click="menuActive = !menuActive")
-      SrIcon(name="hamburguesa-o")
-    NuxtLink.logo(to="/")
-      SrPicture(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
-    SearchBar(endpoint="/api/product/search?path=/&perPage=5")
-    ul.quivi-navbar-list
+      SvgIcon(name="hamburguesa-o")
+    NuxtLink(to="/" class="col-span-1 sm:col-span-2")
+      NuxtImg(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
+    SearchBar(endpoint="/api/product/search?path=/&perPage=5" class="col-span-1 sm:col-span-4")
+    ul.quivi-navbar-list(class="col-span-9 sm:col-span-6")
       li.quivi-navbar-list-item(class="sm:hidden")
         button(@click="searchActive = !searchActive")
-          SrIcon(name="lupa-o" v-if="!searchActive")
-          SrIcon(name="x-o" v-else)
+          SvgIcon(name="lupa-o" v-if="!searchActive")
+          SvgIcon(name="x-o" v-else)
           span Busqueda
       li.quivi-navbar-list-item.hidden(class="sm:flex")
         a(:href="`tel:${contact.phone}`") {{ contact.phone }}
       li.quivi-navbar-list-item
         button(@click="$emit('contactModal')")
-          SrIcon(name="contacto-o")
+          SvgIcon(name="contacto-o")
           span Contacto
       li.quivi-navbar-list-item
         button.cart-btn(@click="toggleCart")
           ClientOnly
             span.cart-counter(v-if="totalCartProducts") {{ totalCartProducts }}
-          SrIcon(name="carrito-o")
+          SvgIcon(name="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
         button.variant-red(@click="$emit('loginModal')")
             .icon-container
-              SrIcon(name="registrarsecaja-o")
+              SvgIcon(name="registrarsecaja-o")
             span Ingresar
   ul.quivi-navbar-menu(:class="{active: menuActive}")
     li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active, 'highlight': item.highLight}" :key="i")
       .link-container  
         NuxtLink(:to="item.path")
           span {{ item.title }}
-          SrIcon(name="ir-o" v-if="!item.children || (item.children && !item.children.length)")
+          SvgIcon(name="ir-o" v-if="!item.children || (item.children && !item.children.length)")
         button.collapse(@click="item.active = !Boolean(item.active)" v-if="item.children && item.children.length")
-          SrIcon(name="desplazamientoabajo-o")
+          SvgIcon(name="desplazamientoabajo-o")
       
         svg.bg
           defs
@@ -112,17 +112,6 @@ watch(
 
       .quivi-searchbar {
         top: 0;
-      }
-    }
-  }
-  .sr-container {
-    display: flex;
-    align-items: center;
-    position: relative;
-    z-index: 3;
-    > * {
-      &:not(:last-child) {
-        margin-right: pxToRem(20);
       }
     }
   }

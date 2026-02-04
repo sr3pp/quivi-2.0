@@ -3,7 +3,7 @@
     button.quivi-accordion-label(@click="toggle")
         SrText(:text="label" kind="subtitle")
         .quivi-accordion-label-icon
-            SrIcon(name="chevron-down-o")
+            SvgIcon(name="chevron-down-o")
     .quivi-accordion-content(:class="{ active }")
         slot(name="content")
 </template>

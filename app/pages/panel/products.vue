@@ -1,18 +1,18 @@
 <template lang="pug">
 .products
-  SrContainer(:with-padding="true")
+  UContainer(:with-padding="true")
     .products-header
       .header-title
         SrText(text="Panel Products" class="title text-center")
         SrFormInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar")
-        QuiviButton(@click="searchProduct")
-          SrIcon(name="lupa-o")
-      QuiviButton.new-product(@click="newProduct" variant="secondary" label="Nuevo producto")
+        UButton(@click="searchProduct")
+          SvgIcon(name="lupa-o")
+      UButton.new-product(@click="newProduct" variant="secondary" label="Nuevo producto")
       label.massive-file
         span Carga Massiva
         Spinner(v-if="uploading")
         input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
-      QuiviButton.delete-all(@click="deleteAll" variant="secondary" label="Eliminar todos")
+      UButton.delete-all(@click="deleteAll" variant="secondary" label="Eliminar todos")
 
 
     DetailTable(

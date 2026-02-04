@@ -84,8 +84,12 @@ export default defineNuxtConfig({
     // "@productdevbook/chatwoot",
     "@nuxt/ui",
     "nuxt-studio",
+    "@nuxt/image",
   ],
-  css: ["@/assets/css/main.css", "@/assets/scss/transitions/index.scss"],
+  ui: {
+    colorMode: false,
+  },
+  css: ["@/assets/css/main.css"],
   nitro: {
     plugins: [resolve(process.cwd(), "server/DB.ts")],
   },
@@ -94,9 +98,8 @@ export default defineNuxtConfig({
       preprocessorOptions: {
         scss: {
           additionalData: ` 
-            @use "@/assets/fonts/index.scss" as *;
             @use "@/assets/scss/tokens.scss" as *;
-            @use "@/assets/scss/sr-content/utilities/pxToRem.scss" as *;`,
+            @use "@/assets/scss/utilities/pxToRem.scss" as *;`,
         },
       },
     },

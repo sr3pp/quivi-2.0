@@ -1,7 +1,7 @@
 <template lang="pug">
 ul.quivi-cart-list 
     li.quivi-cart-list-product(v-for="(product, i) in products" :key="i")
-        SrPicture(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
+        NuxtImg(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
         .quivi-cart-list-product-info
             SrText(:text="product.name" class="subtitle")
             SrText(:text="`Marca: ${product.brand.name}`")
@@ -13,7 +13,7 @@ ul.quivi-cart-list
                 SrText(:text="toPrice(product.price)" :class="{discount: product.discount && product.discount > 0}")
                 SrText.price(:text="toPrice(processDiscount(product))" class="subtitle" v-if="product.discount && product.discount > 0")
         button(@click="removeFromCart(product)" v-if="editable")
-            SrIcon(name="trash-o")
+            SvgIcon(name="trash-o")
 </template>
 
 <script lang="ts" setup>

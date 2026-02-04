@@ -6,7 +6,7 @@
         span X
       template(#header)
         div(class="sr-modal-header")
-          SrContainer
+          UContainer
             h2 Preview
             ul(class="sr-preview-controls-resolutions")
               li(class="sr-preview-controls-resolution"
@@ -30,7 +30,7 @@
     button(@click="componentsModal.toggle()") component list
     button(@click="saveContent") save
     button(@click="showPreview") Preview
-  SrContainer(:with-padding="true")
+  UContainer(:with-padding="true")
     SrText(text="Panel content" class="title" alignment="center")
     component(v-for="(component, i) in content"
       :is="component.component"
@@ -46,7 +46,7 @@
 
   // This part shows the catalog content
   template(v-if="currentCatalog")
-    SrContainer
+    UContainer
       SrText(text="Catalogos" class="subtitle" alignment="center")
       CatalogList(
         @set-catalog="currentCatalog = $event"
@@ -70,10 +70,10 @@
         @add-file="$event.files.forEach((file: string) => currentCatalog.files[$event.key] ? currentCatalog.files[$event.key].push(file) : currentCatalog.files[$event.key] = [file])"
         @remove-file="currentCatalog.files[$event.key].splice($event.idx, 1)"
       )
-    SrContainer(v-if="!currentCatalog.sw")
-      SrGrid(tag="ul")
-        SrGridColumn(v-for="(brand, i) in catalogBrands" :key="brand.name" tag="li" :size="{mobile: '1', sm: '1/5'}")
-          SrPicture(
+    UContainer(v-if="!currentCatalog.sw")
+      UPageGrid(tag="ul")
+        div(v-for="(brand, i) in catalogBrands" :key="brand.name" tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/5")
+          NuxtImg(
             :src="brand.logo"
             alt="placeholder"
             :editable="true"
@@ -81,10 +81,10 @@
           )
           SrFormInput(v-model="brand.name" @change="brand.label = $event")
           button.icon-button(@click="deleteBrand(i)")
-            SrIcon(name="trash-o")
-        SrGridColumn(tag="li" :size="{mobile: '1', sm: '1/5'}")
+            SvgIcon(name="trash-o")
+        div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/5")
           button.icon-button(@click="addBrand")
-            SrIcon(name="plus-o")
+            SvgIcon(name="plus-o")
 
   SrModal(ref="seoModal")
     template(#body)
@@ -105,12 +105,12 @@
           template(v-for="(item, i) in currentMedia.children" :key="'media-item-'+new Date().getTime() + i")
             li.media-modal-item(v-if="!item.children")
               button(@click="setPicture(`/${item.path}`, mediaModal.toggle)")
-                SrPicture(:src="`/${item.path}`" alt="placeholder")
+                NuxtImg(:src="`/${item.path}`" alt="placeholder")
 
   SrModal(ref="iconModal")
     template(#body)
         button
-          SrIcon(name="edit-o" @click="setIcon('edit-o')")
+          SvgIcon(name="edit-o" @click="setIcon('edit-o')")
 
 
   SrModal(class="component-props-modal"
@@ -130,8 +130,8 @@
           SrGridColumnPropsForm(:responsive="responsive"
             v-if="currentComponent.component.component == 'SrGridColumn'"
             :column-element="currentComponent.component.props")
-          SrContainerPropsForm(:responsive="responsive"
-            v-if="currentComponent.component.component == 'SrContainer'"
+          UContainerPropsForm(:responsive="responsive"
+            v-if="currentComponent.component.component == 'UContainer'"
             :container-element="currentComponent.component.props"
             @media-gallery="EmitHandler($event, currentComponent.component, editBackground)")
           SrTabsPropsForm(:responsive="responsive"
@@ -141,24 +141,8 @@
 
 <script lang="ts" setup>
 import { proccessContent, EmitHandler } from "@/assets/ts/utils";
-import * as SrComponents from "@/components/sr";
-import SliderMain from "@/components/Slider/Main.vue";
 
-const appComponents = {
-  SliderMain,
-};
-
-const prefixedComponents: any = {};
-Object.keys(SrComponents).forEach((componentName) => {
-  prefixedComponents[`Sr${componentName}`] = (SrComponents as any)[
-    componentName
-  ];
-});
-
-const Components = {
-  ...prefixedComponents,
-  ...appComponents,
-};
+const Components = {};
 
 const currentCatalog: any = ref(null);
 

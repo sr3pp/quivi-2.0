@@ -1,7 +1,7 @@
 <template lang="pug">
 .catalogo-detail
     ContentRenderer(v-if="page?.body" :value="page")
-    SrContainer(:with-padding="true")
+    UContainer(:with-padding="true")
         DownloadsList(:downloads="downloads" :path="path")
 </template>
 

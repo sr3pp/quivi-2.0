@@ -32,13 +32,18 @@ const alt = computed(() => props.image?.alt || props.title || "Slide");
 
 <template>
   <article class="relative">
-    <picture class="w-full h-full">
+    <picture class="w-full h-full flex">
       <source
         v-if="desktopImage"
         :srcset="desktopImage"
         media="(min-width: 768px)"
       />
-      <img :src="mobileImage || desktopImage" :alt="alt" loading="lazy" />
+      <NuxtImg
+        class="w-full"
+        :src="mobileImage || desktopImage"
+        :alt="alt"
+        loading="lazy"
+      />
     </picture>
 
     <UContainer
@@ -63,7 +68,7 @@ const alt = computed(() => props.image?.alt || props.title || "Slide");
           :to="cta.to"
           :href="cta.href"
           :target="cta.target"
-          :color="cta.color || 'primary'"
+          :color="cta.color || 'secondary'"
           :variant="cta.variant || 'solid'"
         >
           {{ cta.label }}

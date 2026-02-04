@@ -20,19 +20,19 @@ section.sale-detail
     SrFormInput(label="No. de Transaccion" v-model="sale.payment.transaction")
     button(type="button" @click="console.log('aprove order')") Autorizar
     
-  SrGrid
-    SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+  UPageGrid
+    div(class="col-span-1 sm:col-span-2")
       SrText(:text="`Sae: ${sale.sae_order}`" class="subtitle")
-    SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+    div(class="col-span-1 sm:col-span-2")
       Status(:status="sale.status ? 2 : 0")
           SrText(text="status" class="subtitle")
 
   SaleProducts(:products="sale.products")
 
-  SrGrid
-    SrGridColumn(:size="{mobile: '1', sm: '1/2'}")
+  UPageGrid
+    div(class="col-span-1 sm:col-span-2")
       Shipment(:shipment="sale.shipment")
-    SrGridColumn(:size="{mobile: '1', sm: '1/2'}" v-if="sale.bill")
+    div(class="col-span-1 sm:col-span-2" v-if="sale.bill")
       Bill(:bill="sale.bill")
 
 

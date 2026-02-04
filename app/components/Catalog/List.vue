@@ -25,11 +25,11 @@ const getNewCatalog = () => ({
   products: [],
   content: [
     {
-      component: "SrContainer",
+      component: "UContainer",
       props: {
         content: [
           {
-            component: "SrContainer",
+            component: "UContainer",
             props: {
               editable: true,
               contained: false,
@@ -96,10 +96,10 @@ ul.catalog-list
   li.catalog-list-item(v-for="(c, i) in catalogs" :key="i")
     SrFormBox(v-model="catalog.card.slug" type="radio" name="catalog" :value="c.slug" :label="c.label" @change="setCatalog(c.slug)")
     button(@click="deleteCatalog(c.slug)")
-      SrIcon(name="trash-o")
+      SvgIcon(name="trash-o")
   li.catalog-list-item
     button(@click="setCatalog('new')")
-      SrIcon(name="plus-o")
+      SvgIcon(name="plus-o")
 </template>
 
 <style scoped lang="scss">

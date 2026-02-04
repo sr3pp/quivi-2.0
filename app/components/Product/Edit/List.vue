@@ -54,7 +54,7 @@ const removeItem = (idx: number) => {
   ul.quivi-product-edit-list-items
     li.quivi-product-edit-list-items-item(v-for="(item, i) in items" :key="i")
       button(@click="removeItem(i)" type="button") 
-        SrIcon(name="trash-o")
+        SvgIcon(name="trash-o")
         span {{ item.name }}
 </template>
 
