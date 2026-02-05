@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
   const productDir = join(productsDir, product.web);
   if (fs.existsSync(productDir)) {
-    fs.rmdirSync(productDir, { recursive: true });
+    fs.rmdirSync(productDir);
   }
   await ProductModel.findByIdAndDelete(id);
 

@@ -9,6 +9,7 @@ import {
   Segment,
   Product as ProductModel,
 } from "~~/server/Models";
+import type { Product } from "~~/app/types/product";
 
 const processName = (name: string) => {
   return String(name).toLowerCase().trim();
