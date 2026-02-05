@@ -11,31 +11,10 @@ defineExpose({
 </script>
 
 <template lang="pug">
-UModal.quivi-modal-login(v-model:open="modalSw")
+UModal(v-model:open="modalSw")
     template(#header)
-      .sr-modal-header
-        p.title Login
-    template(#content)
-      .sr-modal-body
-        LoginForm
+      p.font-bebas.text-3xl Login
+    template(#body)
+      LoginForm
 
 </template>
-
-<style lang="scss">
-.quivi-modal-login {
-  .sr-modal-container {
-    max-width: pxToRem(400) !important;
-  }
-  .sr-modal-content {
-    min-width: inherit !important;
-  }
-  .sr-modal-close {
-    z-index: 3;
-  }
-  .sr-modal-body {
-    max-height: inherit;
-    overflow: hidden;
-    border-radius: pxToRem(10);
-  }
-}
-</style>

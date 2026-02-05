@@ -1,8 +1,8 @@
-@theme{
-    --color-primary: #f22435;
+@theme {
+  --color-primary: #f22435;
   --color-primary-dark: #c54643;
   --color-secondary: #1c8741;
 
-  --font-bebas: 'Bebas', sans-serif;
-  --font-inria: 'Inria', sans-serif;
+  --font-bebas: "Bebas", sans-serif;
+  --font-inria: "Inria", sans-serif;
 }

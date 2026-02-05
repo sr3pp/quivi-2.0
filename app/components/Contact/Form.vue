@@ -1,78 +1,63 @@
 <template lang="pug">
 .contact-form
-    SrForm(v-if="!sent" :fieldsets="contactForm" @submit="sendContactForm" submit="hidden")
-      template(#submit)
-        UButton(type="submit" label="Enviar" variant="secondary" :disabled="sending")
+    UForm.flex.flex-col(v-if="!sent" :state="formState" :schema="schema" @submit="sendContactForm" class="space-y-4")
+      UFormField(label="Nombre" name="name" required)
+        UInput.w-full(v-model="formState.name" placeholder="Ingresa tu nombre")
+      
+      UFormField(label="Teléfono" name="tel")
+        UInput.w-full(v-model="formState.tel" type="tel" placeholder="Ingresa tu teléfono")
+      
+      UFormField(label="Whatsapp" name="whatsapp")
+        UInput.w-full(v-model="formState.whatsapp" type="tel" placeholder="Ingresa tu Whatsapp")
+      
+      UFormField(label="Correo Electronico" name="email" required)
+        UInput.w-full(v-model="formState.email" type="email" placeholder="Ingresa tu correo")
+      
+      UFormField(label="Mensaje" name="message" required)
+        UTextarea.w-full(v-model="formState.message" placeholder="Escribe tu mensaje" :rows="5")
+      
+      .flex.justify-between.items-center
+        slot
+        UButton(type="submit" label="Enviar" :disabled="sending" :loading="sending")
+    
     .success(v-else)
-      SrText(text="¡Mensaje enviado con éxito!" class="subtitle" alignment="center")
+      p ¡Mensaje enviado con éxito!
 </template>
 
 <script lang="ts" setup>
+import { z } from 'zod'
+import type { FormSubmitEvent } from '@nuxt/ui'
+
 const content = await $fetch("/api/content?page=_config/contact");
 const contactEmail = content.email;
 
-const sending: Ref<boolean> = ref(false);
-const sent = ref<boolean>(false);
+const sending = ref(false);
+const sent = ref(false);
 
-const contactForm: any = ref([
-  {
-    fields: [
-      {
-        component: "SrFormInput",
-        props: {
-          label: "Nombre",
-          value: "",
-          name: "name",
-          required: true,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          label: "Teléfono",
-          value: "",
-          type: "tel",
-          name: "tel",
-          required: false,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          label: "Whatsapp",
-          value: "",
-          type: "tel",
-          name: "whatsapp",
-          required: false,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          label: "Correo Electronico",
-          value: "",
-          name: "email",
-          type: "email",
-          required: true,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          label: "Mensaje",
-          value: "",
-          name: "message",
-          type: "textarea",
-          required: true,
-        },
-      },
-    ],
-  },
-]);
-const sendContactForm = async (contact: any) => {
+// Zod validation schema
+const schema = z.object({
+  name: z.string().min(1, 'El nombre es requerido').trim(),
+  tel: z.string().optional(),
+  whatsapp: z.string().optional(),
+  email: z.string().min(1, 'El correo electrónico es requerido').email('Ingresa un correo electrónico válido'),
+  message: z.string().min(1, 'El mensaje es requerido').trim()
+});
+
+type Schema = z.output<typeof schema>;
+
+// Form state
+const formState = reactive({
+  name: '',
+  tel: '',
+  whatsapp: '',
+  email: '',
+  message: ''
+});
+
+const sendContactForm = async (event: FormSubmitEvent<Schema>) => {
   sending.value = true;
   const data = {
-    context: contact,
+    context: event.data,
     template: "contact",
     to: contactEmail,
     subject: "Mensaje de formulario de contacto",
@@ -95,24 +80,6 @@ const sendContactForm = async (contact: any) => {
 
 <style lang="scss">
 .contact-form {
-  .sr-form {
-    padding: 0;
-    width: 100%;
-    fieldset {
-      padding: 0;
-      border: none;
-      outline: none;
-      gap: 0 !important;
-      .sr-form-input {
-        margin-bottom: pxToRem(20);
-      }
-    }
-
-    .quivi-button {
-      margin-right: 0;
-    }
-  }
-
   .success {
     min-height: pxToRem(200);
     display: flex;

@@ -16,9 +16,9 @@ const terms = await $fetch("/api/content?page=_config/terms");
 UModal.terms-modal(v-model:open="modalSw")
   template(#header)
     .terms-modal-header
-      p {{ terms.title }}
+      p.font-bebas.text-3xl {{ terms.title }}
       span {{ terms.fecha }}
-  template(#content)
+  template(#body)
     ul.terms-modal-list
       li.terms-modal-item(v-for="(section, i) in terms.sections" :key="`${Date.now()}-terms-section-${i}`")
         p {{ section.title }}

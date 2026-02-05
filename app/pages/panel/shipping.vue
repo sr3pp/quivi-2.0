@@ -32,7 +32,7 @@
         div(class="col-span-2")
           p.status-box 
             span {{ currentShipping.status }}
-            Status(:status="currentShipping.status == 'delivered' ? 2 : currentShipping.status == 'shipping' ? 1 : 0")
+            UBadge(:color="currentShipping.status == 'delivered' ? 'primary' : currentShipping.status == 'shipping' ? 'warning' : 'error'" :label="`Envio: ${currentShipping.status}`")
         template(v-if="currentShipping.tracking.number")
           div(class="col-span-1 sm:col-span-2")
             SrText(text="Tracking" class="subtitle")

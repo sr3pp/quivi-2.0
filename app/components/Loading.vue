@@ -1,7 +1,7 @@
 <template lang="pug">
 .quivi-loader
     UContainer
-        SrText(text="Cargando..." class="title" alignment="center")
+        p.font-bebas.text-2xl Cargando...
 </template>
 
 <script setup></script>

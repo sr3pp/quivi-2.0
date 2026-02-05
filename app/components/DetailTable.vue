@@ -68,7 +68,7 @@ const sortBy = (field: string) => {
       tr(v-for="(row, i) in rows" :key="new Date().getTime()+i")
           template(v-for="(cell, key) in row")
             td(v-if="key !== 'actions'" :key="cell")
-              Status(:status="cell ? 2 : 0" v-if="key === 'status'")
+              UBadge(:color="cell ? 'primary' : 'error'" v-if="key === 'status'")
               span(v-else-if="['createdAt'].includes(key)") {{ new Date(cell).toLocaleDateString('es-MX') }}
               span(v-else-if="Array.isArray(cell)") {{ cell.length }}
               span(v-else) {{ cell }}

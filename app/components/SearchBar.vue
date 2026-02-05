@@ -1,10 +1,10 @@
 <template lang="pug">
-.quivi-searchbar
-    input.p-2.rounded-sm(type="text" placeholder="Buscar" v-model="search" @input="runSearch")
+.relative
+    UInput.w-full(type="text" placeholder="Buscar" v-model="search" @input="runSearch")
     button.quivi-searchbar-clearbtn(v-if="results.length" @click="results = []")
       span x
-    button(@click="goToSearch")
-        SvgIcon(name="lupa-o")
+    button.absolute.top-0.right-0.bg-primary.h-full.p-2.flex.items-center.justify-center.rounded-r-md(@click="goToSearch")
+        SvgIcon.size-4.text-white(name="lupa-o")
     .quivi-searchbar-results-container(:class="{ active: results.length > 0 }")
       ul.quivi-searchbar-results
         li.quivi-searchbar-result(v-for="(result, i) in results" :key="i")

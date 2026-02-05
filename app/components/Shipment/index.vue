@@ -35,8 +35,7 @@ defineProps({
   SrText(:text="`email: ${shipment.email}`")
   SrText(:text="`cost: ${toPrice(shipment.cost)}`")
   br
-  Status(:status="shipment.status == 'delivered' ? 2 : shipment.status == 'shipping' ? 1 : 0")
-    SrText(:text="`Envio: ${shipment.status}`")
+  UBadge(:color="shipment.status == 'delivered' ? 'primary' : shipment.status == 'shipping' ? 'warning' : 'error'" :label="`Envio: ${shipment.status}`")
   br
   Address(:address="shipment.address")
 

@@ -24,8 +24,7 @@ section.sale-detail
     div(class="col-span-1 sm:col-span-2")
       SrText(:text="`Sae: ${sale.sae_order}`" class="subtitle")
     div(class="col-span-1 sm:col-span-2")
-      Status(:status="sale.status ? 2 : 0")
-          SrText(text="status" class="subtitle")
+      UBadge(:color="sale.status ? 'primary' : 'error'" label="status")
 
   SaleProducts(:products="sale.products")
 

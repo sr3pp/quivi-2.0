@@ -18,8 +18,8 @@ defineExpose({
 <template lang="pug">
 UModal.faq-modal(v-model:open="modalSw")
   template(#header)
-      p FAQ's
-  template(#content)
+      p.font-bebas.text-3xl FAQ's
+  template(#body)
     ul.faq-list
       li.faq-list-item(v-for="(faq, i) in faqs" :key="'faq-'+ i + new Date().getTime()")
         p.faq-question {{ faq.question }}

@@ -32,8 +32,6 @@ const iconifyName = computed(() =>
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1em;
-  height: 1em;
 }
 .sr-icon-sprite {
   fill: currentColor;

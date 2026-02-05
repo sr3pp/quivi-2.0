@@ -1,21 +1,21 @@
 <template lang="pug">
-.quivi-cart-detail
-    SrText(text="Detalle de la compra" class="subtitle")
-    SrText(:text="`${qty} producto${qty > 1 ? 's' : ''}`")
+div.flex.flex-col.gap-2.border-t-2.border-gray-200.pt-4
+    template(v-if="qty > 0")
+      p {{ qty }} producto{{ qty > 1 ? 's' : '' }} en el carrito
 
-    .quivi-cart-detail-subtotal
-      SrText(text="Subtotal:")
-      SrText(:text="toPrice(subtotal)")
+    .flex.justify-between
+      p Subtotal:
+      p {{ toPrice(subtotal) }}
     
-    .quivi-cart-detail-shipping
-      SrText(text="Envío:")
-      SrText(:text="Number(shipping.limite) > total ? toPrice(Number(shipping.costo)) : 0")
+    .flex.justify-between
+      p Envío:
+      p {{ Number(shipping.limite) > total ? toPrice(Number(shipping.costo)) : 0 }}
 
-    div.quivi-cart-detail-total
-      SrText(text="Total:" class="title")
-      SrText(:text="toPrice(total)" class="title")
+    div.flex.justify-between.font-bold.text-lg
+      p.title Total:
+      p.title {{ toPrice(total) }}
 
-    UButton.quivi-cart-pay-button(href="/tienda/checkout" label="pagar")
+    UButton(href="/tienda/checkout" label="Pagar" class="mx-auto")
 </template>
 
 <script lang="ts" setup>
@@ -42,42 +42,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="scss">
-.quivi-cart-detail {
-  margin-top: auto !important;
-  margin-bottom: 0;
-  display: flex;
-  flex-direction: column;
-
-  padding: pxToRem(20) !important;
-
-  border-top: {
-    style: solid;
-    color: $color-quivi-gray;
-    width: pxToRem(2);
-  }
-
-  > * {
-    &:not(:last-child) {
-      margin-bottom: pxToRem(10);
-    }
-  }
-
-  &-total,
-  &-shipping,
-  &-subtotal {
-    width: 100%;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .sr-text:not(.title) {
-      * {
-        font-family: Inria;
-      }
-    }
-  }
-}
-</style>
