@@ -1,50 +1,68 @@
-import type { CookieRef } from "#app";
 import type { User } from "~/types";
 
+type SessionPayload = {
+  session: Record<string, any>;
+  user: User;
+} | null;
+
 export const useAuth = () => {
-  const defaultLogin = {
-    token: "",
-    user: {
-      id: "",
-      name: "",
-      email: "",
-    },
+  const sessionState = useState<SessionPayload>("auth-session", () => null);
+  const fetched = useState<boolean>("auth-session-fetched", () => false);
+
+  const fetchSession = async () => {
+    try {
+      const data = await $fetch<SessionPayload>("/api/auth/get-session", {
+        credentials: "include",
+      });
+      sessionState.value = data;
+      fetched.value = true;
+      return data;
+    } catch (err) {
+      sessionState.value = null;
+      fetched.value = true;
+      return null;
+    }
   };
 
-  const LoggedInCookie = useCookie("isLoggedIn", {
-    default: () => false,
-    secure: process.env.NODE_ENV === "production",
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-    sameSite: "strict",
-  });
+  const ensureSession = async () => {
+    if (!fetched.value) {
+      return await fetchSession();
+    }
+    return sessionState.value;
+  };
 
-  const authCookie: CookieRef<typeof defaultLogin> = useCookie("auth", {
-    default: () => defaultLogin,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30),
-    sameSite: "strict",
-  });
+  // Autofetch on client once
+  if (process.client && !fetched.value) {
+    fetchSession().catch(() => {});
+  }
 
-  const login = async (user: User, token: string) => {
-    authCookie.value = {
-      token,
-      user: user as any,
-    };
-    LoggedInCookie.value = true;
+  const login = async (email: string, password: string) => {
+    await $fetch("/api/auth/sign-in/email", {
+      method: "POST",
+      body: { email, password },
+      credentials: "include",
+    });
+    await fetchSession();
     useRouter().push("/panel");
   };
 
   const logout = async () => {
-    authCookie.value = defaultLogin;
-    LoggedInCookie.value = false;
+    await $fetch("/api/auth/sign-out", {
+      method: "POST",
+      credentials: "include",
+    });
+    sessionState.value = null;
+    fetched.value = true;
   };
 
-  const isLoggedIn = LoggedInCookie.value;
+  const isLoggedIn = computed(() => !!sessionState.value);
 
   return {
+    session: sessionState,
+    isLoggedIn,
     login,
     logout,
-    isLoggedIn,
+    fetchSession,
+    ensureSession,
   };
 };

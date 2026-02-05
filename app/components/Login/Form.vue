@@ -10,30 +10,32 @@
 </template>
 
 <script lang="ts" setup>
-import { z } from 'zod'
-import type { FormSubmitEvent } from '@nuxt/ui'
+import { z } from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
 
 // Zod validation schema
 const schema = z.object({
-  email: z.string().min(1, 'El correo electrónico es requerido').email('Ingresa un correo electrónico válido'),
-  password: z.string().min(1, 'La contraseña es requerida').min(6, 'La contraseña debe tener al menos 6 caracteres')
+  email: z
+    .string()
+    .min(1, "El correo electrónico es requerido")
+    .email("Ingresa un correo electrónico válido"),
+  password: z
+    .string()
+    .min(1, "La contraseña es requerida")
+    .min(6, "La contraseña debe tener al menos 6 caracteres"),
 });
 
 type Schema = z.output<typeof schema>;
 
 // Form state
 const formState = reactive({
-  email: '',
-  password: ''
+  email: "",
+  password: "",
 });
 
 const login = async (event: FormSubmitEvent<Schema>) => {
   try {
-    const { user, token }: any = await $fetch("/api/auth/login", {
-      method: "POST",
-      body: event.data,
-    });
-    useAuth().login(user, token);
+    await useAuth().login(event.data.email, event.data.password);
   } catch (error) {
     console.error(error);
   }

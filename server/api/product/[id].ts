@@ -1,4 +1,4 @@
-import { Product as ProductModel } from "../../Models";
+import { Product as ProductModel } from "~~/server/Models";
 
 export default defineEventHandler(async (event) => {
   const params = getRouterParams(event);

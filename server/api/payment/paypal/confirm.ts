@@ -1,4 +1,4 @@
-import { Paypal } from "../../../utilities";
+import { Paypal } from "~~/server/utils/paypal";
 
 export default defineEventHandler(async (event) => {
   const { public: config } = useRuntimeConfig();

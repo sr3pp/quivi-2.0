@@ -1,4 +1,4 @@
-import { Product as ProductModel, ProductBrand } from "../../Models";
+import { Product as ProductModel, ProductBrand } from "~~/server/Models";
 
 export default defineEventHandler(async (event) => {
   const { codes } = await readBody(event);

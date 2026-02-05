@@ -25,8 +25,8 @@
 </template>
 
 <script lang="ts" setup>
-import { z } from 'zod'
-import type { FormSubmitEvent } from '@nuxt/ui'
+import { z } from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
 
 const content = await $fetch("/api/content?page=_config/contact");
 const contactEmail = content.email;
@@ -36,22 +36,25 @@ const sent = ref(false);
 
 // Zod validation schema
 const schema = z.object({
-  name: z.string().min(1, 'El nombre es requerido').trim(),
+  name: z.string().min(1, "El nombre es requerido").trim(),
   tel: z.string().optional(),
   whatsapp: z.string().optional(),
-  email: z.string().min(1, 'El correo electrónico es requerido').email('Ingresa un correo electrónico válido'),
-  message: z.string().min(1, 'El mensaje es requerido').trim()
+  email: z
+    .string()
+    .min(1, "El correo electrónico es requerido")
+    .email("Ingresa un correo electrónico válido"),
+  message: z.string().min(1, "El mensaje es requerido").trim(),
 });
 
 type Schema = z.output<typeof schema>;
 
 // Form state
 const formState = reactive({
-  name: '',
-  tel: '',
-  whatsapp: '',
-  email: '',
-  message: ''
+  name: "",
+  tel: "",
+  whatsapp: "",
+  email: "",
+  message: "",
 });
 
 const sendContactForm = async (event: FormSubmitEvent<Schema>) => {

@@ -1,14 +1,13 @@
 export interface User {
-  [key: string]: string | number | { type: any; unique: boolean } | unknown;
+  id?: string;
   _id?: string;
-  email: string | { type: StringConstructor; unique: true };
-  password?: string | { type: StringConstructor; bcrypt: true; select: false };
-  admin_level: number | { type: NumberConstructor; default: number };
+  email: string;
+  name?: string;
+  admin_level?: number;
   profile: {
-    [key: string]: string | number | { type: any; unique: boolean } | unknown;
-    name: string | { type: StringConstructor; required: true };
-    lastname: string | { type: StringConstructor; required: true };
-    phone: string | { type: StringConstructor; required: true };
+    name: string;
+    lastname: string;
+    phone: string;
+    rfc?: string;
   };
-  save: () => Promise<void>;
 }

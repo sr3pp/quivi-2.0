@@ -1,4 +1,4 @@
-import { Openpay } from "../../../utilities";
+import { Openpay } from "~~/server/utils/openpay";
 
 export default defineEventHandler(async (event) => {
   const { public: config } = useRuntimeConfig();

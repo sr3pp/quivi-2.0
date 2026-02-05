@@ -1,5 +1,5 @@
-import { modelPagination } from "../../utilities";
-import { Shipment } from "../../Models";
+import { modelPagination } from "~~/server/utils/modelPagination";
+import { Shipment } from "~~/server/Models";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

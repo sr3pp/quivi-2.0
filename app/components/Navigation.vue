@@ -25,10 +25,13 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
           SvgIcon(name="carrito-o")
           span Carrito
       li.quivi-navbar-list-item
-        button.variant-red(@click="$emit('loginModal')")
-            .icon-container
-              SvgIcon(name="registrarsecaja-o")
-            span Ingresar
+        ClientOnly
+          button.variant-red(@click="$emit('loginModal')" v-if="!isLoggedIn")
+              .icon-container
+                SvgIcon(name="registrarsecaja-o")
+              span Ingresar
+          UDropdownMenu(v-else :items="panelItems" class="w-full")
+            UButton(label="User" color="neutral" variant="outline" icon="i-lucide-menu")
   ul.quivi-navbar-menu(:class="{active: menuActive}")
     li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active, 'highlight': item.highLight}" :key="i")
       .link-container  
@@ -66,6 +69,26 @@ import {
   colorQuiviDarkYellow,
 } from "~/assets/ts/tokens";
 
+import type { DropdownMenuItem } from "@nuxt/ui";
+
+const panelItems: DropdownMenuItem[][] = [
+  [
+    {
+      label: "Panel",
+      icon: "i-lucide-dashboard",
+      href: "/panel",
+    },
+  ],
+  [
+    {
+      label: "Logout",
+      color: "error",
+      icon: "i-lucide-logout",
+      onClick: () => logout(),
+    },
+  ],
+];
+
 const props = defineProps({
   navigation: {
     type: Array,
@@ -87,6 +110,10 @@ const btnColor3: string = colorQuiviYellow;
 const btnColor4: string = colorQuiviDarkYellow;
 
 const { cart, toggleCart, totalCartProducts } = useCart();
+
+const { isLoggedIn, logout, session } = useAuth();
+
+const { user } = session as any;
 
 watch(
   () => route.value.name,

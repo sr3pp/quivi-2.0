@@ -1,4 +1,4 @@
-import { Product } from "../../Models";
+import { Product } from "~~/server/Models";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);

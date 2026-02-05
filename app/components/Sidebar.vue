@@ -22,7 +22,7 @@ defineProps({
 
 const logout = async () => {
   try {
-    useAuth().logout();
+    await useAuth().logout();
     useRouter().push("/");
   } catch (error) {
     console.error(error);

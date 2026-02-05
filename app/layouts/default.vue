@@ -64,9 +64,10 @@ const business = computed(() => data.value?.businessInfo ?? null);
 const distribuidores = computed(() => data.value?.distribuidoresInfo ?? null);
 const faqs = computed(() => data.value?.faqsInfo ?? null);
 const contact = computed(() => data.value?.contactInfo ?? null);
-const social = computed(() =>
-  (business.value?.meta?.content as { social?: Array<any> } | undefined)
-    ?.social ?? [],
+const social = computed(
+  () =>
+    (business.value?.meta?.content as { social?: Array<any> } | undefined)
+      ?.social ?? [],
 );
 const faqsContent = computed(() => faqs.value?.meta?.content ?? []);
 const distribuidoresContent = computed(

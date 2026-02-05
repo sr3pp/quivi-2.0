@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { Shipment, Sale } from "../../Models";
-import { modelPagination } from "../../utilities";
+import { Shipment, Sale } from "~~/server/Models";
+import { modelPagination } from "~~/server/utils/modelPagination";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);

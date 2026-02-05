@@ -1,4 +1,4 @@
-import { Bill, Shipment, Sale } from "../../Models/index";
+import { Bill, Shipment, Sale } from "~~/server/Models/index";
 
 export default defineEventHandler(async (event) => {
   try {

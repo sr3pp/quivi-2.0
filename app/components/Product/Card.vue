@@ -10,12 +10,7 @@
         SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
     .quivi-product-card-footer
         UButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
-        UTooltip(:content="{
-                    align: 'end',
-                    side: 'top',
-                    sideOffset: 2
-                  }"
-                :text="product.extra" v-if="product.extra")
+        UTooltip(:content="{align: 'end',side: 'top',sideOffset: 2}" :text="product.extra" v-if="product.extra")
                 
 
 </template>

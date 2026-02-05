@@ -1,10 +1,8 @@
-import { Product } from "../../Models";
-import {
-  getStartIndex,
-  searchHandler,
-  filterHandler,
-  modelPagination,
-} from "../../utilities";
+import { Product } from "~~/server/Models";
+import { getStartIndex } from "~~/server/utils/getStartIndex";
+import { filterHandler } from "~~/server/utils/filterHandler";
+import { modelPagination } from "~~/server/utils/modelPagination";
+import { searchHandler } from "~~/server/utils/searchHandler";
 
 export default defineEventHandler(async (event: any) => {
   const query = getQuery(event);

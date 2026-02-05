@@ -9,6 +9,10 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    betterAuth: {
+      secret: process.env.BETTER_AUTH_SECRET || process.env.JWT_SECRET,
+      baseURL: process.env.BETTER_AUTH_URL,
+    },
     public: {
       sae: {
         url: process.env.SAE_URL,
