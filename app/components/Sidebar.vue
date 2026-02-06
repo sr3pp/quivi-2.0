@@ -65,7 +65,7 @@ const logout = async () => {
         border: none;
       }
 
-      span {
+      span:not(.sr-icon) {
         position: relative;
         margin-left: pxToRem(10);
         color: $color-white;
@@ -96,10 +96,11 @@ const logout = async () => {
         width: pxToRem(25);
         height: pxToRem(25);
         margin-right: pxToRem(4);
+        max-width: inherit;
       }
 
       &:hover {
-        span {
+        span:not(.sr-icon) {
           overflow: visible;
           padding: pxToRem(10);
           max-width: pxToRem(200);

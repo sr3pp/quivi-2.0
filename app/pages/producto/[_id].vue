@@ -110,8 +110,6 @@ const getLabel = (key: string) => {
 </script>
 
 <template lang="pug">
-.product-detail
-
     UContainer(:with-padding="true")
         UPageGrid
             div(class="col-span-1 sm:col-span-2/5")
@@ -134,7 +132,7 @@ const getLabel = (key: string) => {
                           UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
                     .product-detail-actions
                         UButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
-                        UButton(href="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
+                        UButton(to="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
             div(class="col-span-1 sm:col-span-2")
                 p ESPECIFICACIONES DEL PRODUCTO
                 ul.product-detail-details

@@ -7,13 +7,10 @@
         UButton(@click="searchShipping")
           SvgIcon(name="lupa-o")
 
-    DetailTable(
+    UTable(
       v-if="shipping"
-      :headers="['order', 'name', 'createdAt', 'status', 'actions']"
+      :columns="columns"
       :data="shipping"
-      @detail="shippDetail"
-      :actions="['detail']"
-      @update:data="(val) => shipping = val"
     )
 
     br
@@ -65,6 +62,8 @@
 </template>
 
 <script lang="ts" setup>
+import { h, resolveComponent } from "vue";
+import type { TableColumn } from "@nuxt/ui";
 definePageMeta({
   layout: "panel",
 });
@@ -72,6 +71,8 @@ definePageMeta({
 const {
   query: { page },
 } = useRoute();
+
+const UButton = resolveComponent("UButton");
 
 const data: any = await $fetch("/api/shipping?page=" + (page || 1));
 const shipping: any = ref(data.shipping);
@@ -86,6 +87,60 @@ const newTracking = ref({
   store: "",
   url: "",
 });
+
+type Shipping = {
+  order?: string;
+  name?: string;
+  last_name?: string;
+  createdAt?: string;
+  status?: string;
+  [key: string]: any;
+};
+
+const columns: TableColumn<Shipping>[] = [
+  {
+    accessorKey: "order",
+    header: "Order",
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) =>
+      `${row.original.name ?? ""} ${row.original.last_name ?? ""}`.trim(),
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created",
+    cell: ({ row }) =>
+      row.original.createdAt
+        ? new Date(row.original.createdAt).toLocaleDateString("es-MX")
+        : "",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) =>
+      h("div", { class: "flex items-center gap-2" }, [
+        h(UButton, {
+          icon: "i-lucide-eye",
+          color: "primary",
+          variant: "ghost",
+          size: "sm",
+          "aria-label": "Detail",
+          onClick: () => shippDetail(row.original),
+        }),
+      ]),
+    meta: {
+      class: {
+        td: "text-right",
+      },
+    },
+  },
+];
 
 const searchShipping = async () => {
   const data: any = await $fetch("/api/shipping/search?search=" + search.value);

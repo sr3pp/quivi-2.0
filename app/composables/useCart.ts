@@ -1,8 +1,16 @@
 import { processDiscount } from "~/assets/ts/utilities";
 import type { Cart, Product } from "~/types";
+import { useLocalStorage } from "@vueuse/core";
+
+// Persistent cart state using useLocalStorage for SSR compatibility
+const cartProducts = useLocalStorage<Product[]>("cart-products", []);
+const cartShipping = useLocalStorage<{ costo: number; limite: number }>(
+  "cart-shipping",
+  { costo: 0, limite: 0 }
+);
 
 const cart = ref<Cart>({
-  products: [],
+  products: cartProducts.value,
   subtotal: computed((): number => {
     const subtotal = cart.value.products.reduce(
       (acc: number, product: Product) => {
@@ -22,8 +30,8 @@ const cart = ref<Cart>({
     );
   }),
   shipping: {
-    costo: 0,
-    limite: 0,
+    costo: cartShipping.value.costo,
+    limite: cartShipping.value.limite,
     isFree: computed((): boolean => {
       return cart.value.subtotal > cart.value.shipping.limite;
     }),
@@ -33,7 +41,6 @@ const cart = ref<Cart>({
 const active: Ref<boolean> = ref(false);
 
 export function useCart() {
-  const { addNotification } = useNotification();
   function addToCart(product: Product, qty: number) {
     const productExists: Product | undefined = cart.value.products.find(
       (p: any) => p.web === product.web,
@@ -48,14 +55,15 @@ export function useCart() {
       cart.value.products.push(product);
     }
 
-    addNotification({
+    //Migrate to TOAST system
+    /* addNotification({
       title: "Producto agregado",
       description: `El producto <b>${product.name}</b> se ha agregado al carrito`,
       status: true,
       clickHandler: () => {
         toggleCart();
       },
-    });
+    }); */
   }
 
   function toggleCart() {
@@ -85,6 +93,7 @@ export function useCart() {
   }) {
     cart.value.shipping.limite = limite;
     cart.value.shipping.costo = costo;
+    cartShipping.value = { costo, limite };
   }
 
   function updateQty(product: Product, value: number) {
@@ -96,27 +105,19 @@ export function useCart() {
   }
 
   function syncLocalStorage() {
-    localStorage.setItem("cart-products", JSON.stringify(cart.value.products));
-    localStorage.setItem(
-      "cart-shipping",
-      JSON.stringify({
-        costo: cart.value.shipping.costo,
-        limite: cart.value.shipping.limite,
-      }),
-    );
+    cartProducts.value = cart.value.products;
+    cartShipping.value = {
+      costo: cart.value.shipping.costo,
+      limite: cart.value.shipping.limite,
+    };
   }
 
   function getCart() {
-    if (process.client) {
-      const products = localStorage.getItem("cart-products");
-      if (products) {
-        cart.value.products = JSON.parse(products);
-      }
-      const shipping = localStorage.getItem("cart-shipping");
-      if (shipping) {
-        const { costo, limite } = JSON.parse(shipping);
-        setShippingConfig({ costo, limite });
-      }
+    // Cart is automatically loaded from localStorage via useLocalStorage
+    cart.value.products = cartProducts.value;
+    if (cartShipping.value.costo || cartShipping.value.limite) {
+      cart.value.shipping.costo = cartShipping.value.costo;
+      cart.value.shipping.limite = cartShipping.value.limite;
     }
   }
 

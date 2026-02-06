@@ -4,12 +4,9 @@
   .content
     NuxtPage
 
-  ClientOnly
-    NotificationStack
 </template>
 
 <script lang="ts" setup>
-const notifications = useState("notifications", (): any => []);
 const items = [
   {
     label: "Users",
@@ -30,11 +27,6 @@ const items = [
     label: "Envios",
     icon: "send-order-f",
     url: "/panel/shipping",
-  },
-  {
-    label: "Contenido",
-    icon: "edit-o",
-    url: "/panel/content",
   },
   {
     label: "Configuracion",

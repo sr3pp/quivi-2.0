@@ -6,26 +6,26 @@
         p(class="title") Configuración de la Empresa
       div(class="col-span-1 sm:col-span-2")
         UButton(@click="updateBusiness" class="sr-button--primary" variant="secondary" label="Guardar cambios")
-    SrText(text="Direccion" class="subtitle")
+    p  Direccion
     ul.data-list.wrapped
       li.data-list-item(v-for="(value, key) in business.address" :key="key")
-        SrFormInput(v-model="business.address[key]" :label="key" type="text")
+        UInput(v-model="business.address[key]" :label="key" type="text")
 
-    SrText(text="Cuentas Bancarias" class="subtitle")
+    p  Cuentas Bancarias
     ul.data-list
       li.data-list-item(v-for="(value, key) in business.bank_accounts" :key="key")
-        SrFormInput(v-model="business.bank_accounts[key].bank_name" label="Nombre banco" type="text")
-        SrFormInput(v-model="business.bank_accounts[key].account_number" label="Numero de cuenta" type="text")
+        UInput(v-model="business.bank_accounts[key].bank_name" label="Nombre banco" type="text")
+        UInput(v-model="business.bank_accounts[key].account_number" label="Numero de cuenta" type="text")
         button(@click="business.bank_accounts.splice(key, 1)") Eliminar
       li.data-list-item
-        SrFormInput(v-model="newBank.bank_name" label="Nombre banco" type="text")
-        SrFormInput(v-model="newBank.account_number" label="Numero de cuenta" type="text")
+        UInput(v-model="newBank.bank_name" label="Nombre banco" type="text")
+        UInput(v-model="newBank.account_number" label="Numero de cuenta" type="text")
         button(@click="addAccount") Agregar
 
-    SrText(text="Redes Sociales" class="subtitle")
+    p Redes Sociales
     ul.data-list.wrapped
       li.data-list-item(v-for="(value, key) in business.social" :key="key")
-        SrFormInput(v-model="business.social[key].url" :label="value.label" type="text")
+        UInput(v-model="business.social[key].url" :label="value.label" type="text")
 </template>
 
 <script lang="ts" setup>

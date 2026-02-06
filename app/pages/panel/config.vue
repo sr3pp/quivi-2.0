@@ -7,46 +7,45 @@
       div(class="col-span-1 sm:col-span-2")
         UButton(@click="updateConfig" class="sr-button--primary" variant="secondary" label="Guardar cambios")
     div
-      SrText(text="Envio" class="subtitle")
+      p Envio
       UPageGrid(tag="ul")
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" v-for="(value, key) in shipping" :key="key")
           SrFormInput(v-model="shipping[key]" :label="key" :disabled="key === 'clave'" type="text")
     div  
-      SrText(text="Comercios" class="subtitle")
+      p Comercios
       UPageGrid(tag="ul")
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" v-for="(value, key) in comercios" :key="key")
           NuxtImg(:src="`${value.logo}`" :alt="value.name" :editable="true" @media-gallery="showGallery(comercios[key], 'logo')")
-          SrFormInput(v-model="comercios[key].name" label="Nombre" type="text")
+          UInput(v-model="comercios[key].name" label="Nombre" type="text")
           button(@click="comercios.splice(key, 1)") Eliminar
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" key="key_distribuidor")
           NuxtImg(:src="newComercio.logo" :alt="newComercio.name" :editable="true" @media-gallery="showGallery(null, 'logo', 'comercios')")
-          SrFormInput(v-model="newComercio.name" label="Nombre" type="text")
+          UInput(v-model="newComercio.name" label="Nombre" type="text")
           UButton(@click="addElement('comercios')" label="Agregar" variant="secondary")
     div
-      SrText(text="Distribuidores" class="subtitle")
+      p Distribuidores
       UPageGrid(tag="ul" class="distribuidores")
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" v-for="(value, key) in distribuidores" :key="key")
           NuxtImg(:src="`${value.logo}`" :alt="value.name" :editable="true" @media-gallery="showGallery(distribuidores[key], 'logo')")
-          SrFormInput(v-model="distribuidores[key].name" label="Nombre" type="text")
+          UInput(v-model="distribuidores[key].name" label="Nombre" type="text")
           button(@click="distribuidores.splice(key, 1)") Eliminar
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" key="key_distribuidor")
           NuxtImg(:src="newDistribuidor.logo" :alt="newDistribuidor.name" :editable="true" @media-gallery="showGallery(null, 'logo', 'distribuidores')")
-          SrFormInput(v-model="newDistribuidor.name" label="Nombre" type="text")
+          UInput(v-model="newDistribuidor.name" label="Nombre" type="text")
           UButton(@click="addElement('distribuidores')" label="Agregar" variant="secondary")
     div
-      SrText(text="Cupones" class="subtitle")
+      p Cupones
       UPageGrid(tag="ul")
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" v-for="(value, key) in promotions" :key="key")
-          SrFormInput(v-model="promotions[key].name" label="Nombre" type="text")
-          SrFormInput(v-model="promotions[key].code" label="Codigo" type="text")
-          SrFormSelect(v-model="promotions[key].category" :options="promotionOptions" label="categoria" type="text")
+          UInput(v-model="promotions[key].name" label="Nombre" type="text")
+          UInput(v-model="promotions[key].code" label="Codigo" type="text")
+          USelect(v-model="promotions[key].category" :options="promotionOptions" label="categoria" type="text")
           button(@click="promotions.splice(key, 1)") Eliminar
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" key="key_distribuidor")
-          SrFormInput(v-model="newPromotion.name" label="Nombre" type="text")
-          SrFormInput(v-model="newPromotion.code" label="Codigo" type="text")
-          SrFormSelect(v-model="newPromotion.category" :options="promotionOptions" label="categoria" type="text")
+          UInput(v-model="newPromotion.name" label="Nombre" type="text")
+          UInput(v-model="newPromotion.code" label="Codigo" type="text")
+          USelect(v-model="newPromotion.category" :options="promotionOptions" label="categoria" type="text")
           UButton(@click="addElement('promotions')" label="Agregar" variant="secondary")
-  QuiviGallery(:gallery="gallery" ref="galleryModal" @setPicture="setGallery")
 </template>
 
 <script lang="ts" setup>

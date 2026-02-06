@@ -4,10 +4,10 @@
     figure.quivi-product-card-img
         img(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
     .quivi-product-card-body
-        SrText(:text="product.name" class="title")
-        SrText.sae(:text="`Clave: ${product.sae}`")
-        SrText(:text="toPrice(processDiscount(product))" class="title")
-        SrText.discount(:text="toPrice(product.price)" class="subtitle" v-if="product.discount")
+        p {{ product.name }}
+        p.sae {{ `Clave: ${product.sae}` }}
+        p {{ toPrice(processDiscount(product)) }}
+        p(v-if="product.discount") {{ toPrice(product.price) }}
     .quivi-product-card-footer
         UButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
         UTooltip(:content="{align: 'end',side: 'top',sideOffset: 2}" :text="product.extra" v-if="product.extra")

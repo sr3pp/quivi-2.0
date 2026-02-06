@@ -3,44 +3,50 @@
   UContainer(:with-padding="true")
     .products-header
       .header-title
-        SrText(text="Panel Products" class="title text-center")
-        SrFormInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar")
+        p.font-bebas.text-3xl Panel Products
+        UInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar")
         UButton(@click="searchProduct")
           SvgIcon(name="lupa-o")
       UButton.new-product(@click="newProduct" variant="secondary" label="Nuevo producto")
       label.massive-file
         span Carga Massiva
         Spinner(v-if="uploading")
-        input(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
+        UInput(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
       UButton.delete-all(@click="deleteAll" variant="secondary" label="Eliminar todos")
 
 
-    DetailTable(
-      :headers="['sae', 'web', 'name', 'actions']"
+    UTable(
+      :columns="columns"
       :data="products"
-      @delete="deleteProduct"
-      @edit="editProduct"
-      @update:data="(val) => products = val"
-      :actions="['edit', 'delete']"
     )
 
     Pagination(:pagination="pagination")
 
-    UModal.product-modal(v-model:open="modalSw")
-      template(#header)
+    UModal(v-model:open="modalSw" description="Create or edit product")
+      template(#title)
           p.title Edit product
-      template(#content)
-          UForm.product-form(:fieldsets="productForm" @submit="updateProduct")
+      template(#body)
+          PanelProductForm(
+            :product="currentProduct"
+            :product-brands="productBrands"
+            :categories="categories"
+            :subcategories="subcategories"
+            :car-brands="carBrands"
+            :car-models="carModels"
+            @submit="updateProduct"
+          )
 </template>
 
 <script lang="ts" setup>
+import type { TableColumn } from "@nuxt/ui";
+import PanelProductForm from "~/components/Panel/ProductForm.vue";
 import { fetchProducts } from "@/assets/ts/utilities";
-
-const notifications = useState("notifications", (): any => []);
 
 definePageMeta({
   layout: "panel",
 });
+
+const UButton = resolveComponent("UButton");
 
 const route = useRoute();
 const { search: _search, page = 1, filters: _filters } = route.query;
@@ -56,223 +62,18 @@ const [productBrands, categories, subcategories, carBrands, carModels] =
 
 const search = ref(_search as string);
 const filters = ref(_filters as string);
-const productModal = ref(false);
+const modalSw = ref(false);
 const products: any = ref([]);
 const pagination = ref({});
-const currentProduct = ref("");
+const currentProduct: Ref<Product | null> = ref(null);
 
-const productForm: any = ref([
-  {
-    fields: [
-      {
-        component: "SrFormInput",
-        props: {
-          name: "sae",
-          label: "SAE",
-          required: true,
-          value: "",
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "web",
-          label: "Web",
-          required: true,
-          value: "",
-        },
-      },
-      {
-        component: "ProductEditThumbs",
-        props: {
-          name: "thumbs",
-          thumbs: [],
-          removeThumb: (i: number) => {
-            productForm.value.forEach((fieldset: any) => {
-              fieldset.fields.forEach((field: any) => {
-                if (field.props.name === "thumbs") {
-                  field.props.thumbs.splice(i, 1);
-                }
-              });
-            });
-          },
-          addThumb: (thumb: string) => {
-            productForm.value.forEach((fieldset: any) => {
-              fieldset.fields.forEach((field: any) => {
-                if (field.props.name === "thumbs") {
-                  field.props.thumbs.push(thumb);
-                }
-              });
-            });
-          },
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "name",
-          label: "Name",
-          required: true,
-          value: "",
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "description",
-          label: "Description",
-          required: true,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "price",
-          label: "Precio",
-          type: "number",
-          step: "0.01",
-          required: true,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "priority",
-          label: "Prioridad",
-          type: "number",
-          value: "99",
-          required: false,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "discount",
-          label: "Descuento",
-          type: "number",
-          value: 0,
-          required: false,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "extra",
-          label: "Extra",
-          required: false,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "meassure_unity",
-          label: "Unidad de medida",
-          required: true,
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "line",
-          label: "linea",
-          required: false,
-        },
-      },
-      {
-        component: "SrFormSelect",
-        props: {
-          name: "brand",
-          label: "Marca",
-          required: true,
-          options: productBrands.map((brand: any) => ({
-            value: brand._id,
-            name: brand.name,
-          })),
-        },
-      },
-      {
-        component: "SrFormSelect",
-        props: {
-          name: "category",
-          label: "Categoria",
-          required: true,
-          options: categories.map((brand: any) => ({
-            value: brand._id,
-            name: brand.name,
-          })),
-        },
-      },
-      {
-        component: "SrFormSelect",
-        props: {
-          name: "subcategory",
-          label: "Subcategoria",
-          required: true,
-          options: subcategories.map((brand: any) => ({
-            value: brand._id,
-            name: brand.name,
-          })),
-        },
-      },
-
-      {
-        component: "ProductEditList",
-        props: {
-          name: "years",
-          select: {
-            label: "Anios",
-            required: true,
-            options: Array.from(
-              { length: new Date().getFullYear() - 1980 + 1 },
-              (_, i) => ({
-                value: i + 1980,
-                name: String(i + 1980),
-              }),
-            ),
-          },
-          items: [],
-          removeItem,
-          addItem,
-        },
-      },
-      {
-        component: "ProductEditList",
-        props: {
-          name: "car_brands",
-          select: {
-            label: "Marcas de auto",
-            required: true,
-            options: carBrands.map((brand: any) => ({
-              value: brand._id,
-              name: brand.name,
-            })),
-          },
-          items: [],
-          removeItem,
-          addItem,
-        },
-      },
-      {
-        component: "ProductEditList",
-        props: {
-          name: "models",
-          value: [],
-          select: {
-            label: "modelos",
-            required: true,
-            options: carModels.map((model: any) => ({
-              value: model._id,
-              name: model.name,
-            })),
-          },
-          items: [],
-          removeItem,
-          addItem,
-        },
-      },
-    ],
-  },
-]);
+type Product = {
+  _id: string;
+  sae: string;
+  web: string;
+  name: string;
+  [key: string]: any;
+};
 
 const prodctData = ref(
   await fetchProducts(route.path, page as string, _search as string, _filters),
@@ -280,6 +81,50 @@ const prodctData = ref(
 
 products.value = prodctData.value.products;
 pagination.value = prodctData.value.pagination;
+
+const columns: TableColumn<Product>[] = [
+  {
+    accessorKey: "sae",
+    header: "SAE",
+  },
+  {
+    accessorKey: "web",
+    header: "Web",
+  },
+  {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return h("div", { class: "flex items-center gap-2" }, [
+        h(UButton, {
+          icon: "i-lucide-edit",
+          color: "primary",
+          variant: "ghost",
+          size: "sm",
+          "aria-label": "Edit",
+          onClick: () => editProduct(row.original),
+        }),
+        h(UButton, {
+          icon: "i-lucide-trash",
+          color: "error",
+          variant: "ghost",
+          size: "sm",
+          "aria-label": "Delete",
+          onClick: () => deleteProduct(row.original),
+        }),
+      ]);
+    },
+    meta: {
+      class: {
+        td: "text-right",
+      },
+    },
+  },
+];
 
 const searchProduct = async () => {
   const _prodcutData = await fetchProducts(
@@ -292,103 +137,28 @@ const searchProduct = async () => {
 };
 
 const newProduct = () => {
-  currentProduct.value = "";
-  productForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      if (field.props.items) {
-        field.props.items = [];
-      } else if (field.props.name === "thumbs") {
-        field.props.thumbs = [];
-      } else {
-        field.props.value = "";
-      }
-    });
-  });
-  (productModal.value as any).toggle();
+  currentProduct.value = null;
+  modalSw.value = true;
 };
 
 const editProduct = (_product: any) => {
   const product = products.value.find((p: any) => p.sae === _product.sae);
-  currentProduct.value = product._id;
-  (productModal.value as any).toggle();
-  productForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      if (field.props.name == "years") {
-        field.props.items = product[field.props.name].map((year: any) => ({
-          value: year,
-          name: year,
-        }));
-      } else if (field.component === "ProductEditList") {
-        field.props.items = product[field.props.name].map((item: any) => {
-          let id, name;
-          if (field.props.name === "car_brands") {
-            const brand: any = carBrands.find(
-              (brand: any) => brand._id === item,
-            );
-            id = brand._id;
-            name = brand.name;
-          } else {
-            const model: any = carModels.find(
-              (model: any) => model._id === item,
-            );
-            id = model._id;
-            name = model.name;
-          }
-          return {
-            value: id,
-            name,
-          };
-        });
-      } else if (field.props.name === "thumbs") {
-        field.props.thumbs = product[field.props.name].filter(
-          (th: string) => th,
-        );
-        field.props.productId = product._id;
-      } else {
-        if (field.props.name === "discount") {
-          field.props.value =
-            product.discount === null || product.discount === undefined
-              ? 0
-              : product.discount;
-        } else {
-          field.props.value =
-            product[field.props.name] &&
-            typeof product[field.props.name] === "object"
-              ? product[field.props.name]._id
-              : String(product[field.props.name]);
-        }
-      }
-    });
-  });
-};
-
-const fillLists = (data: any) => {
-  productForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      if (field.component === "ProductEditList") {
-        data[field.props.name] = field.props.items.map(
-          (item: any) => item.value,
-        );
-      } else if (field.component === "ProductEditThumbs") {
-        data[field.props.name] = field.props.thumbs;
-      }
-    });
-  });
+  currentProduct.value = product ?? null;
+  modalSw.value = true;
 };
 
 const updateProduct = async (data: any) => {
   if (!currentProduct.value) {
     return saveProduct(data);
   }
-  fillLists(data);
-  data._id = currentProduct.value;
+  data._id = currentProduct.value._id;
 
   try {
     const product = await $fetch("/api/product", {
       method: "PUT",
       body: data,
     });
-    (productModal.value as any).toggle();
+    modalSw.value = false;
   } catch (error) {
     console.error(error);
   }
@@ -405,7 +175,6 @@ const deleteProduct = async (_product: any) => {
 };
 
 const saveProduct = async (product: any) => {
-  fillLists(product);
   await $fetch("/api/product", {
     method: "POST",
     body: product,
@@ -441,11 +210,12 @@ watch(
 
 const uploading: Ref<boolean> = ref(false);
 const handleFileUpload = async (e: Event) => {
-  notifications.value.push({
+  //TODO: Move notificaitons to TOAST system
+  /*   notifications.value.push({
     title: "Procesando archivo",
     description: `El archivo se esta procesando, por favor espere`,
     status: true,
-  });
+  }); */
   uploading.value = true;
 
   const target = e.target as HTMLInputElement;
@@ -462,32 +232,14 @@ const handleFileUpload = async (e: Event) => {
 
     uploading.value = false;
 
-    notifications.value.push({
+    // TODO migrate to TOAST system
+    /* notifications.value.push({
       title: "Listo!",
       description: `El archivo se proceso correctamente`,
       status: true,
-    });
+    }); */
   }
 };
-
-function removeItem(idx: number, key: string) {
-  productForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      if (field.props.name === key) {
-        field.props.items.splice(idx, 1);
-      }
-    });
-  });
-}
-function addItem(item: any, key: string) {
-  productForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      if (field.props.name === key) {
-        field.props.items.push(item);
-      }
-    });
-  });
-}
 </script>
 
 <style lang="scss">
