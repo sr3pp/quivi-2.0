@@ -6,7 +6,7 @@ import { useLocalStorage } from "@vueuse/core";
 const cartProducts = useLocalStorage<Product[]>("cart-products", []);
 const cartShipping = useLocalStorage<{ costo: number; limite: number }>(
   "cart-shipping",
-  { costo: 0, limite: 0 }
+  { costo: 0, limite: 0 },
 );
 
 const cart = ref<Cart>({
