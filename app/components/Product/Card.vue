@@ -1,16 +1,16 @@
 <template lang="pug">
-.quivi-product-card
-  .quivi-product-card-container
-    figure.quivi-product-card-img
-        img(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
-    .quivi-product-card-body
-        p {{ product.name }}
-        p.sae {{ `Clave: ${product.sae}` }}
-        p {{ toPrice(processDiscount(product)) }}
-        p(v-if="product.discount") {{ toPrice(product.price) }}
-    .quivi-product-card-footer
-        UButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
-        UTooltip(:content="{align: 'end',side: 'top',sideOffset: 2}" :text="product.extra" v-if="product.extra")
+UCard
+  template(#header)
+    figure.w-full
+      NuxtImg.w-full(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
+  div
+    p {{ product.name }}
+    p.sae {{ `Clave: ${product.sae}` }}
+    p {{ toPrice(processDiscount(product)) }}
+    p(v-if="product.discount") {{ toPrice(product.price) }}
+  template(#footer)
+    UButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
+    UTooltip(:content="{align: 'end',side: 'top',sideOffset: 2}" :text="product.extra" v-if="product.extra")
                 
 
 </template>

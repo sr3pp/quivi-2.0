@@ -1,20 +1,22 @@
 <template lang="pug">
-ul.quivi-product-filters
-    li.quivi-product-filters-item(v-for="(item, i) in filtersForm" :key="i")
-        label
-            span {{item.label}}
-            input(type="text" v-model="item.value" @change="setChildren(item)" :list="item.label" :placeholder="item.placeholder")
-            datalist(:id="item.label")
-                option(v-for="(opt, j) in item.options" :key="j" :id="opt.value" :value="opt.label")
-    li.quivi-product-filters-item
+ul.flex.flex-col.gap-4
+    li(v-for="(item, i) in filtersForm" :key="i")
+        UFormField(:label="item.label")
+            UInputMenu.w-full(
+                v-model="item.value"
+                :items="item.options"
+                option-attribute="label"
+                :placeholder="item.placeholder"
+                @update:model-value="setChildren(item)"
+            )
+    li.flex.justify-between
       UButton(@click="filter" label="Filtrar")
-    li.quivi-product-filters-item
-      UButton(v-if="isFiltered" href="/tienda" label="Limpiar Filtros")
+      UButton(v-if="filters" href="/tienda" label="Limpiar Filtros")
 </template>
 
 <script lang="ts" setup>
-defineProps<{
-  isFiltered?: boolean;
+const props = defineProps<{
+  filters?: string;
 }>();
 
 const getCarBrands = async (): Promise<any[]> => {
@@ -46,12 +48,10 @@ const getMotors = async (): Promise<any[]> => {
 };
 
 const motors = await getMotors();
-const motorsOptions = ref(
-  motors.map((motor: any) => ({
-    label: motor.name.toUpperCase(),
-    value: motor._id,
-  })),
-);
+const motorsOptions = motors.map((motor: any) => ({
+  label: motor.name.toUpperCase(),
+  value: motor._id,
+}));
 
 const createYearList = () => {
   const startYear = 1999;
@@ -63,24 +63,33 @@ const createYearList = () => {
   return years;
 };
 
-const filtersForm: any = ref([
+type FilterOption = { label: string; value: any; models?: any[] };
+type FilterItem = {
+  label: string;
+  value: FilterOption | string | null;
+  placeholder: string;
+  options: FilterOption[];
+  key: string;
+};
+
+const filtersForm = ref<FilterItem[]>([
   {
     label: "Vehiculo",
-    value: "",
+    value: null,
     placeholder: "Selecciona la marca",
     options: carBrandsOptions,
     key: "car_brands",
   },
   {
     label: "Submarca",
-    value: "",
+    value: null,
     placeholder: "Selecciona la submarca",
     options: [],
     key: "car_models",
   },
   {
     label: "Año",
-    value: "",
+    value: null,
     placeholder: "Selecciona el año",
     key: "years",
     options: createYearList()
@@ -92,14 +101,14 @@ const filtersForm: any = ref([
   },
   {
     label: "Motor",
-    value: "",
+    value: null,
     placeholder: "Selecciona el motor",
     options: motorsOptions,
     key: "motors",
   },
   {
     label: "Refacción",
-    value: "",
+    value: null,
     placeholder: "Selecciona la categoria",
     options: categoryOptions,
     key: "category",
@@ -108,13 +117,23 @@ const filtersForm: any = ref([
 
 const emit = defineEmits(["filter"]);
 
+const getSelectedLabel = (item: FilterItem) =>
+  typeof item.value === "object" && item.value
+    ? item.value.label
+    : (item.value as string);
+
+const getSelectedValue = (item: FilterItem) => {
+  if (!item.value) return null;
+  if (typeof item.value === "object") return item.value.value;
+  const opt = item.options.find((o) => o.label === item.value);
+  return opt?.value ?? item.value;
+};
+
 const filter = async () => {
-  const filters: any = {};
-  filtersForm.value.forEach((element: any) => {
-    if (element.value) {
-      const { value } = element.options.find(
-        (opt: any) => opt.label == element.value,
-      );
+  const filters: Record<string, any> = {};
+  filtersForm.value.forEach((element) => {
+    const value = getSelectedValue(element);
+    if (value) {
       filters[element.key] = value;
     }
   });
@@ -122,71 +141,81 @@ const filter = async () => {
   emit("filter", filters);
 };
 
-const setChildren = (item: any) => {
+const setChildren = (item: FilterItem) => {
   if (item.label == "Vehiculo") {
-    const { models } = item.options.find((opt: any) => opt.label == item.value);
+    const selectedLabel = getSelectedLabel(item);
+    const selected = item.options.find((opt) => opt.label == selectedLabel);
+    const models = selected?.models || [];
+    const subBrand = filtersForm.value.find((f) => f.key === "car_models");
+    if (!subBrand) return;
 
-    filtersForm.value[1].options = models.map((model: any) => ({
+    subBrand.options = models.map((model: any) => ({
       label: model.name.toUpperCase(),
       value: model._id,
     }));
+    subBrand.value = null;
   } else if (item.label == "Submarca") {
-    //reduce motors options
     let newMotors;
-    if (item.value == "") {
+    const selectedLabel = getSelectedLabel(item);
+
+    if (!selectedLabel) {
       newMotors = motors;
     } else {
       newMotors = motors.filter((motor: any) => {
         const { models } = motor;
-        const model = models.find((model: any) => model.name == item.value);
+        const model = models.find((model: any) => model.name == selectedLabel);
         return model;
       });
     }
 
-    filtersForm.value[3].options = newMotors.map((motor: any) => ({
+    const motorFilter = filtersForm.value.find((f) => f.key === "motors");
+    if (!motorFilter) return;
+
+    motorFilter.options = newMotors.map((motor: any) => ({
       label: motor.name.toUpperCase(),
       value: motor._id,
     }));
+    motorFilter.value = null;
   }
 };
 
-const route = useRoute();
-watch(
-  () => route.query,
-  async ({ filters }) => {
-    if (!filters) {
-      filtersForm.value.forEach((item: any) => {
-        item.value = "";
-      });
+const applyFiltersFromQuery = (filters?: string) => {
+  if (!filters) {
+    filtersForm.value.forEach((item) => {
+      item.value = null;
+    });
+    return;
+  }
+
+  const parsed = filters
+    .split("|")
+    .map((pair) => pair.split("."))
+    .filter((pair) => pair.length === 2);
+
+  parsed.forEach(([key, value]) => {
+    if (!key || !value) return;
+    const item = filtersForm.value.find((f) => f.key === key);
+    if (!item) return;
+
+    const option = item.options.find((opt) => String(opt.value) === value);
+    item.value = option ?? value;
+
+    if (item.label === "Vehiculo") {
+      setChildren(item);
     }
+  });
+
+  const subBrand = filtersForm.value.find((f) => f.key === "car_models");
+  if (subBrand?.value) {
+    setChildren(subBrand);
+  }
+};
+
+watch(
+  () => props.filters,
+  (filters) => {
+    applyFiltersFromQuery(filters);
   },
+  { immediate: true },
 );
 </script>
-
-<style lang="scss" scoped>
-.quivi-product-filters {
-  &-item {
-    label {
-      display: flex;
-      flex-direction: column;
-    }
-    input {
-      appearance: none;
-      padding: pxToRem(10);
-      border: solid pxToRem(2) $color-quivi-light-gray;
-      border-radius: pxToRem(8);
-    }
-
-    display: flex;
-    flex-direction: column;
-
-    .quivi-button {
-      margin: auto;
-    }
-
-    &:not(:last-child) {
-      margin-bottom: pxToRem(20);
-    }
-  }
-}
-</style>
