@@ -15,78 +15,90 @@ const processName = (name: string) => {
   return String(name).toLowerCase().trim();
 };
 
-const processRelation = async (rows: any[], model: any, idx: number) => {
-  const operations = rows
-    .map((row: any) => {
-      if (row[idx] == "-" || !row[idx]) return;
+const isValidCell = (v: any) => v !== "-" && v !== null && v !== undefined && String(v).trim() !== "";
 
-      const elName = processName(row[idx]);
-      return {
-        updateOne: {
-          filter: { name: elName },
-          update: { name: elName },
-          upsert: true,
-        },
-      };
-    })
-    .filter((operation: any) => operation);
+const splitCSV = (v: any) =>
+  processName(String(v))
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
-  await model.bulkWrite(operations);
-
-  return await model
-    .find({
-      $in: {
-        name: rows.map((row: any) => {
-          return { name: processName(row[idx]) };
-        }),
-      },
-    })
-    .select(["_id", "name"]);
+const chunk = <T>(arr: T[], size: number): T[][] => {
+  const out: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
 };
 
-const processMultipleRelations = async (
-  rows: any[],
-  model: any,
-  idx: number,
-) => {
-  const operations: any = [];
-  rows.forEach((row: any) => {
-    if (row[idx] == "-" || !row[idx]) return;
+const bulkWriteBatched = async (model: any, operations: any[], batchSize = 1000) => {
+  if (!operations.length) return;
+  for (const batch of chunk(operations, batchSize)) {
+    await model.bulkWrite(batch, { ordered: false });
+  }
+};
 
-    const elName = processName(row[idx]);
-    const names = elName.split(",");
-    names.forEach((name: string) => {
-      const operation: any = {
-        updateOne: {
-          filter: { name },
-          update: { name },
-          upsert: true,
-        },
-      };
+type NameId = { _id: any; name: string };
+const toIdMap = (docs: NameId[]) => new Map(docs.map((d) => [d.name, d._id]));
 
-      operations.push(operation);
-    });
-  });
+const processRelation = async (rows: any[], model: any, idx: number) => {
+  const names = Array.from(
+    new Set(
+      rows
+        .map((row: any) => row?.[idx])
+        .filter(isValidCell)
+        .map((v: any) => processName(String(v))),
+    ),
+  );
 
-  await model.bulkWrite(operations);
-
-  return await model
-    .find({
-      $in: {
-        name: rows.map((row: any) => {
-          return { name: processName(row[idx]) };
-        }),
+  if (names.length) {
+    const operations = names.map((name) => ({
+      updateOne: {
+        filter: { name },
+        update: { $setOnInsert: { name } },
+        upsert: true,
       },
-    })
-    .select(["_id", "name"]);
+    }));
+
+    await bulkWriteBatched(model, operations, 2000);
+  }
+
+  return await model.find({ name: { $in: names } }).select(["_id", "name"]).lean();
+};
+
+const processMultipleRelations = async (rows: any[], model: any, idx: number) => {
+  const names = Array.from(
+    new Set(
+      rows
+        .map((row: any) => row?.[idx])
+        .filter(isValidCell)
+        .flatMap((v: any) => splitCSV(v)),
+    ),
+  );
+
+  if (names.length) {
+    const operations = names.map((name) => ({
+      updateOne: {
+        filter: { name },
+        update: { $setOnInsert: { name } },
+        upsert: true,
+      },
+    }));
+
+    await bulkWriteBatched(model, operations, 2000);
+  }
+
+  return await model.find({ name: { $in: names } }).select(["_id", "name"]).lean();
 };
 
 export default defineEventHandler(async (event) => {
   const products: Product[] = [];
+
   const files = (await readMultipartFormData(event)) as any[];
-  const file = files[0];
+  const file = files?.[0];
+  if (!file?.data) throw new Error("Missing upload file");
+
   const rows = await readXlsxFile(file.data);
-  rows.splice(0, 1)[0];
+  // remove header row
+  rows.splice(0, 1);
 
   const headerNames: string[] = [
     "segment",
@@ -122,149 +134,224 @@ export default defineEventHandler(async (event) => {
   const models = await processMultipleRelations(rows, CarModel, 2);
   const carBrands = await processMultipleRelations(rows, CarBrand, 1);
 
-  const processCarBrand = async (row: any) => {
-    if (!String(row[2])) return;
-    const carModel: any = models.find((model: any) => {
-      const modelNames = processName(row[2]).split(",");
-      return modelNames.includes(model.name);
-    });
-    try {
-      await CarBrand.findOneAndUpdate(
-        {
-          name: processName(String(row[1])),
-        },
-        {
-          $addToSet: { models: carModel._id },
-        },
-        {
+  const categoryIdByName = toIdMap(categories as any);
+  const subcategoryIdByName = toIdMap(subcategries as any);
+  const brandIdByName = toIdMap(brands as any);
+  const segmentIdByName = toIdMap(segments as any);
+  const motorIdByName = toIdMap(motors as any);
+  const carModelIdByName = toIdMap(models as any);
+  const carBrandIdByName = toIdMap(carBrands as any);
+
+  type Lookups = {
+    segmentIdByName: Map<string, any>;
+    brandIdByName: Map<string, any>;
+    categoryIdByName: Map<string, any>;
+    subcategoryIdByName: Map<string, any>;
+    motorIdByName: Map<string, any>;
+    carModelIdByName: Map<string, any>;
+    carBrandIdByName: Map<string, any>;
+  };
+
+  const lookups: Lookups = {
+    segmentIdByName,
+    brandIdByName,
+    categoryIdByName,
+    subcategoryIdByName,
+    motorIdByName,
+    carModelIdByName,
+    carBrandIdByName,
+  };
+
+  const buildCarBrandModelOps = (row: any, carModelIdByName: Map<string, any>) => {
+    const rawModel = row?.[2];
+    const rawBrand = row?.[1];
+    if (!isValidCell(rawModel)) return [];
+    if (!isValidCell(rawBrand)) return [];
+
+    const modelNames = splitCSV(rawModel);
+    if (!modelNames.length) return [];
+
+    const brandName = processName(String(rawBrand));
+
+    const ops: any[] = [];
+    for (const mn of modelNames) {
+      const modelId = carModelIdByName.get(mn);
+      if (!modelId) continue;
+      ops.push({
+        updateOne: {
+          filter: { name: brandName },
+          update: { $addToSet: { models: modelId } },
           upsert: true,
         },
-      );
-    } catch (error) {
-      return error;
-    }
-  };
-
-  const processMotorModels = async (row: any) => {
-    if (row[5] !== "-" && row[5]) {
-      const motorNames = processName(row[5]).split(",");
-      const operations: any = [];
-      motorNames.forEach(async (name: string) => {
-        const modelName = processName(row[2]);
-        const model = models.find((model: any) => model.name === modelName);
-        if (model) {
-          const operation: any = {
-            updateOne: {
-              filter: { name },
-              update: { $addToSet: { models: model._id } },
-              upsert: true,
-            },
-          };
-
-          operations.push(operation);
-        }
       });
-      await Motor.bulkWrite(operations);
     }
+
+    return ops;
   };
 
-  const processProduct = async (
+  const buildMotorModelOps = (row: any, carModelIdByName: Map<string, any>) => {
+    const rawMotors = row?.[5];
+    const rawModel = row?.[2];
+    if (!isValidCell(rawMotors)) return [];
+    if (!isValidCell(rawModel)) return [];
+
+    const modelName = processName(String(rawModel)).trim();
+    const modelId = carModelIdByName.get(modelName);
+    if (!modelId) return [];
+
+    const motorNames = splitCSV(rawMotors);
+    if (!motorNames.length) return [];
+
+    return motorNames.map((name) => ({
+      updateOne: {
+        filter: { name },
+        update: { $addToSet: { models: modelId } },
+        upsert: true,
+      },
+    }));
+  };
+
+  const processProduct = (
     product: any,
     row: any,
     key: string,
     index: number,
+    l: Lookups,
   ) => {
-    if (key === "segment") {
-      const segment: any = segments.find((segment: any) => {
-        return segment.name == processName(row[index]);
-      });
+    const cell = row?.[index];
 
-      if (segment) {
-        product[key] = segment._id;
+    if (key === "segment") {
+      if (!isValidCell(cell)) return;
+      const id = l.segmentIdByName.get(processName(cell));
+      if (id) product[key] = id;
+      return;
+    }
+
+    if (key === "brand") {
+      if (!isValidCell(cell)) return;
+      const id = l.brandIdByName.get(processName(cell));
+      if (id) product[key] = id;
+      return;
+    }
+
+    if (key === "category") {
+      if (!isValidCell(cell)) return;
+      const id = l.categoryIdByName.get(processName(cell));
+      if (id) product[key] = id;
+      return;
+    }
+
+    if (key === "subcategory") {
+      if (!isValidCell(cell)) return;
+      const id = l.subcategoryIdByName.get(processName(cell));
+      if (id) product[key] = id;
+      return;
+    }
+
+    if (key === "motors") {
+      if (!isValidCell(cell)) {
+        product[key] = [];
+        return;
       }
-    } else if (key === "brand") {
-      const brand: any = brands.find(
-        (brand: any) => brand.name === processName(row[index]),
-      );
-      if (brand) {
-        product[key] = brand._id;
+      const ids: any[] = [];
+      for (const name of splitCSV(cell)) {
+        const id = l.motorIdByName.get(name);
+        if (id) ids.push(id);
       }
-    } else if (key === "category") {
-      const category: any = categories.find(
-        (cat: any) => cat.name === processName(row[index]),
-      );
-      if (category) {
-        product[key] = category._id;
+      product[key] = ids;
+      return;
+    }
+
+    if (key === "models") {
+      if (!isValidCell(cell)) {
+        product[key] = [];
+        return;
       }
-    } else if (key === "subcategory") {
-      const subcategory: any = subcategries.find(
-        (subcat: any) => subcat.name === processName(row[index]),
-      );
-      if (subcategory) {
-        product[key] = subcategory._id;
+      const ids: any[] = [];
+      for (const name of splitCSV(cell)) {
+        const id = l.carModelIdByName.get(name);
+        if (id) ids.push(id);
       }
-    } else if (key === "motors") {
-      const _motors: any = motors.filter((motor: any) => {
-        const motorNames = processName(row[index]).split(",");
-        return motorNames.includes(motor.name);
-      });
-      product[key] = _motors.map((motor: any) => motor._id);
-    } else if (key === "models") {
-      const _models: any = models.filter((model: any) => {
-        const modelNames = processName(row[index]).split(",");
-        return modelNames.includes(model.name);
-      });
-      product[key] = _models.map((model: any) => model._id);
-    } else if (key === "car_brands") {
-      const _carBrands: any = carBrands.filter((carBrand: any) => {
-        const carBrandNames = processName(row[index]).split(",");
-        return carBrandNames.includes(carBrand.name);
-      });
-      product[key] = _carBrands.map((carBrand: any) => carBrand._id);
-    } else if (key === "years") {
-      product[key] = String(row[index])
+      product[key] = ids;
+      return;
+    }
+
+    if (key === "car_brands") {
+      if (!isValidCell(cell)) {
+        product[key] = [];
+        return;
+      }
+      const ids: any[] = [];
+      for (const name of splitCSV(cell)) {
+        const id = l.carBrandIdByName.get(name);
+        if (id) ids.push(id);
+      }
+      product[key] = ids;
+      return;
+    }
+
+    if (key === "years") {
+      product[key] = String(cell ?? "")
         .split(",")
         .map((year: string) => Number(year))
         .filter((year) => !isNaN(year));
-    } else if (key === "discount") {
-      product[key] =
-        row[index] !== null ? Number(row[index].replace("%", "")) : 0;
-    } else if (key.includes("thumb")) {
-      product.thumbs.push(row[index]);
-    } else if (key === "priority") {
-      product[key] = row[index] !== null ? Number(row[index]) : 99;
-    } else {
-      product[key] = row[index] !== null ? row[index] : "";
+      return;
     }
+
+    if (key === "discount") {
+      product[key] = isValidCell(cell) ? Number(String(cell).replace("%", "")) : 0;
+      return;
+    }
+
+    if (key.includes("thumb")) {
+      if (isValidCell(cell)) product.thumbs.push(cell);
+      return;
+    }
+
+    if (key === "priority") {
+      product[key] = isValidCell(cell) ? Number(cell) : 99;
+      return;
+    }
+
+    product[key] = cell !== null && cell !== undefined ? cell : "";
   };
 
-  rows.forEach(async (row: any) => {
-    const product: any = {};
-    product.thumbs = [];
-    headerNames.forEach(async (key: string, i: number) => {
+  const carBrandOps: any[] = [];
+  const motorOps: any[] = [];
+
+  for (const row of rows) {
+    const product: any = { thumbs: [] };
+
+    for (let i = 0; i < headerNames.length; i++) {
+      const key = headerNames[i];
       try {
-        await processProduct(product, row, key, i);
+        processProduct(product, row, key, i, lookups);
       } catch (error) {
         console.log(error);
       }
-    });
+    }
 
     products.push(product);
 
-    await processCarBrand(row);
-    await processMotorModels(row);
-  });
+    carBrandOps.push(...buildCarBrandModelOps(row, carModelIdByName));
+    motorOps.push(...buildMotorModelOps(row, carModelIdByName));
+  }
+
+  await bulkWriteBatched(CarBrand, carBrandOps, 2000);
+  await bulkWriteBatched(Motor, motorOps, 2000);
 
   try {
-    const operations: any = products.map((product) => ({
-      updateOne: {
-        filter: { web: product.web },
-        update: product,
-        upsert: true,
-      },
-    }));
+    const operations: any = products
+      .filter((p: any) => p?.web)
+      .map((product) => ({
+        updateOne: {
+          filter: { web: product.web },
+          update: product,
+          upsert: true,
+        },
+      }));
 
-    await ProductModel.bulkWrite(operations);
+    await bulkWriteBatched(ProductModel, operations, 1000);
 
     return true;
   } catch (error) {

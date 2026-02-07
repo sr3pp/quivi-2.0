@@ -57,6 +57,8 @@ export const modelPagination = async (
 
   const pagination = {
     limit,
+    perPage,
+    total,
     startIndex,
     endIndex,
     page,

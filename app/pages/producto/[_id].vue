@@ -110,12 +110,12 @@ const getLabel = (key: string) => {
 </script>
 
 <template lang="pug">
-    UContainer(:with-padding="true")
+    UContainer.py-10
         UPageGrid
-            div(class="col-span-1 sm:col-span-2/5")
+            div(class="col-span-1 sm:col-span-6")
               ProductThumbs(:thumbs="product.thumbs" :productName="product.name" :productId="product.web")
-            div(class="col-span-1 sm:col-span-3/5")
-                .product-detail-info(v-if="product")
+            div(class="col-span-1 sm:col-span-6")
+                .flex.flex-col.gap-6(v-if="product")
                     p {{ product.name }}
                     p {{ `Refaccion: ${product.web}` }}
                     p {{ product.extra }}
@@ -124,16 +124,16 @@ const getLabel = (key: string) => {
                         .price-container
                           p(v-if="product.discount && product.discount > 0" class="title") {{ toPrice(processDiscount(product)) }}
                           p(:class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}") {{ toPrice(product.price) }}
-                        .product-detail-no-existences(v-if="!existences")
-                          p PRODUCTO NO DISPONIBLE
-                          UButton(label="Solicitar información" size="lg" variant="secondary")
+                        .flex.flex-col.gap-1(v-if="!existences")
+                          p.text-sm PRODUCTO NO DISPONIBLE
+                          UButton(label="Solicitar información" size="lg")
                         .product-detail-existences(v-else)
                           UInputNumber(v-model="qty" :max="product.existences" @updateQty="($event) => qty += $event")
-                          UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" variant="secondary")
-                    .product-detail-actions
+                          UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" color="secondary")
+                    .flex.justify-between
                         UButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
-                        UButton(to="/tienda" label="Ir a la tienda" :loading="false" :disabled="false")
-            div(class="col-span-1 sm:col-span-2")
+                        UButton(to="/tienda" label="Ir a la tienda" :loading="false" :disabled="false" color="secondary")
+            div(class="col-span-1")
                 p ESPECIFICACIONES DEL PRODUCTO
                 ul.product-detail-details
                     template(v-for="([key, value], i) in Object.entries(product)")

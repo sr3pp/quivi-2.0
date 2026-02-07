@@ -1,16 +1,17 @@
 <template lang="pug">
-UCard
+UCard(:ui="{ header: 'p-0 sm:px-0', footer: 'flex justify-between items-center' }")
   template(#header)
     figure.w-full
       NuxtImg.w-full(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
   div
     p {{ product.name }}
     p.sae {{ `Clave: ${product.sae}` }}
-    p {{ toPrice(processDiscount(product)) }}
-    p(v-if="product.discount") {{ toPrice(product.price) }}
+    p(v-if="!product.discount") {{ toPrice(product.price) }}
+    p(v-else) {{ toPrice(processDiscount(product)) }}
   template(#footer)
-    UButton(:href="`/producto/${product._id}`" label="Ver Mas" :loading="false" :disabled="false")
-    UTooltip(:content="{align: 'end',side: 'top',sideOffset: 2}" :text="product.extra" v-if="product.extra")
+    UButton(:href="`/producto/${product._id}`" size="xl" label="Ver Mas" color="secondary" :loading="false" :disabled="false")
+    UTooltip(:text="product.extra" :content="{align: 'end',side: 'top',sideOffset: 2}")
+      UButton(icon="i-lucide-info" aria-label="Detalles")
                 
 
 </template>
@@ -52,138 +53,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.quivi-product-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-grow: 1;
-  position: relative;
-  justify-content: center;
-  width: 100%;
-  border: none;
-  border-radius: pxToRem(10);
-  margin-bottom: pxToRem(20);
-  background: $color-white;
-  transition: transform 0.35s ease-in-out;
-
-  &-container {
-    position: relative;
-    z-index: 1;
-    width: 100%;
-    background: $color-white;
-    border-radius: pxToRem(10);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    border-radius: pxToRem(10);
-    background: linear-gradient(
-      to bottom,
-      $color-quivi-light-red,
-      $color-quivi-red
-    );
-    transition:
-      box-shadow 0.35s ease,
-      background 0.35s ease;
-  }
-
-  &-img {
-    width: 100%;
-    height: pxToRem(200);
-    margin: 0;
-    margin-bottom: pxToRem(20);
-    overflow: hidden;
-    box-shadow: pxToRem(10) pxToRem(10) pxToRem(0) rgba(0, 0, 0, 0);
-    transition: box-shadow 0.35s ease;
-    img {
-      width: 100%;
-      object-fit: cover;
-      transition: transform 0.35s ease;
-    }
-  }
-
-  &:hover {
-    transform: scale(1.03);
-    &::before {
-      box-shadow: pxToRem(10) pxToRem(10) pxToRem(20) rgba(0, 0, 0, 0.25);
-      background: linear-gradient(
-        to bottom,
-        $color-quivi-red,
-        $color-quivi-light-red
-      );
-    }
-    .quivi-product-card {
-      &-img {
-        box-shadow: pxToRem(10) pxToRem(10) pxToRem(20) rgba(0, 0, 0, 0.25);
-        img {
-          transform: scale(1.1);
-        }
-      }
-    }
-  }
-
-  &-body {
-    padding-right: pxToRem(20);
-    padding-left: pxToRem(20);
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-
-    .sr-text,
-    .sae {
-      margin-bottom: pxToRem(10);
-    }
-
-    .sae {
-      display: none;
-    }
-
-    .title {
-      margin-top: auto;
-      --text-size-sm: #{pxToRem(24)};
-    }
-
-    .discount {
-      color: $color-quivi-red;
-      text-decoration: line-through;
-      --text-size-sm: #{pxToRem(16)};
-    }
-  }
-
-  .quivi-tooltip {
-    margin-left: auto;
-    flex-shrink: 0;
-    width: pxToRem(40);
-    height: pxToRem(40);
-    font-size: pxToRem(16);
-  }
-
-  &-footer {
-    width: 100%;
-    display: flex;
-    position: relative;
-    justify-content: space-between;
-    align-items: center;
-    padding: pxToRem(20);
-    margin-top: auto;
-
-    .quivi-button {
-      min-width: pxToRem(120);
-      margin-left: 0;
-    }
-  }
-}
-</style>

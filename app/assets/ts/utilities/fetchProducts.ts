@@ -3,6 +3,7 @@ export const fetchProducts = async (
   goTo: string,
   search: string,
   filters?: any,
+  perPage?: number,
 ) => {
   const query: any = {
     page: goTo,
@@ -13,14 +14,18 @@ export const fetchProducts = async (
     query.filters = filters;
   }
 
-  const data: any = await $fetch(
-    `/api/product${
-      Object.keys(query).length ? `?path=${path}&` : ""
-    }${Object.keys(query)
-      .map((key: string) => (query[key] ? `${key}=${query[key]}` : ""))
-      .filter(Boolean)
-      .join("&")}`,
-  );
+  if (perPage) {
+    query.perPage = perPage;
+  }
+
+  const data: any = await $fetch("/api/product", {
+    query: {
+      path,
+      ...Object.fromEntries(
+        Object.entries(query).filter(([, value]) => value !== undefined),
+      ),
+    },
+  });
 
   return {
     products: data?.products,
