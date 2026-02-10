@@ -6,9 +6,9 @@ export default defineAppConfig({
     button: {
       variants: {
         color: {
-          secondary: "font-bebas"
-        }
-      }
-    }
+          secondary: "font-bebas",
+        },
+      },
+    },
   },
 });

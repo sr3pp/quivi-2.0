@@ -2,7 +2,7 @@
 UCard(:ui="{ header: 'p-0 sm:px-0', footer: 'flex justify-between items-center' }")
   template(#header)
     figure.w-full
-      NuxtImg.w-full(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
+      ProductImage.w-full(:product="product")
   div
     p {{ product.name }}
     p.sae {{ `Clave: ${product.sae}` }}

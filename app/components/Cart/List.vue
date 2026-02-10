@@ -1,18 +1,19 @@
 <template lang="pug">
-ul.quivi-cart-list 
-    li.quivi-cart-list-product(v-for="(product, i) in products" :key="i")
-        NuxtImg(:src="`/products/${product.web}/${product.thumbs[0]}`" :alt="product.name")
-        .quivi-cart-list-product-info
-            SrText(:text="product.name" class="subtitle")
-            SrText(:text="`Marca: ${product.brand.name}`")
-            SrText(:text="`Web: ${product.web}`")
-            UInputNumber(v-if="editable" v-model="product.qty" :max="product.existences")
-            span.quivi-cart-list-product-max-label(v-if="product.qty == product.existences") Limite de stock, contactanos si necesitas más
-            SrText(:text="`Qty: ${String(product.qty)}`")
-            .price-container
-                SrText(:text="toPrice(product.price)" :class="{discount: product.discount && product.discount > 0}")
-                SrText.price(:text="toPrice(processDiscount(product))" class="subtitle" v-if="product.discount && product.discount > 0")
-        button(@click="removeFromCart(product)" v-if="editable")
+ul.flex.flex-col.gap-4
+    li.flex.gap-2(v-for="(product, i) in products" :key="i")
+        ProductImage(:product="product" class="size-30 aspect-squeare object-cover flex-grow-0")
+        .flex.flex-col.gap-2.text-sm
+            p {{ product.name }}
+            p.flex.justify-between 
+              span {{ `Marca: ${product.brand.name}` }}
+              span {{ `Web: ${product.web}` }}
+            .flex.justify-between
+              UInputNumber(v-if="editable" v-model="product.qty" :max="product.existences")
+              span(v-if="product.qty == product.existences") Limite de stock, contactanos si necesitas más
+            .flex.justify-between
+                p.font-bold(:class="{'line-through text-primary-dark': product.discount && product.discount > 0}") {{ toPrice(product.price) }}
+                p.font-bold(v-if="product.discount && product.discount > 0") {{ toPrice(processDiscount(product)) }}
+        button.size-4.text-primary(@click="removeFromCart(product)" v-if="editable")
             SvgIcon(name="trash-o")
 </template>
 

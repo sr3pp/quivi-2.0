@@ -15,7 +15,8 @@ const processName = (name: string) => {
   return String(name).toLowerCase().trim();
 };
 
-const isValidCell = (v: any) => v !== "-" && v !== null && v !== undefined && String(v).trim() !== "";
+const isValidCell = (v: any) =>
+  v !== "-" && v !== null && v !== undefined && String(v).trim() !== "";
 
 const splitCSV = (v: any) =>
   processName(String(v))
@@ -29,7 +30,11 @@ const chunk = <T>(arr: T[], size: number): T[][] => {
   return out;
 };
 
-const bulkWriteBatched = async (model: any, operations: any[], batchSize = 1000) => {
+const bulkWriteBatched = async (
+  model: any,
+  operations: any[],
+  batchSize = 1000,
+) => {
   if (!operations.length) return;
   for (const batch of chunk(operations, batchSize)) {
     await model.bulkWrite(batch, { ordered: false });
@@ -61,10 +66,17 @@ const processRelation = async (rows: any[], model: any, idx: number) => {
     await bulkWriteBatched(model, operations, 2000);
   }
 
-  return await model.find({ name: { $in: names } }).select(["_id", "name"]).lean();
+  return await model
+    .find({ name: { $in: names } })
+    .select(["_id", "name"])
+    .lean();
 };
 
-const processMultipleRelations = async (rows: any[], model: any, idx: number) => {
+const processMultipleRelations = async (
+  rows: any[],
+  model: any,
+  idx: number,
+) => {
   const names = Array.from(
     new Set(
       rows
@@ -86,7 +98,10 @@ const processMultipleRelations = async (rows: any[], model: any, idx: number) =>
     await bulkWriteBatched(model, operations, 2000);
   }
 
-  return await model.find({ name: { $in: names } }).select(["_id", "name"]).lean();
+  return await model
+    .find({ name: { $in: names } })
+    .select(["_id", "name"])
+    .lean();
 };
 
 export default defineEventHandler(async (event) => {
@@ -162,7 +177,10 @@ export default defineEventHandler(async (event) => {
     carBrandIdByName,
   };
 
-  const buildCarBrandModelOps = (row: any, carModelIdByName: Map<string, any>) => {
+  const buildCarBrandModelOps = (
+    row: any,
+    carModelIdByName: Map<string, any>,
+  ) => {
     const rawModel = row?.[2];
     const rawBrand = row?.[1];
     if (!isValidCell(rawModel)) return [];
@@ -299,7 +317,9 @@ export default defineEventHandler(async (event) => {
     }
 
     if (key === "discount") {
-      product[key] = isValidCell(cell) ? Number(String(cell).replace("%", "")) : 0;
+      product[key] = isValidCell(cell)
+        ? Number(String(cell).replace("%", ""))
+        : 0;
       return;
     }
 

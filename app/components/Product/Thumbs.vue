@@ -1,7 +1,9 @@
 <script lang="ts" setup>
+import type { Product } from "~/types";
+
 const props = defineProps({
   thumbs: {
-    type: Array,
+    type: Array as PropType<string[]>,
     default: () => [],
   },
   productName: {
@@ -14,21 +16,29 @@ const props = defineProps({
   },
 });
 
-const currentThumb = ref(props.thumbs.at(0));
+const currentThumb = ref<string | undefined>(props.thumbs.at(0));
 
-const changeThumb = (thumb: any) => {
+const changeThumb = (thumb: string) => {
   currentThumb.value = thumb;
 };
+
+const buildProduct = (thumb: string | undefined): Partial<Product> => ({
+  name: props.productName,
+  web: props.productId,
+  thumbs: thumb ? [thumb] : [],
+});
+
+const mainProduct = computed(() => buildProduct(currentThumb.value));
 </script>
 
 <template lang="pug">
 .quivi-product-thumbs
-    NuxtImg(:src="`/products/${productId}/${currentThumb}`" :alt="productName"  width="100%" height="100%")
+    ProductImage(:product="mainProduct" :alt="productName" width="100%" height="100%")
     ul.quivi-product-thumbs-list
       template(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i")
         li.quivi-product-thumbs-item(v-if="thumb !== currentThumb")
           button(@click="changeThumb(thumb)")
-            NuxtImg(:src="`/products/${productId}/${thumb}`" :alt="productName")
+            ProductImage(:product="buildProduct(thumb)" :alt="productName")
 </template>
 
 <style lang="scss">

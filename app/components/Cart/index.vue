@@ -3,7 +3,7 @@ UDrawer(v-model:open="isOpen" direction="right")
   template(#header)
     button(@click="toggleCart" class="absolute left-0 top-0 translate-x-[-50%] translate-y-[20px] rounded-full bg-primary text-white border-none text-[20px] flex items-center justify-center")
       UIcon(name="ci:close-big") 
-    button.quivi-cart-empty(@click="emptyCart" v-if="cart.products.length") Vaciar carrito
+    UButton.ml-auto(@click="emptyCart" v-if="cart.products.length" color="neutral" variant="outline") Vaciar carrito
   template(#body)
       template(v-if="cart.products.length")
         CartList(:products="cart.products" :editable="true" @remove="removeFromCart")
