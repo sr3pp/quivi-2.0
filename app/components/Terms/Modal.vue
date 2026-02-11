@@ -19,10 +19,7 @@ UModal.terms-modal(v-model:open="modalSw")
       p.font-bebas.text-3xl {{ terms.title }}
       span {{ terms.fecha }}
   template(#body)
-    ul.terms-modal-list
-      li.terms-modal-item(v-for="(section, i) in terms.sections" :key="`${Date.now()}-terms-section-${i}`")
-        p {{ section.title }}
-        p {{ section.content }}
+    Terms(:terms="terms.sections")
 </template>
 
 <style scoped lang="scss">

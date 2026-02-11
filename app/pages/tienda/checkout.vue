@@ -20,7 +20,7 @@ UContainer
       template(#title)
         p Para continuar acepta los términos y condiciones
       template(#body)
-        p terms here
+        Terms.mb-4(:terms="terms.meta.content.sections")
         UCheckbox(v-model="termsSw" label="Acepta los términos y condiciones para proceder al pago" class="check")
       template(#footer)
         p(v-html="termsLegend2")
@@ -72,9 +72,6 @@ const { terms, sat } = data.value as {
   terms: Object;
   sat: Object;
 };
-
-console.log("terms", terms);
-console.log("sat", sat);
 
 const termsLegend2: string =
   "Serás redirigido a un sitio externo a <span class='highlight'>Quivi.mx</span>";

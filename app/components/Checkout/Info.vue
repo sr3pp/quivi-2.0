@@ -33,7 +33,7 @@
       UFormField(name="billingSw")
         UCheckbox(v-model="formState.billingSw" label="Requiero Factura")
 
-    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")(v-if="formState.billingSw")
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4" v-if="formState.billingSw")
       legend.font-bebas.text-3xl Datos de facturacion
       UFormField(label="Nombre / Razon Social" name="billing.name" required)
         UInput.w-full(v-model="formState.billing.name" placeholder="Nombre / Razon Social")
@@ -48,7 +48,7 @@
       UFormField(label="Regimen" name="billing.regime" required)
         USelect.w-full(v-model="formState.billing.regime" :items="regimenesOptions")
 
-    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")(v-if="formState.billingSw")
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4" v-if="formState.billingSw")
       legend.font-bebas.text-3xl Direccion de facturacion
       UFormField(label="Usar direccion de envio" name="billingAddressSw")
         UCheckbox(v-model="formState.billingAddressSw" label="Usar direccion de envio")

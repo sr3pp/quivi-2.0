@@ -26,7 +26,7 @@ defineProps<{
       <div class="flex flex-col items-center justify-center text-center">
         <h2 class="text-4xl font-bold mb-4">{{ title }}</h2>
         <p class="mb-6">{{ description }}</p>
-        <div class="flex justify-center items-center" v-if="cta">
+        <div v-if="cta" class="flex justify-center items-center">
           <UButton color="secondary" :to="cta.link">
             {{ cta.text }}
           </UButton>
