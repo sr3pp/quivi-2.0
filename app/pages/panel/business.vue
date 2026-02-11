@@ -1,31 +1,31 @@
 <template lang="pug">
-.quivi-business
+div
   UContainer(:with-padding="true")
-    UPageGrid.quivi-business-header
+    UPageGrid(class="mb-5")
       div(class="col-span-1 sm:col-span-2")
         p(class="title") Configuración de la Empresa
       div(class="col-span-1 sm:col-span-2")
         UButton(@click="updateBusiness" class="sr-button--primary" variant="secondary" label="Guardar cambios")
     p  Direccion
-    ul.data-list.wrapped
-      li.data-list-item(v-for="(value, key) in business.address" :key="key")
-        UInput(v-model="business.address[key]" :label="key" type="text")
+    ul(class="mb-5 flex flex-wrap gap-5")
+      li(v-for="(value, key) in business.address" :key="key" class="flex items-center gap-2.5 py-2.5")
+        UInput(v-model="business.address[key]" :label="key" type="text" class="w-full")
 
     p  Cuentas Bancarias
-    ul.data-list
-      li.data-list-item(v-for="(value, key) in business.bank_accounts" :key="key")
-        UInput(v-model="business.bank_accounts[key].bank_name" label="Nombre banco" type="text")
-        UInput(v-model="business.bank_accounts[key].account_number" label="Numero de cuenta" type="text")
+    ul(class="mb-5")
+      li(v-for="(value, key) in business.bank_accounts" :key="key" class="flex items-center gap-2.5 py-2.5")
+        UInput(v-model="business.bank_accounts[key].bank_name" label="Nombre banco" type="text" class="w-full sm:max-w-1/3")
+        UInput(v-model="business.bank_accounts[key].account_number" label="Numero de cuenta" type="text" class="w-full sm:max-w-1/3")
         button(@click="business.bank_accounts.splice(key, 1)") Eliminar
-      li.data-list-item
-        UInput(v-model="newBank.bank_name" label="Nombre banco" type="text")
-        UInput(v-model="newBank.account_number" label="Numero de cuenta" type="text")
+      li(class="flex items-center gap-2.5 py-2.5")
+        UInput(v-model="newBank.bank_name" label="Nombre banco" type="text" class="w-full sm:max-w-1/3")
+        UInput(v-model="newBank.account_number" label="Numero de cuenta" type="text" class="w-full sm:max-w-1/3")
         button(@click="addAccount") Agregar
 
     p Redes Sociales
-    ul.data-list.wrapped
-      li.data-list-item(v-for="(value, key) in business.social" :key="key")
-        UInput(v-model="business.social[key].url" :label="value.label" type="text")
+    ul(class="flex flex-wrap gap-5")
+      li(v-for="(value, key) in business.social" :key="key" class="flex items-center gap-2.5 py-2.5")
+        UInput(v-model="business.social[key].url" :label="value.label" type="text" class="w-full")
 </template>
 
 <script lang="ts" setup>
@@ -37,12 +37,7 @@ const newBank = ref({
   account_number: "",
 });
 
-const [{ data: business }, { data: terms }] = await Promise.all([
-  useFetch("/api/content?page=_config/business"),
-  useFetch("/api/content?page=_config/terms"),
-]);
-
-console.log(business, terms);
+const { data: business } = await useFetch("/api/content?page=_config/business");
 
 const updateBusiness = async () => {
   try {
@@ -60,38 +55,3 @@ const addAccount = () => {
   newBank.value = { bank_name: "", account_number: "" };
 };
 </script>
-
-<style lang="scss" scoped>
-.quivi-business {
-  &-header {
-    margin-bottom: pxToRem(20);
-  }
-  .data-list {
-    &.wrapped {
-      display: flex;
-      flex-wrap: wrap;
-      gap: pxToRem(20);
-
-      .data-list-item {
-        .sr-form-input {
-          max-width: 100%;
-        }
-      }
-    }
-    &:not(:last-child) {
-      margin-bottom: pxToRem(20);
-    }
-
-    &-item {
-      display: flex;
-      align-items: center;
-      gap: pxToRem(10);
-      padding: pxToRem(10) 0;
-
-      .sr-form-input {
-        max-width: 33.3333%;
-      }
-    }
-  }
-}
-</style>

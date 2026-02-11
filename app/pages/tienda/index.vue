@@ -11,7 +11,7 @@ UPageGrid
       UPageGrid.pr-4
           div(class="col-span-1 sm:col-span-6 md:col-span-4" v-for="(product, i) in products" :key="i")
             ProductCard(:product="product")
-      UPagination(v-model="pageModel" :items-per-page="perPage" :total="pagination.total || 0" @update:page="handlePage" color="primary")
+      UPagination.mb-10.flex.justify-center(v-model="pageModel" :items-per-page="perPage" :total="pagination.total || 0" @update:page="handlePage" color="primary")
 
 </template>
 
@@ -89,77 +89,3 @@ const filterProducts = async (filters: Record<string, string | number>) => {
   await refresh();
 };
 </script>
-
-<style lang="scss">
-.store {
-  overflow: hidden;
-
-  &-shipping {
-    align-self: start;
-    width: auto;
-    padding: pxToRem(10) pxToRem(20);
-    background-color: $color-quivi-red;
-    color: $color-white;
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: pxToRem(-10);
-      width: pxToRem(20);
-      height: 100%;
-      background-color: $color-quivi-red;
-      z-index: 1;
-    }
-  }
-
-  > .sr-grid {
-    margin: 0;
-    .store-filters {
-      padding-top: pxToRem(16);
-      .sr-text {
-        margin-bottom: pxToRem(16);
-      }
-    }
-    > *:not(.store-filters) {
-      padding-top: pxToRem(0);
-    }
-
-    .products {
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .product-grid {
-      padding: pxToRem(30) pxToRem(10);
-    }
-  }
-
-  .search-label {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: pxToRem(20);
-
-    .quivi-button {
-      margin-right: pxToRem(20);
-    }
-  }
-
-  &-filters {
-    background-color: $color-near-white;
-  }
-
-  .quivi-pagination {
-    margin: auto;
-  }
-
-  .main-slider {
-    &-slide {
-      height: pxToRem(250);
-      min-height: inherit;
-    }
-  }
-}
-</style>

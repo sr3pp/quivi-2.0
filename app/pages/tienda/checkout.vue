@@ -1,30 +1,34 @@
 <template lang="pug">
-UContainer.py-10
-    div(v-if="verifyingPayment" class="col-span-12")
+div(class="relative min-h-[80vh]")
+  UContainer.py-10
+    div(
+      v-if="verifyingPayment"
+      class="fixed inset-0 z-[3] flex items-center justify-center bg-[rgba(255,255,255,0.5)] backdrop-blur-[0.3125rem]"
+    )
       p Verificando Pago...
     UPageGrid(v-else)
         div(class="col-span-1 sm:col-span-8" class="column")
           CheckoutSteps
           ClientOnly
             TransitionGroup(name="fade")
-              CheckoutInfo(v-show="stepsState[0].active" :sat="sat.meta.content" key="1")
+              CheckoutInfo(v-show="stepsState[0].active" :sat="satContent" key="1")
               CheckoutPayment(v-show="stepsState[1].active" key="2")
-              CheckoutResume(v-show="stepsState[2].active" :sat="sat.meta.content" key="3")
+              CheckoutResume(v-show="stepsState[2].active" :sat="satContent" key="3")
                     
-        div(class="col-span-1 sm:col-span-4")
+        div(class="col-span-1 sm:col-span-4 sticky top-10 flex flex-col justify-center gap-5")
           ClientOnly
-              CartList(:products="cart.products" :editable="false")
+              CartList(:products="cart.products" :editable="false" class="[&_ul]:max-h-[40vh]")
               CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
           UButton(label="Pagar" :disabled="!paymentLock" kind="primary" @click="termsModalSw = true")
-    UModal.terms-modal( v-model:open="termsModalSw")
+    UModal(v-model:open="termsModalSw")
       template(#title)
         p Para continuar acepta los términos y condiciones
       template(#body)
-        Terms.mb-4(:terms="terms.meta.content.sections")
-        UCheckbox(v-model="termsSw" label="Acepta los términos y condiciones para proceder al pago" class="check")
+        Terms.mb-4(:terms="termsSections")
+        UCheckbox(v-model="termsSw" label="Acepta los términos y condiciones para proceder al pago" class="mb-5 flex items-center justify-center text-xs")
       template(#footer)
-        p(v-html="termsLegend2")
-        UButton(label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
+        p(class="mb-5 text-center text-xs" v-html="termsLegend2")
+        UButton(class="mx-auto" label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
 </template>
 
 <script lang="ts" setup>
@@ -33,6 +37,7 @@ import {
   paypalHandler,
   paymentKeyDict,
 } from "~/assets/ts/utilities";
+import type { LocationQueryValue } from "vue-router";
 import type {
   CheckoutCartProduct,
   OpenpayVerificationResponse,
@@ -41,7 +46,7 @@ import type {
 } from "~/types";
 
 const {
-  id: transactionId,
+  id: routeTransactionId,
   order_id: registeredOrder,
   token: paypal_order_id,
 } = useRoute().query;
@@ -73,10 +78,44 @@ const { data } = await useAsyncData("checkout-config", async () => {
   };
 });
 
-const { terms, sat } = data.value as {
-  terms: { meta: { content: { sections: unknown[] } } };
-  sat: { meta: { content: Record<string, unknown> } };
+const termsSections = computed<unknown[]>(() => {
+  const sections = (data.value?.terms as { meta?: { content?: { sections?: unknown[] } } } | null)?.meta?.content?.sections;
+  return Array.isArray(sections) ? sections : [];
+});
+
+const satContent = computed<Record<string, unknown>>(() => {
+  const content = (data.value?.sat as { meta?: { content?: Record<string, unknown> } } | null)?.meta?.content;
+  return content ?? {};
+});
+
+const normalizeQueryValue = (
+  value: LocationQueryValue | LocationQueryValue[] | undefined,
+): string | string[] | undefined => {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+  if (value === null) {
+    return undefined;
+  }
+  return value;
 };
+
+const asString = (
+  value: LocationQueryValue | LocationQueryValue[] | undefined,
+): string | undefined => {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value)) {
+    return value.find((item): item is string => typeof item === "string");
+  }
+  return undefined;
+};
+
+const transactionId = normalizeQueryValue(routeTransactionId);
+const registeredOrderId = asString(registeredOrder);
+const paypalOrderId = asString(paypal_order_id);
 
 const termsLegend2: string =
   "Serás redirigido a un sitio externo a <span class='highlight'>Quivi.mx</span>";
@@ -98,14 +137,14 @@ const saveOrder = async (order: SaleOrderDraft) => {
   });
 };
 
-const storePayment = async (orderId: string, reference: string) => {
+const storePayment = async (orderId: string, reference?: string) => {
   const result = await proccesOrder(orderId);
   const order = result?.order;
   if (!order) return;
   saveOrder(order);
   resetStorage();
   await navigateTo(
-    `/tienda/order/barcode?order_id=${orderId}&reference=${reference}`,
+    `/tienda/order/barcode?order_id=${orderId}&reference=${reference ?? ""}`,
   );
 };
 
@@ -119,8 +158,8 @@ const speiHandler = async (orderId: string) => {
 };
 
 // Pre-register card payments so sales always exist before redirect
-const cardPendingHandler = async (orderId: string, transactionId: string) => {
-  const result = await proccesOrder(orderId, transactionId, false);
+const cardPendingHandler = async (orderId: string, transactionId?: string) => {
+  const result = await proccesOrder(orderId, transactionId ?? "", false);
   if (result && result.order) {
     await saveOrder(result.order);
   }
@@ -177,12 +216,13 @@ const proccesOrder = async (
   id: string,
   transaction?: string,
   paid: boolean = false,
-) => {
+): Promise<{ order: SaleOrderDraft } | null> => {
   const user = null;
 
-  const partidas = cart.value.products.map(
-    (product: CheckoutCartProduct) =>
-      `${product.qty},${product.sae},${product.price}`,
+  const cartProducts = cart.value.products as CheckoutCartProduct[];
+  const partidas = cartProducts.map(
+    (product) =>
+      `${Number(product.qty ?? 0)},${String(product.sae)},${Number(product.price)}`,
   );
 
   const paymentMethodCode: PaymentCode | "" = paymentMethod.value.value
@@ -224,14 +264,14 @@ const proccesOrder = async (
 
     const order: SaleOrderDraft = {
       user,
-      products: cart.value.products.map((product: CheckoutCartProduct) => ({
+      products: cartProducts.map((product) => ({
         product: String(product._id),
-        quantity: product.qty,
-        price: product.price,
-        discount: product.discount,
+        quantity: Number(product.qty ?? 0),
+        price: Number(product.price),
+        discount: Number(product.discount),
       })),
       order_no: id,
-      sae_order: sae ? sae : null,
+      sae_order: sae ? String(sae) : null,
       status: paid,
       shipping: shipping.value,
       payment: {
@@ -253,7 +293,7 @@ const proccesOrder = async (
     };
   } catch (error) {
     console.log(error);
-    return false;
+    return null;
   }
 };
 
@@ -261,7 +301,9 @@ const transactionHandler = async () => {
   if (transactionId) {
     verifyingPayment.value = true;
     const { status, payment_method, reference }: OpenpayVerificationResponse =
-      await $fetch("/api/payment/openpay/verify-transaction", {
+      await $fetch<OpenpayVerificationResponse>(
+        "/api/payment/openpay/verify-transaction" as string,
+        {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -269,7 +311,8 @@ const transactionHandler = async () => {
         body: {
           transactionId,
         },
-      });
+      },
+      );
 
     if (status === "completed") {
       verifyingPayment.value = false;
@@ -282,7 +325,7 @@ const transactionHandler = async () => {
             "Content-Type": "application/json",
           },
           body: {
-            order_no: registeredOrder,
+            order_no: registeredOrderId,
             status: true,
             payment: { status: true, transaction: transactionId },
           },
@@ -291,8 +334,8 @@ const transactionHandler = async () => {
         if (!updated) {
           // Fallback: create the order now if it wasn't pre-registered
           const result = await proccesOrder(
-            registeredOrder as string,
-            transactionId as string,
+            registeredOrderId ?? "",
+            asString(transactionId) ?? "",
             true,
           );
           const order = result?.order;
@@ -304,11 +347,11 @@ const transactionHandler = async () => {
 
         //if payment method is not cash redirect to success page
         if (payment_method.type !== "store") {
-          await navigateTo(`/tienda/order/success?order_id=${registeredOrder}`);
+          await navigateTo(`/tienda/order/success?order_id=${registeredOrderId ?? ""}`);
         } else {
           //if payment method is cash redirect to barcode page
           await navigateTo(
-            `/tienda/order/barcode?order_id=${registeredOrder}&reference=${reference}`,
+            `/tienda/order/barcode?order_id=${registeredOrderId ?? ""}&reference=${reference ?? ""}`,
           );
         }
       } catch (error) {
@@ -317,22 +360,22 @@ const transactionHandler = async () => {
     } else {
       //if not success, save order to unfinished orders.
     }
-  } else if (paypal_order_id) {
+  } else if (paypalOrderId) {
     //confirm paypal order
     const paypal = new paypalHandler();
-    const confirm = await paypal.confirm(paypal_order_id as string);
+    const confirm = await paypal.confirm(paypalOrderId);
 
     if (confirm === "APPROVED") {
       const result = await proccesOrder(
-        registeredOrder as string,
-        paypal_order_id as string,
+        registeredOrderId ?? "",
+        paypalOrderId,
         true,
       );
       const order = result?.order;
       if (!order) return;
       saveOrder(order);
       resetStorage();
-      await navigateTo(`/tienda/order/success?order_id=${registeredOrder}`);
+      await navigateTo(`/tienda/order/success?order_id=${registeredOrderId ?? ""}`);
     }
   }
 };
@@ -342,97 +385,3 @@ onMounted(() => {
   transactionHandler();
 });
 </script>
-
-<style lang="scss">
-.checkout {
-  position: relative;
-  min-height: 80vh;
-  &-loading {
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    z-index: 3;
-    background-color: rgba($color-white, 0.5);
-    backdrop-filter: blur(pxToRem(5));
-    display: flex;
-    align-items: center;
-  }
-
-  .cart-resume {
-    position: sticky;
-    top: pxToRem(40);
-    display: flex;
-    flex-direction: column;
-    gap: pxToRem(20);
-    justify-content: center;
-  }
-
-  .quivi-cart {
-    &-list {
-      max-height: 40vh;
-    }
-    &-detail {
-      .quivi-button {
-        display: none;
-      }
-    }
-  }
-
-  .modal-terms {
-    .sr-modal-container {
-      overflow: hidden;
-      max-width: pxToRem(800);
-      max-height: 90vh;
-    }
-    .sr-modal-content {
-      width: 100%;
-      min-width: inherit;
-    }
-
-    .sr-modal-body {
-      .quivi-terms {
-        margin-bottom: pxToRem(20);
-      }
-
-      .check {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: pxToRem(20);
-        .sr-text {
-          font-size: pxToRem(12);
-        }
-        .sr-form-box {
-          margin-top: pxToRem(4);
-          font-size: pxToRem(12);
-          &-label {
-            width: auto;
-          }
-        }
-      }
-    }
-
-    .sr-modal-footer {
-      display: flex;
-      flex-direction: column;
-      .sr-text {
-        &-container {
-          text-align: center;
-          font-size: pxToRem(12);
-        }
-        &:last-of-type {
-          margin-bottom: pxToRem(20);
-        }
-      }
-      .quivi-button {
-        margin: auto;
-      }
-    }
-  }
-}
-</style>

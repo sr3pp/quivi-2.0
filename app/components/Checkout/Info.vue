@@ -144,6 +144,7 @@ const addressSchema = z.object({
   state: requiredText("El estado es requerido"),
   city: requiredText("El municipio es requerido"),
   zip: requiredText("El codigo postal es requerido"),
+  country: z.string().default("MX"),
 });
 
 const billingSchema = z.object({
@@ -161,6 +162,7 @@ const billingSchema = z.object({
     state: z.string(),
     city: z.string(),
     zip: z.string(),
+    country: z.string().default("MX"),
   }),
 });
 
@@ -214,6 +216,7 @@ const emptyAddress = (): {
   state: string;
   city: string;
   zip: string;
+  country: string;
 } => ({
   street: "",
   ext_num: "",
@@ -222,6 +225,7 @@ const emptyAddress = (): {
   state: "",
   city: "",
   zip: "",
+  country: "MX",
 });
 
 const formState = reactive<
@@ -328,11 +332,23 @@ watch(
 
 const processData = (event: FormSubmitEvent<z.output<typeof schema>>) => {
   console.log("Form submitted with data:", event.data);
-  shipping.value = event.data.shipping;
+  shipping.value = {
+    ...event.data.shipping,
+    address: {
+      ...event.data.shipping.address,
+      int_num: event.data.shipping.address.int_num ?? "",
+    },
+  };
   billingSw.value = event.data.billingSw;
   billingAddressSw.value = event.data.billingAddressSw ?? false;
   if (event.data.billingSw && event.data.billing) {
-    billing.value = event.data.billing;
+    billing.value = {
+      ...event.data.billing,
+      address: {
+        ...event.data.billing.address,
+        int_num: event.data.billing.address.int_num ?? "",
+      },
+    };
   }
   console.log("Calling setStep(1)");
   setStep(1);
@@ -372,30 +388,3 @@ onMounted(() => {
   }
 });
 </script>
-
-<style lang="scss">
-.quivi-checkout {
-  &-info {
-    .shipping-form {
-      margin-bottom: pxToRem(20);
-    }
-  }
-  &-form {
-    fieldset {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-    .sr-form-input,
-    .sr-form-select {
-      width: 100%;
-      @media (min-width: $breakpoint-md) {
-        width: calc((100% / 3) - pxToRem(8));
-        flex-grow: 1;
-        &:last-child {
-          flex-grow: 0;
-        }
-      }
-    }
-  }
-}
-</style>

@@ -1,9 +1,17 @@
 <template lang="pug">
-ul.quivi-checkout-steps
-  li.quivi-checkout-steps-item(v-for="(step, i) in  stepsState" :key="i" :class="{active: step.active, done: step.done}")
-    button.quivi-checkout-steps-item-label(@click="setStepHandler(i)" :disabled="!step.enabled")
+ul(class="flex p-5 mb-5")
+  li(class="flex items-center flex-1"
+    v-for="(step, i) in  stepsState"
+    :key="i"
+    :class="[step.active ? 'opacity-100' : 'opacity-50', i !== stepsState.length - 1 ? 'mr-5' : '']"
+  )
+    button(
+      class="appearance-none flex items-center justify-center flex-col w-full bg-transparent border-0 hover:underline"
+      @click="setStepHandler(i)"
+      :disabled="!step.enabled"
+    )
       p {{ step.label }}
-      span.quivi-checkout-steps-item-status
+      span(class="w-full h-1" :class="step.done ? 'bg-[var(--color-quivi-green)]' : 'bg-[var(--color-quivi-gray)]'")
 </template>
 
 <script lang="ts" setup>
@@ -15,46 +23,3 @@ const setStepHandler = (idx: number) => {
   setStep(idx);
 };
 </script>
-
-<style lang="scss">
-.quivi-checkout-steps {
-  display: flex;
-  padding: pxToRem(20);
-  margin-bottom: pxToRem(20) !important;
-  &-item {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    opacity: 0.5;
-    &:not(:last-child) {
-      margin-right: pxToRem(20);
-    }
-    &-label {
-      appearance: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      width: 100%;
-      background: none;
-      border: none;
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-    &-status {
-      width: 100%;
-      height: pxToRem(4);
-      background-color: $color-quivi-gray;
-    }
-    &.done {
-      .quivi-checkout-steps-item-status {
-        background-color: $color-quivi-green;
-      }
-    }
-    &.active {
-      opacity: 1;
-    }
-  }
-}
-</style>

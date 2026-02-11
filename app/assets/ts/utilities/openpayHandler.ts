@@ -44,13 +44,16 @@ export class openpayHandler {
       dataObj.due_date = new Date().setDate(new Date().getDate() + 3);
     }
 
-    const response = await $fetch<OpenpayChargeResponse>("/api/payment/openpay", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await $fetch<OpenpayChargeResponse>(
+      "/api/payment/openpay",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: dataObj,
       },
-      body: dataObj,
-    });
+    );
     const { payment_method, id } = response;
 
     if (payment_method.url) {

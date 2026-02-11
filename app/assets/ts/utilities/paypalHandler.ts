@@ -24,15 +24,15 @@ export class paypalHandler {
     const { links } = await $fetch<PaypalCreateOrderResponse>(
       "/api/payment/paypal",
       {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: {
-        order_id: buildOrderId(),
-        products: productList,
-        total: total,
-      },
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          order_id: buildOrderId(),
+          products: productList,
+          total: total,
+        },
       },
     );
 

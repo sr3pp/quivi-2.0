@@ -1,47 +1,94 @@
 <template lang="pug">
-nav.quivi-navbar(:class="{'active-search': searchActive}")
+nav(
+  class="relative flex flex-col py-2.5 shadow-[0_0.25rem_1.25rem_rgba(91,91,95,0.3)] transition-[padding-top] duration-300"
+  :class="searchActive ? 'pt-15 sm:pt-2.5' : ''"
+)
   UContainer(class="grid grid-cols-12 items-center gap-4")
-    button.quivi-navbar-burguer(@click="menuActive = !menuActive")
-      SvgIcon(name="hamburguesa-o")
+    button(
+      class="relative z-2 flex size-20 items-center justify-center bg-transparent border-0 p-0 sm:hidden"
+      @click="menuActive = !menuActive"
+    )
+      SvgIcon(class="size-20 text-[var(--color-quivi-gray)]" name="hamburguesa-o")
     NuxtLink(to="/" class="col-span-1 sm:col-span-2")
       NuxtImg(src="/img/logo.png" alt="Comercializadora Quivi Logo" width="180" height="auto")
-    SearchBar(endpoint="/api/product/search?path=/&perPage=5" class="col-span-1 sm:col-span-4")
-    ul.quivi-navbar-list(class="col-span-9 sm:col-span-6")
-      li.quivi-navbar-list-item(class="sm:hidden")
-        button(@click="searchActive = !searchActive")
-          SvgIcon(name="lupa-o" v-if="!searchActive")
-          SvgIcon(name="x-o" v-else)
-          span Busqueda
-      li.quivi-navbar-list-item.hidden(class="sm:flex")
-        a(:href="`tel:${contact.phone}`") {{ contact.phone }}
-      li.quivi-navbar-list-item
-        button(@click="$emit('contactModal')")
-          SvgIcon(name="contacto-o")
-          span Contacto
-      li.quivi-navbar-list-item
-        button.cart-btn(@click="toggleCart")
+    SearchBar(
+      endpoint="/api/product/search?path=/&perPage=5"
+      class="col-span-1 sm:col-span-4 min-w-[300px] sm:relative"
+      :class="searchActive ? 'fixed top-0 left-1/2 z-2 w-[calc(100%-2.5rem)] -translate-x-1/2 sm:top-auto sm:left-auto sm:w-auto sm:translate-x-0' : 'fixed -top-full left-1/2 z-2 w-[calc(100%-2.5rem)] -translate-x-1/2 sm:top-auto sm:left-auto sm:w-auto sm:translate-x-0'"
+    )
+    ul(class="col-span-9 sm:col-span-6 ml-auto flex items-center justify-end")
+      li(class="w-[1.875rem] sm:hidden mr-5")
+        button(
+          class="cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
+          @click="searchActive = !searchActive"
+        )
+          SvgIcon(class="w-[1.875rem] h-[2.5rem] text-[var(--color-quivi-light-red)]" name="lupa-o" v-if="!searchActive")
+          SvgIcon(class="w-[1.875rem] h-[2.5rem] text-[var(--color-quivi-light-red)]" name="x-o" v-else)
+          span(class="hidden text-[0.75rem] font-inria text-[var(--color-text-color)] sm:inline-block sm:text-base") Busqueda
+      li(class="hidden sm:flex w-[5rem] mr-2.5")
+        a(class="whitespace-nowrap" :href="`tel:${contact.phone}`") {{ contact.phone }}
+      li(class="w-[1.875rem] sm:w-[5rem] mr-2.5")
+        button(
+          class="cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
+          @click="$emit('contactModal')"
+        )
+          SvgIcon(class="size-10 text-[var(--color-quivi-light-red)] sm:w-10 sm:h-[3.125rem]" name="contacto-o")
+          span(class="hidden text-[0.75rem] font-inria text-[var(--color-text-color)] sm:inline-block sm:text-base") Contacto
+      li(class="w-[1.875rem] sm:w-[5rem] mr-2.5")
+        button(
+          class="relative cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
+          @click="toggleCart"
+        )
           ClientOnly
-            span.cart-counter(v-if="totalCartProducts") {{ totalCartProducts }}
-          SvgIcon(name="carrito-o")
-          span Carrito
-      li.quivi-navbar-list-item
+            span(
+              class="absolute z-2 top-0 right-0 w-5 h-5 bg-[var(--color-quivi-red)] rounded-full flex items-center justify-center text-[0.75rem] text-[var(--color-white)]"
+              v-if="totalCartProducts"
+            ) {{ totalCartProducts }}
+          SvgIcon(class="size-10 text-[var(--color-quivi-light-red)] sm:w-10 sm:h-[3.125rem]" name="carrito-o")
+          span(class="hidden text-[0.75rem] font-inria text-[var(--color-text-color)] sm:inline-block sm:text-base") Carrito
+      li(class="w-[1.875rem] sm:w-[5rem]")
         ClientOnly
-          button.variant-red(@click="$emit('loginModal')" v-if="!isLoggedIn")
-              .icon-container
-                SvgIcon(name="registrarsecaja-o")
-              span Ingresar
+          button(
+            class="cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
+            @click="$emit('loginModal')"
+            v-if="!isLoggedIn"
+          )
+            div(class="w-full h-full flex items-center justify-center bg-gradient-to-r from-[var(--color-quivi-light-red)] to-[var(--color-quivi-red)]")
+              SvgIcon(class="w-[1.875rem] h-[2.5rem] text-[var(--color-white)] sm:w-10 sm:h-[3.125rem]" name="registrarsecaja-o")
+            span(class="hidden w-full p-1 text-[var(--color-text-color)] sm:inline-block sm:text-base") Ingresar
           UDropdownMenu(v-else :items="panelItems" class="w-full")
             UButton(label="User" color="neutral" variant="outline" icon="i-lucide-menu")
-  ul.quivi-navbar-menu(:class="{active: menuActive}")
-    li.quivi-navbar-item(v-for="(item, i) in navigation" :class="{active: item.active, 'highlight': item.highLight}" :key="i")
-      .link-container  
-        NuxtLink(:to="item.path")
+  ul(
+    class="absolute top-full left-0 w-full z-10 max-h-0 overflow-hidden rounded-b-lg bg-gradient-to-r from-[var(--color-quivi-gray)] to-[var(--color-quivi-darkest-gray)] shadow-[0_0.625rem_0.625rem_rgba(51,47,46,0.3)] transition-[max-height] duration-300 sm:relative sm:z-2 sm:max-h-none sm:overflow-visible sm:w-auto sm:h-auto sm:bg-none sm:shadow-none sm:flex sm:items-center sm:ml-auto sm:mb-[-3.125rem] sm:px-5"
+    :class="menuActive ? 'max-h-screen' : ''"
+  )
+    li(
+      class="group relative z-2 flex flex-col min-w-[8.75rem] sm:mr-1"
+      v-for="(item, i) in navigation"
+      :class="[item.highLight ? 'text-[var(--color-text-color)]' : '', item.active ? 'is-active' : '']"
+      :key="i"
+    )
+      div(class="relative flex")
+        NuxtLink(
+          class="relative z-2 flex w-full p-4 text-[var(--color-white)] sm:min-w-[8.125rem] sm:h-auto sm:justify-center sm:p-2.5 sm:text-center sm:font-bebas sm:text-[1.375rem] sm:leading-[1.4]"
+          :to="item.path"
+        )
           span {{ item.title }}
-          SvgIcon(name="ir-o" v-if="!item.children || (item.children && !item.children.length)")
-        button.collapse(@click="item.active = !Boolean(item.active)" v-if="item.children && item.children.length")
-          SvgIcon(name="desplazamientoabajo-o")
-      
-        svg.bg
+          SvgIcon(class="size-10 ml-auto sm:hidden" name="ir-o" v-if="!item.children || (item.children && !item.children.length)")
+        button(
+          class="ml-auto p-4 bg-transparent border-0 sm:hidden"
+          @click="item.active = !Boolean(item.active)"
+          v-if="item.children && item.children.length"
+        )
+          SvgIcon(
+            class="size-10 text-[var(--color-white)] transition-transform duration-300"
+            :class="item.active ? 'rotate-180' : ''"
+            name="desplazamientoabajo-o"
+          )
+        svg(
+          class="hidden sm:block absolute inset-0 z-1 w-full h-full"
+          :style="{ fill: item.highLight ? 'url(#stateMenuBtnHighlight)' : 'url(#stateMenuBtn)' }"
+        )
           defs
             linearGradient(id="stateMenuBtnHover" x1="0%" y1="0%" x2="0%" y2="100%")
               stop(offset="0%" stop-color="#000000")
@@ -56,9 +103,21 @@ nav.quivi-navbar(:class="{'active-search': searchActive}")
               stop(offset="0%" :stop-color="btnColor3")
               stop(offset="100%" :stop-color="btnColor4")
           use(href="/icons/botonmenu-o.svg#s")
-      ol.quivi-navbar-submenu(v-if="item.children && item.children.length" role="list")
-        li.quivi-navbar-submenu-item(v-for="(el, e) in item.children.filter(child => child.stem !== item.stem && !child.stem.endsWith('/index'))" :key="e")
-          NuxtLink(:to="el.path") {{ el.title }}
+      ol(
+        class="flex flex-col overflow-hidden max-h-0 transition-[max-height,opacity,padding-top] duration-300 sm:absolute sm:left-0 sm:top-3.5 sm:min-w-[15.625rem] sm:rounded-b-[1.125rem] sm:bg-gradient-to-r sm:from-[var(--color-quivi-gray)] sm:to-[var(--color-quivi-darkest-gray)] sm:shadow-[0_0.625rem_0.625rem_rgba(51,47,46,0.3)] sm:group-hover:max-h-screen sm:group-hover:pt-7"
+        :class="item.active ? 'max-h-screen' : ''"
+        v-if="item.children && item.children.length"
+        role="list"
+      )
+        li(
+          class="relative flex w-full"
+          v-for="(el, e) in item.children.filter(child => child.stem !== item.stem && !child.stem.endsWith('/index'))"
+          :key="e"
+        )
+          NuxtLink(
+            class="w-full text-[var(--color-white)] text-left text-[1.125rem] leading-[1.8] capitalize px-5 py-4 sm:px-4 sm:justify-start sm:font-inria"
+            :to="el.path"
+          ) {{ el.title }}
 </template>
 
 <script lang="ts" setup>
@@ -109,9 +168,9 @@ const btnColor2: string = colorQuiviDarkestGray;
 const btnColor3: string = colorQuiviYellow;
 const btnColor4: string = colorQuiviDarkYellow;
 
-const { cart, toggleCart, totalCartProducts } = useCart();
+const { toggleCart, totalCartProducts } = useCart();
 
-const { isLoggedIn, logout, session } = useAuth();
+const { isLoggedIn, logout } = useAuth();
 
 watch(
   () => route.value.name,
@@ -120,480 +179,3 @@ watch(
   },
 );
 </script>
-
-<style lang="scss" scoped>
-.quivi-navbar {
-  padding-top: pxToRem(10);
-  padding-bottom: pxToRem(10);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  box-shadow: 0 pxToRem(4) pxToRem(20) rgba($color-quivi-dark-gray, 0.3);
-  transition: padding-top 0.35s ease;
-
-  &.active-search {
-    @media (max-width: $breakpoint-sm) {
-      padding-top: pxToRem(60);
-
-      .quivi-searchbar {
-        top: 0;
-      }
-    }
-  }
-
-  &-burguer {
-    background: none;
-    border: none;
-    padding: 0;
-    width: pxToRem(30);
-    height: pxToRem(30);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-
-    .sr-icon {
-      width: pxToRem(30);
-      height: pxToRem(30);
-      color: $color-quivi-gray;
-    }
-
-    @media (min-width: $breakpoint-sm) {
-      display: none;
-    }
-  }
-
-  .logo {
-    width: 20%;
-    min-width: pxToRem(100);
-
-    @media (min-width: $breakpoint-sm) {
-      min-width: pxToRem(180);
-      margin: 0 !important;
-      padding-right: pxToRem(20);
-    }
-  }
-
-  .quivi-searchbar {
-    display: flex;
-    position: fixed;
-    flex-shrink: 1;
-    top: -100%;
-    left: 50%;
-    z-index: 2;
-    width: calc(100% - pxToRem(40));
-    transform: translateX(-50%);
-    transition: top 0.35s ease;
-
-    @media (min-width: $breakpoint-sm) {
-      position: relative;
-      min-width: pxToRem(300);
-      width: 40%;
-      transform: none;
-      left: inherit;
-    }
-  }
-
-  &-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    z-index: 10;
-    max-height: 0;
-    overflow: hidden;
-    border-bottom-left-radius: pxToRem(8);
-    border-bottom-right-radius: pxToRem(8);
-    background: linear-gradient(
-      to right,
-      $color-quivi-gray,
-      $color-quivi-darkest-gray
-    );
-    box-shadow: 0 pxToRem(10) pxToRem(10) rgba($color-black, 0.3);
-    transition: max-height 0.35s ease;
-
-    &.active {
-      max-height: 100vh;
-    }
-
-    @media (min-width: $breakpoint-sm) {
-      overflow: visible;
-      max-height: inherit;
-      width: auto;
-      height: auto;
-      background-color: transparent;
-      background: none;
-      box-shadow: none;
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      margin-left: auto;
-      margin-bottom: pxToRem(-50);
-      padding-left: pxToRem(20);
-      padding-right: pxToRem(20);
-    }
-  }
-
-  &-list {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    &-item {
-      width: pxToRem(30);
-      a {
-        white-space: nowrap;
-      }
-      button {
-        cursor: pointer;
-        padding: 0;
-        width: 100%;
-        background: none;
-        border: none;
-        color: $color-text-color;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        border-radius: pxToRem(8);
-        overflow: hidden;
-
-        span {
-          display: none;
-          color: $color-text-color;
-          font-size: pxToRem(12);
-          font-family: Inria;
-        }
-
-        &.variant-red {
-          .icon-container {
-            background: linear-gradient(
-              to right,
-              $color-quivi-light-red,
-              $color-quivi-red
-            );
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .sr-icon {
-              color: $color-white;
-            }
-          }
-          span {
-            width: 100%;
-            padding: pxToRem(4);
-            color: $color-text-color;
-          }
-        }
-
-        .sr-icon {
-          width: pxToRem(30);
-          height: pxToRem(40);
-          color: $color-quivi-light-red;
-        }
-      }
-
-      .cart {
-        &-btn {
-          position: relative;
-          display: flex;
-        }
-        &-counter {
-          position: absolute;
-          z-index: 2;
-          top: 0;
-          right: 0;
-          width: pxToRem(20);
-          height: pxToRem(20);
-          background-color: $color-quivi-red;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: pxToRem(12);
-          color: $color-white;
-        }
-      }
-
-      &.hidden {
-        display: none !important;
-      }
-
-      &:not(:last-child) {
-        margin-right: pxToRem(20);
-      }
-
-      @media (min-width: $breakpoint-sm) {
-        width: pxToRem(80);
-        button {
-          span {
-            display: inline-block;
-            font-size: pxToRem(16);
-          }
-
-          .sr-icon {
-            width: pxToRem(40);
-            height: pxToRem(50);
-          }
-        }
-        &.sm\:hidden {
-          display: none;
-        }
-        &.sm\:flex {
-          display: flex !important;
-        }
-
-        &:not(:last-child) {
-          margin-right: pxToRem(10);
-        }
-      }
-    }
-  }
-
-  &-item {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 2;
-    min-width: pxToRem(140);
-
-    &.highlight {
-      a {
-        color: $color-text-color;
-      }
-
-      svg.bg {
-        fill: url(#stateMenuBtnHighlight);
-      }
-
-      &:hover,
-      &:has(.router-link-active) {
-        svg.bg {
-          fill: url(#stateMenuBtnHighlightHover);
-        }
-      }
-    }
-
-    &:not(:last-child) {
-      &::after {
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        transform: translateX(-50%);
-        content: "";
-        width: 95%;
-        height: pxToRem(2);
-        border-radius: 100%;
-        background: linear-gradient(
-          to right,
-          $color-quivi-gray,
-          $color-white,
-          $color-quivi-gray
-        );
-      }
-
-      @media (min-width: $breakpoint-sm) {
-        &::after {
-          display: none;
-        }
-      }
-    }
-
-    .link-container {
-      display: flex;
-      position: relative;
-    }
-    .collapse {
-      background: none;
-      border: none;
-      margin-left: auto;
-      padding: pxToRem(16);
-
-      .sr-icon {
-        width: pxToRem(25);
-        height: pxToRem(25);
-        color: $color-white;
-        transition: transform 0.35s ease;
-      }
-
-      @media (min-width: $breakpoint-sm) {
-        display: none;
-      }
-    }
-
-    a {
-      display: flex;
-      width: 100%;
-      color: $color-white;
-      padding: pxToRem(16);
-
-      .sr-icon {
-        width: pxToRem(25);
-        height: pxToRem(25);
-        margin-left: auto;
-      }
-
-      @media (min-width: $breakpoint-sm) {
-        .sr-icon {
-          display: none;
-        }
-        &::after {
-          display: none;
-        }
-      }
-    }
-    .bg {
-      display: none;
-    }
-
-    &.active {
-      .collapse {
-        .sr-icon {
-          transform: rotate(180deg);
-        }
-      }
-
-      .quivi-navbar-submenu {
-        max-height: 100vh;
-      }
-    }
-
-    @media (min-width: $breakpoint-sm) {
-      &:not(:last-child) {
-        margin-right: pxToRem(4);
-      }
-
-      &:hover {
-        z-index: 3;
-        .bg {
-          fill: url(#stateMenuBtnHover);
-        }
-
-        .quivi-navbar-submenu {
-          max-height: 100vh;
-          padding-top: pxToRem(28);
-        }
-      }
-
-      a {
-        padding: pxToRem(10);
-        text-align: center;
-        height: auto;
-        color: $color-white;
-        min-width: pxToRem(130);
-        position: relative;
-        z-index: 2;
-        font-family: Bebas;
-        font-size: pxToRem(22);
-        line-height: 1.4;
-        justify-content: center;
-
-        span {
-          font-family: inherit;
-        }
-
-        &.router-link-active {
-          + svg {
-            fill: url(#stateMenuBtnHover);
-          }
-        }
-      }
-
-      .bg {
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        fill: url(#stateMenuBtn);
-      }
-    }
-  }
-
-  &-submenu {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    max-height: 0;
-    opacity: 1;
-
-    @media (min-width: $breakpoint-sm) {
-      padding-top: 0;
-      z-index: 0;
-      left: 0;
-      position: absolute;
-      top: pxToRem(14);
-      min-width: pxToRem(250);
-      box-shadow: 0 pxToRem(10) pxToRem(10) rgba($color-black, 0.3);
-      background: linear-gradient(
-        to right,
-        $color-quivi-gray,
-        $color-quivi-darkest-gray
-      );
-      border-bottom-left-radius: pxToRem(18);
-      border-bottom-right-radius: pxToRem(18);
-    }
-
-    transition:
-      max-height 0.35s ease,
-      opacity 0.35s ease,
-      padding-top 0.35s ease;
-
-    &-item {
-      width: 100%;
-      display: flex;
-      position: relative;
-
-      a {
-        width: 100%;
-        font-family: Inria;
-        font-size: pxToRem(18);
-        height: auto;
-        line-height: 1.8;
-        text-transform: capitalize;
-        text-align: left;
-        padding-right: pxToRem(20);
-        padding-left: pxToRem(20);
-      }
-
-      &:not(:last-child) {
-        &::after {
-          position: absolute;
-          left: 50%;
-          bottom: 0;
-          transform: translateX(-50%);
-          content: "";
-          width: 95%;
-          height: pxToRem(2);
-          border-radius: 100%;
-          background: linear-gradient(
-            to right,
-            $color-quivi-gray,
-            $color-white,
-            $color-quivi-gray
-          );
-        }
-      }
-
-      &:hover {
-        a {
-          color: $color-quivi-darkest-gray;
-        }
-      }
-
-      @media (min-width: $breakpoint-sm) {
-        a {
-          padding-left: pxToRem(16);
-          padding-right: pxToRem(16);
-          justify-content: flex-start;
-        }
-      }
-    }
-  }
-}
-</style>

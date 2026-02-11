@@ -1,25 +1,59 @@
 <template lang="pug">
-.relative
-    UInput.w-full(type="text" placeholder="Buscar" v-model="search" @input="runSearch")
-    button.quivi-searchbar-clearbtn(v-if="results.length" @click="results = []")
-      span x
-    button.absolute.top-0.right-0.bg-primary.h-full.p-2.flex.items-center.justify-center.rounded-r-md(@click="goToSearch")
-        SvgIcon.size-4.text-white(name="lupa-o")
-    .quivi-searchbar-results-container(:class="{ active: results.length > 0 }")
-      ul.quivi-searchbar-results
-        li.quivi-searchbar-result(v-for="(result, i) in results" :key="i")
-          NuxtLink(:to="result.url" :prefetch="false")
-            NuxtImg(:src="`/products/${result.web}/${result.thumbs[0]}`" :alt="result.name")
-            .quivi-searchbar-result-description
-              p {{ result.name }}
-              p {{ result.brand.name }}
-              p {{ result.web }}
-      .quivi-searchbar-result.full
-          NuxtLink(:to="`/tienda?search=${search}`") Ver todos los resultados
+div(class="relative flex h-[3.125rem] w-full rounded-lg border border-[var(--color-quivi-gray)] bg-[var(--color-white)]")
+  UInput(
+    type="text"
+    placeholder="Buscar"
+    v-model="search"
+    @input="runSearch"
+    class="h-full w-full"
+    :ui="{ base: 'h-full rounded-lg border-none bg-transparent px-2 pr-[3.75rem] text-base text-[var(--color-text-color)] ring-0 focus:ring-0' }"
+  )
+  button(
+    v-if="results.length"
+    @click="results = []"
+    class="absolute right-10 top-0 z-[3] flex h-full w-8 items-center justify-center bg-transparent text-[1.125rem] font-bebas text-[var(--color-quivi-gray)]"
+    aria-label="Limpiar resultados"
+  )
+    span x
+  button(
+    class="absolute right-0 top-0 z-[4] flex h-full w-10 items-center justify-center rounded-r-md border-0 bg-[var(--color-quivi-red)] p-2 text-[var(--color-white)]"
+    @click="goToSearch"
+    aria-label="Buscar"
+  )
+    SvgIcon(class="size-4 text-[var(--color-white)]" name="lupa-o")
+  div(
+    class="absolute left-0 top-full z-[2] flex w-full flex-col overflow-hidden rounded-b-lg border border-t-0 border-[rgba(91,91,95,0.3)] bg-[var(--color-white)] opacity-0 shadow-[0_0.25rem_1.25rem_rgba(91,91,95,0.3)] transition-[max-height,opacity] duration-300 ease-in-out"
+    :class="results.length ? 'max-h-[18.75rem] opacity-100' : 'max-h-0'"
+  )
+    ul(class="h-full overflow-auto pb-[3.125rem]")
+      li(v-for="(result, i) in results" :key="i")
+        NuxtLink(
+          :to="result.url"
+          :prefetch="false"
+          class="flex p-2 text-[var(--color-text-color)]"
+        )
+          NuxtImg(
+            :src="`/products/${result.web}/${result.thumbs[0]}`"
+            :alt="result.name"
+            class="mr-5 w-1/4"
+          )
+          div(class="flex flex-col justify-center")
+            p {{ result.name }}
+            p {{ result.brand.name }}
+            p {{ result.web }}
+    div(class="absolute bottom-0 left-0 h-10 w-full bg-[var(--color-white)] shadow-[0_-0.25rem_0.625rem_rgba(91,91,95,0.1)]")
+      NuxtLink(
+        :to="`/tienda?search=${search}`"
+        class="flex h-full w-full items-center justify-center text-[var(--color-quivi-green)]"
+      ) Ver todos los resultados
 </template>
 
 <script lang="ts" setup>
 import type { Product } from "~/types";
+
+interface SearchResultsResponse {
+  products: Product[];
+}
 
 const props = defineProps({
   endpoint: {
@@ -28,11 +62,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["search"]);
+const emit = defineEmits<{
+  search: [results: SearchResultsResponse | null];
+}>();
 
-let controller: null | AbortController = null;
-const search: Ref<String> = ref("");
-const results: Ref<Array<Product>> = ref([]);
+let controller: AbortController | null = null;
+const search = ref("");
+const results = ref<Product[]>([]);
 
 const runSearch = async () => {
   if (controller) {
@@ -42,31 +78,36 @@ const runSearch = async () => {
   if (!search.value) {
     results.value = [];
     return;
-  } else if (search.value.length < 3) {
+  }
+
+  if (search.value.length < 3) {
     return;
   }
 
   controller = new AbortController();
-  const signal = controller.signal;
-  if (props.endpoint) {
-    results.value = [];
-    const { data: _results }: any = await useFetch(props.endpoint, {
-      method: "POST",
-      body: {
-        search,
-      },
-      signal,
-    });
 
-    results.value = _results.value.products;
-
-    emit("search", _results);
+  if (!props.endpoint) {
+    return;
   }
+
+  results.value = [];
+  const { data: fetchResults } = await useFetch<SearchResultsResponse>(props.endpoint, {
+    method: "POST",
+    body: {
+      search: search.value,
+    },
+    signal: controller.signal,
+  });
+
+  const payload = fetchResults.value ?? null;
+  results.value = payload?.products ?? [];
+  emit("search", payload);
 };
+
 const router = useRouter();
 const goToSearch = () => {
   if (search.value) {
-    router.push({ path: "/tienda", query: { search: search.value as string } });
+    router.push({ path: "/tienda", query: { search: search.value } });
   }
 };
 
@@ -88,135 +129,3 @@ watch(
   },
 );
 </script>
-
-<style lang="scss" scoped>
-.quivi-searchbar {
-  display: flex;
-  position: relative;
-  border: {
-    style: solid;
-    color: $color-quivi-gray;
-    width: pxToRem(1);
-    radius: pxToRem(8);
-  }
-
-  height: pxToRem(50);
-
-  input {
-    width: 100%;
-    border: none;
-    border-radius: pxToRem(8);
-    background-color: $color-white;
-    padding: pxToRem(8);
-    padding-right: pxToRem(60);
-    font-size: pxToRem(16);
-  }
-
-  button {
-    cursor: pointer;
-    padding: pxToRem(4);
-    background-color: $color-quivi-red;
-    color: $color-white;
-    border: none;
-    border-top-right-radius: pxToRem(8);
-    border-bottom-right-radius: pxToRem(8);
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    width: pxToRem(40);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .sr-icon {
-      flex-shrink: 0;
-      width: pxToRem(25);
-      height: pxToRem(25);
-    }
-  }
-
-  &-results-container {
-    max-height: 0;
-    opacity: 0;
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    z-index: 2;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    border-bottom-left-radius: pxToRem(8);
-    border-bottom-right-radius: pxToRem(8);
-    overflow: hidden;
-    border: {
-      style: solid;
-      color: rgba($color-quivi-dark-gray, 0.3);
-      width: pxToRem(1);
-    }
-    border-top: none;
-    background-color: $color-white;
-    box-shadow: pxToRem(0) pxToRem(4) pxToRem(20)
-      rgba($color-quivi-dark-gray, 0.3);
-    transition:
-      max-height 0.35s ease-in-out,
-      opacity 0.35s ease;
-
-    &.active {
-      max-height: pxToRem(300);
-      opacity: 1;
-    }
-  }
-
-  &-results {
-    height: 100%;
-    overflow: auto;
-    padding-bottom: pxToRem(50);
-  }
-
-  &-result {
-    a {
-      display: flex;
-      padding: pxToRem(8);
-      color: $color-text-color;
-
-      .sr-picture {
-        width: 25%;
-        margin-right: pxToRem(20);
-      }
-    }
-
-    &-description {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    &.full {
-      background-color: $color-white;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: pxToRem(40);
-      box-shadow: pxToRem(0) pxToRem(-4) pxToRem(10)
-        rgba($color-quivi-dark-gray, 0.1);
-      a {
-        width: 100%;
-        justify-content: center;
-        color: $color-quivi-green;
-      }
-    }
-  }
-
-  &-clearbtn {
-    position: absolute;
-    right: pxToRem(40) !important;
-    top: 0;
-    background: none !important;
-    color: $color-quivi-gray !important;
-    font-size: pxToRem(18);
-    font-family: Bebas;
-  }
-}
-</style>

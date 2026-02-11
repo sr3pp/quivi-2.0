@@ -1,18 +1,16 @@
 <template lang="pug">
-.sales
   UContainer(:with-padding="true")
-    .sales-header
-      .header-title
-        SrText(text="Panel Ventas" class="title text-center")
-        SrFormInput(v-model="search" @keyup.enter="searchSale" placeholder="Buscar")
+      .flex.gap-4.items-center.justify-between
+        p Panel Ventas
+        UInput(v-model="search" @keyup.enter="searchSale" placeholder="Buscar")
         UButton(@click="searchSale")
           SvgIcon(name="lupa-o")
 
-    SrText(value="Panel ventas" class="title" alignment="center")
+    p Panel ventas
     //button(@click="salesModal.toggle()") Create venta
     UTable(
       :columns="columns"
-      :data="sales ?? []"
+      :data="salesList"
     )
 
     SrModal(ref="saleDetailModal")
@@ -43,6 +41,7 @@ const saleDetailModal: Ref<PanelSalesModal | null> = ref(null);
 const currentSale = ref<PanelSaleRow | null>(null);
 
 const { data: sales } = await useFetch<PanelSaleRow[]>("/api/sales");
+const salesList = computed<PanelSaleRow[]>(() => sales.value ?? []);
 
 const columns: TableColumn<PanelSaleRow>[] = [
   {
@@ -289,23 +288,26 @@ const search = ref("");
 
 const searchSale = async () => {
   if (!search.value) {
-    const { data: _sales } = await useFetch("/api/sales");
-    sales.value = _sales.value;
+    const { data: _sales } = await useFetch<PanelSaleRow[]>("/api/sales");
+    sales.value = _sales.value ?? [];
   } else {
-    const { data: _sale } = await useFetch(`/api/sales/${search.value}`);
-    sales.value = [_sale.value];
+    const { data: _sale } = await useFetch<PanelSaleRow>(
+      `/api/sales/${search.value}`,
+    );
+    sales.value = _sale.value ? [_sale.value] : [];
   }
 };
 
 const saleDetail = (sale: PanelSaleRow) => {
-  currentSale.value = sales.value.find(
+  currentSale.value =
+    salesList.value.find(
     (_sale) => _sale.order_no === sale.order_no,
-  );
+    ) ?? null;
   saleDetailModal.value?.toggle();
 };
 
 const deleteSale = async (_sale: PanelSaleRow) => {
-  const sale = sales.value.find(
+  const sale = salesList.value.find(
     (saleItem) => saleItem.order_no === _sale.order_no,
   );
   if (!sale?._id) return;
@@ -320,31 +322,3 @@ const saveSale = (_sale: unknown) => {
   console.log(_sale);
 };
 </script>
-
-<style lang="scss" scoped>
-.sales {
-  .sales-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-
-    .header-title {
-      display: flex;
-      align-items: center;
-      .sr-form-input {
-        padding: 0;
-        margin-left: pxToRem(10);
-      }
-      .quivi-button {
-        margin-left: pxToRem(10);
-        min-width: inherit;
-      }
-      .sr-icon {
-        width: pxToRem(20);
-        height: pxToRem(20);
-      }
-    }
-  }
-}
-</style>

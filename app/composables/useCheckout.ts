@@ -1,4 +1,9 @@
-import type { BillData, CheckoutStep, PaymentOption, ShippmentData } from "~/types";
+import type {
+  BillData,
+  CheckoutStep,
+  PaymentOption,
+  ShippmentData,
+} from "~/types";
 
 const defaultShipping = (): ShippmentData => ({
   name: "",

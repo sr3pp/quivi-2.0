@@ -9,7 +9,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "tokenize": "ts-node --esm tokens/index.ts",
-    "lint": "eslint --ext .js,.ts,.vue --fix",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint . --ext .js,.ts,.vue --fix",
     "prettify": "prettier --write .",
     "lintfix": "npm run lint && npm run prettify",
     "test": "vitest"

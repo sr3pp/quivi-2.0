@@ -1,9 +1,9 @@
 <template lang="pug">
 .catalogo
     UContainer(:with-padding="true")
-        SrText(:text="`Order: ${order_id}`" class="title")
-        SrText(:text="order.payment.transaction")
-        SrText(:text="getPaymentMethod(order.payment.method)")
+        p {{`Order: ${order_id}`}}
+        p {{`Transaction: ${order.payment.transaction}`}}
+        p {{`Payment Method: ${getPaymentMethod(order.payment.method)}`}}
         SaleProducts(:products="order.products")
 
         UPageGrid(:style="{marginTop: '0!important'}")
@@ -42,15 +42,3 @@ const getPaymentMethod = (name: string) => {
   return r[0].replace(/-/g, " ");
 };
 </script>
-
-<style lang="scss" scoped>
-.catalogo {
-  .sr-container {
-    > * {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(20);
-      }
-    }
-  }
-}
-</style>

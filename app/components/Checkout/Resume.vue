@@ -30,7 +30,7 @@ UPageGrid
                     strong {{ keyDict[k] }}: 
                     span {{ v }}
 
-        small.quivi-checkout-resume-safelegend(v-html="safeLegend")
+        small(class="mt-auto pt-5" v-html="safeLegend")
 </template>
 
 <script lang="ts" setup>
@@ -80,12 +80,3 @@ const getSatValue = (key: string, value: string) => {
   return value;
 };
 </script>
-
-<style lang="scss">
-.quivi-checkout-resume {
-  &-safelegend {
-    margin-top: auto;
-    padding-top: pxToRem(20);
-  }
-}
-</style>

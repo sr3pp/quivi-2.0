@@ -2,7 +2,7 @@ import { resolve } from "pathe";
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2026-02-11',
+  compatibilityDate: "2026-02-11",
   app: {
     pageTransition: { name: "page", mode: "out-in" },
     head: {
@@ -95,17 +95,6 @@ export default defineNuxtConfig({
   css: ["@/assets/css/main.css"],
   nitro: {
     plugins: [resolve(process.cwd(), "server/DB.ts")],
-  },
-  vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: ` 
-            @use "@/assets/scss/tokens.scss" as *;
-            @use "@/assets/scss/utilities/pxToRem.scss" as *;`,
-        },
-      },
-    },
   },
   //@ts-ignore
   chatwoot: {

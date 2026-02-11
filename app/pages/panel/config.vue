@@ -1,7 +1,6 @@
 <template lang="pug">
-.quivi-config
-  UContainer(:with-padding="true")
-    UPageGrid.quivi-config-header
+  UContainer(:with-padding="true" class="space-y-10")
+    UPageGrid
       div(class="col-span-1 sm:col-span-2")
         p(class="title") Panel Config
       div(class="col-span-1 sm:col-span-2")
@@ -21,7 +20,7 @@
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" key="key_distribuidor")
           NuxtImg(:src="newComercio.logo" :alt="newComercio.name" :editable="true" @media-gallery="showGallery(null, 'logo', 'comercios')")
           UInput(v-model="newComercio.name" label="Nombre" type="text")
-          UButton(@click="addElement('comercios')" label="Agregar" variant="secondary")
+          UButton(@click="addElement('comercios')" label="Agregar" variant="secondary" class="mt-2.5 w-full")
     div
       p Distribuidores
       UPageGrid(tag="ul" class="distribuidores")
@@ -32,7 +31,7 @@
         div(tag="li" class="col-span-1 sm:col-span-2 md:col-span-1/4" key="key_distribuidor")
           NuxtImg(:src="newDistribuidor.logo" :alt="newDistribuidor.name" :editable="true" @media-gallery="showGallery(null, 'logo', 'distribuidores')")
           UInput(v-model="newDistribuidor.name" label="Nombre" type="text")
-          UButton(@click="addElement('distribuidores')" label="Agregar" variant="secondary")
+          UButton(@click="addElement('distribuidores')" label="Agregar" variant="secondary" class="mt-2.5 w-full")
     div
       p Cupones
       UPageGrid(tag="ul")
@@ -45,7 +44,7 @@
           UInput(v-model="newPromotion.name" label="Nombre" type="text")
           UInput(v-model="newPromotion.code" label="Codigo" type="text")
           USelect(v-model="newPromotion.category" :options="promotionOptions" label="categoria" type="text")
-          UButton(@click="addElement('promotions')" label="Agregar" variant="secondary")
+          UButton(@click="addElement('promotions')" label="Agregar" variant="secondary" class="mt-2.5 w-full")
 </template>
 
 <script lang="ts" setup>
@@ -178,25 +177,3 @@ const addElement = async (type: string) => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.quivi-config {
-  .sr-container {
-    > * {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(40);
-      }
-    }
-  }
-  .sr-grid:not(.quivi-config-header) {
-    [class*="sr-grid-col"] {
-      justify-content: space-between;
-
-      .quivi-button {
-        margin-top: pxToRem(10);
-        min-width: 100%;
-      }
-    }
-  }
-}
-</style>

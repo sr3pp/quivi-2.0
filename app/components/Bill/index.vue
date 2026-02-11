@@ -28,23 +28,13 @@ defineProps({
 
 <template lang="pug">
 .bill
-  SrText(text="Bill" class="subtitle" tag="h2")
-  SrText(:text="`Razon social: ${bill.name}`")
-  SrText(:text="`Regimen: ${bill.regime}`")
-  SrText(:text="`CFDI: ${bill.cfdi}`")
-  SrText(:text="`RFC: ${bill.rfc}`")
-  SrText(:text="`Tel: ${bill.phone}`")
-  SrText(:text="`Email: ${bill.email}`")
+  p Bill
+  p {{ `Razon social: ${bill.name}` }}
+  p {{ `Regimen: ${bill.regime}` }}
+  p {{ `CFDI: ${bill.cfdi}` }}
+  p {{ `RFC: ${bill.rfc}` }}
+  p {{ `Tel: ${bill.phone}` }}
+  p {{ `Email: ${bill.email}` }}
   br
   Address(:address="bill.address")
 </template>
-
-<style lang="scss">
-.bill {
-  .sr-text {
-    &.subtitle {
-      margin-bottom: pxToRem(10);
-    }
-  }
-}
-</style>

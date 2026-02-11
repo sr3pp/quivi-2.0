@@ -32,28 +32,11 @@ const mainProduct = computed(() => buildProduct(currentThumb.value));
 </script>
 
 <template lang="pug">
-.quivi-product-thumbs
-    ProductImage(:product="mainProduct" :alt="productName" width="100%" height="100%")
-    ul.quivi-product-thumbs-list
-      template(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i")
-        li.quivi-product-thumbs-item(v-if="thumb !== currentThumb")
-          button(@click="changeThumb(thumb)")
-            ProductImage(:product="buildProduct(thumb)" :alt="productName")
+div
+  ProductImage(:product="mainProduct" :alt="productName" width="100%" height="100%")
+  ul(class="mt-2.5 flex gap-2.5 overflow-x-auto")
+    template(v-for="(thumb, i) in thumbs.filter(th => th)" :key="i")
+      li(v-if="thumb !== currentThumb" class="w-1/3 shrink-0")
+        button(class="w-full" @click="changeThumb(thumb)")
+          ProductImage(:product="buildProduct(thumb)" :alt="productName")
 </template>
-
-<style lang="scss">
-.quivi-product-thumbs {
-  &-list {
-    display: flex;
-    justify-content: space-between;
-    margin-top: pxToRem(10);
-    overflow: scroll;
-    gap: pxToRem(10);
-  }
-
-  &-item {
-    width: 33.3333%;
-    flex-shrink: 0;
-  }
-}
-</style>

@@ -1,10 +1,10 @@
 <template lang="pug">
 .barcode
     UContainer(:with-padding="true")
-        SrText(:text="`Numero de orden: ${order_id}`" class="title")
-        SrText(text="Siguientes pasos:" class="subtitle")
-        SrText(:html="steps[0]")
-        SrText(:html="steps[1]")
+        p {{`Numero de orden: ${order_id}`}}
+        p Siguientes pasos:
+        div(v-html="steps[0]")
+        div(v-html="steps[1]")
         iframe(:src="reciptUrl" width="100%" height="1000px" ref="iframe")
         UButton(label="Imprimir" :to="reciptUrl" target="_blank")
 </template>
@@ -21,7 +21,10 @@ const merchId = config.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
-const { page: contactPage } = await usePageContent("/_config/contact", "config");
+const { page: contactPage } = await usePageContent(
+  "/_config/contact",
+  "config",
+);
 const email = contactPage.value?.email ?? "";
 
 const iframe: Ref<HTMLIFrameElement | null> = ref(null);
@@ -47,15 +50,3 @@ const printRecipt = () => {
   reciptEl?.focus();
 };
 </script>
-
-<style lang="scss" scoped>
-.barcode {
-  .sr-container {
-    > * {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(20);
-      }
-    }
-  }
-}
-</style>

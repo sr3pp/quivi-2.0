@@ -1,5 +1,4 @@
 <template lang="pug">
-.contact-form
     UForm.flex.flex-col(v-if="!sent" :state="formState" :schema="schema" @submit="sendContactForm" class="space-y-4")
       UFormField(label="Nombre" name="name" required)
         UInput.w-full(v-model="formState.name" placeholder="Ingresa tu nombre")
@@ -80,14 +79,3 @@ const sendContactForm = async (
   sending.value = false;
 };
 </script>
-
-<style lang="scss">
-.contact-form {
-  .success {
-    min-height: pxToRem(200);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-</style>

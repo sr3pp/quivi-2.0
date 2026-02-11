@@ -95,8 +95,7 @@ const columns: TableColumn<User>[] = [
           variant: "ghost",
           size: "sm",
           "aria-label": "Delete",
-          onClick: () =>
-            deleteUser(getUserId(row.original), userIndex),
+          onClick: () => deleteUser(getUserId(row.original), userIndex),
         }),
       ]);
     },
@@ -169,7 +168,8 @@ const updateUser = async (_user: UserFormInput) => {
     users.value?.splice(
       users.value.findIndex(
         (u) =>
-          getUserId(u) === (currentUser.value ? getUserId(currentUser.value) : ""),
+          getUserId(u) ===
+          (currentUser.value ? getUserId(currentUser.value) : ""),
       ),
       1,
       user,

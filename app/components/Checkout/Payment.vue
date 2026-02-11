@@ -8,21 +8,20 @@
 <script lang="ts" setup>
 import type { PaymentOption } from "~/types";
 
-const paymentOptions: Array<{ value: PaymentOption["value"]; label: string }> = [
-  { value: "credit-card", label: "Tarjeta de crédito" },
-  { value: "debit-card", label: "Tarjeta de débito" },
-  { value: "paypal", label: "Paypal" },
-  { value: "spei", label: "Transferencia / Deposito" },
-  { value: "cash", label: "Efectivo" },
-];
+const paymentOptions: Array<{ value: PaymentOption["value"]; label: string }> =
+  [
+    { value: "credit-card", label: "Tarjeta de crédito" },
+    { value: "debit-card", label: "Tarjeta de débito" },
+    { value: "paypal", label: "Paypal" },
+    { value: "spei", label: "Transferencia / Deposito" },
+    { value: "cash", label: "Efectivo" },
+  ];
 
 const { paymentMethod, setStep, paymentLock } = useCheckout();
 const method = ref(paymentMethod.value?.value || "");
 const setPaymentMethod = (method: string) => {
   if (!method) return;
-  const selected = paymentOptions.find(
-    (el) => el.value == method,
-  );
+  const selected = paymentOptions.find((el) => el.value == method);
   if (!selected) return;
   paymentMethod.value = {
     name: selected.label,

@@ -16,38 +16,17 @@ defineExpose({
 </script>
 
 <template lang="pug">
-UModal.faq-modal(v-model:open="modalSw")
+UModal(v-model:open="modalSw")
   template(#header)
-      p.font-bebas.text-3xl FAQ's
+      p.font-bebas.text-3xl.p-5.pb-0 FAQ's
   template(#body)
-    ul.faq-list
-      li.faq-list-item(v-for="(faq, i) in faqs" :key="'faq-'+ i + new Date().getTime()")
-        p.faq-question {{ faq.question }}
-        p.faq-answer(v-html="faq.answer")
+    ul(class="rounded-[10px] overflow-hidden")
+      li(
+        class="p-5"
+        :class="i % 2 === 1 ? 'bg-[var(--color-quivi-light-gray)] text-[var(--color-white)]' : ''"
+        v-for="(faq, i) in faqs"
+        :key="'faq-'+ i + new Date().getTime()"
+      )
+        p {{ faq.question }}
+        p(class="pl-5" v-html="faq.answer")
 </template>
-
-<style lang="scss" scoped>
-.faq-modal {
-  .sr-modal-header {
-    .title {
-      padding: pxToRem(20);
-      padding-bottom: 0;
-    }
-  }
-
-  .faq-list {
-    border-radius: pxToRem(10);
-    overflow: hidden;
-    &-item {
-      padding: pxToRem(20);
-      &:nth-child(even) {
-        background-color: $color-quivi-light-gray;
-        color: $color-white;
-      }
-      .answer {
-        padding-left: pxToRem(20);
-      }
-    }
-  }
-}
-</style>

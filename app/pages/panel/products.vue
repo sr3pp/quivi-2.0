@@ -1,18 +1,20 @@
 <template lang="pug">
-.products
+div
   UContainer(:with-padding="true")
-    .products-header
-      .header-title
+    div(class="mb-5 flex flex-wrap items-center justify-between gap-2.5")
+      div(class="mb-5 flex items-center justify-between")
         p.font-bebas.text-3xl Panel Products
-        UInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar")
-        UButton(@click="searchProduct")
-          SvgIcon(name="lupa-o")
-      UButton.new-product(@click="newProduct" variant="secondary" label="Nuevo producto")
-      label.massive-file
+        UInput(v-model="search" @keyup.enter="searchProduct" placeholder="Buscar" class="ml-5 p-0")
+        UButton(@click="searchProduct" class="ml-2.5 min-w-[unset]")
+          SvgIcon(name="lupa-o" class="size-5")
+      UButton(@click="newProduct" variant="secondary" label="Nuevo producto" class="mr-2.5")
+      label(
+        class="flex cursor-pointer rounded-[1.5625rem] bg-gradient-to-r from-[var(--color-quivi-light-red)] to-[var(--color-quivi-red)] p-2.5 text-[var(--color-white)]"
+      )
         span Carga Massiva
-        Spinner(v-if="uploading")
-        UInput(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload")
-      UButton.delete-all(@click="deleteAll" variant="secondary" label="Eliminar todos")
+        Spinner(v-if="uploading" class="ml-2.5 !h-5 !w-5 !bg-[var(--color-white)]")
+        UInput(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload" class="hidden")
+      UButton(@click="deleteAll" variant="secondary" label="Eliminar todos" class="ml-2.5 mr-0")
 
 
     UTable(
@@ -20,7 +22,14 @@
       :data="products"
     )
 
-    Pagination(:pagination="pagination")
+    UPagination(
+      v-model="pageModel"
+      :items-per-page="itemsPerPage"
+      :total="pagination.total || 0"
+      @update:page="handlePage"
+      color="primary"
+      class="mt-5"
+    )
 
     UModal(v-model:open="modalSw" description="Create or edit product")
       template(#title)
@@ -50,7 +59,9 @@ definePageMeta({
 const UButton = resolveComponent("UButton");
 
 const route = useRoute();
-const { search: _search, page = 1, filters: _filters } = route.query;
+const router = useRouter();
+const { search: _search, filters: _filters } = route.query;
+const pageQuery = computed(() => (route.query.page as string) || "1");
 
 const [productBrands, categories, subcategories, carBrands, carModels] =
   await Promise.all([
@@ -65,11 +76,18 @@ const search = ref(_search as string);
 const filters = ref(_filters as string);
 const modalSw = ref(false);
 const products = ref<PanelProductRow[]>([]);
-const pagination = ref({});
+const pagination = ref<{ total?: number; perPage?: number }>({});
 const currentProduct: Ref<PanelProductRow | null> = ref(null);
+const pageModel = ref(Number(pageQuery.value));
+const itemsPerPage = computed(() => Number(pagination.value.perPage ?? 10));
 
 const prodctData = ref(
-  await fetchProducts(route.path, page as string, _search as string, _filters),
+  await fetchProducts(
+    route.path,
+    pageQuery.value,
+    _search as string,
+    _filters as string,
+  ),
 );
 
 products.value = prodctData.value.products;
@@ -122,7 +140,7 @@ const columns: TableColumn<PanelProductRow>[] = [
 const searchProduct = async () => {
   const _prodcutData = await fetchProducts(
     route.path,
-    page as string,
+    pageQuery.value,
     search.value,
   );
   products.value = _prodcutData.products;
@@ -197,10 +215,20 @@ watch(
       );
     search.value = _search as string;
     filters.value = _filters as string;
+    pageModel.value = Number((page as string) || 1);
     products.value = _products;
     pagination.value = _pagination;
   },
 );
+
+const handlePage = async (page: number) => {
+  await router.push({
+    query: {
+      ...route.query,
+      page,
+    },
+  });
+};
 
 const uploading: Ref<boolean> = ref(false);
 const handleFileUpload = async (e: Event) => {
@@ -235,98 +263,3 @@ const handleFileUpload = async (e: Event) => {
   }
 };
 </script>
-
-<style lang="scss">
-.products {
-  .header-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: pxToRem(20);
-    .sr-form-input {
-      margin-left: pxToRem(20);
-      padding: pxToRem(0);
-    }
-
-    .quivi-button {
-      margin-left: pxToRem(10);
-      min-width: inherit;
-    }
-
-    .sr-icon {
-      width: pxToRem(20);
-      height: pxToRem(20);
-    }
-  }
-  .new-product {
-    margin-right: pxToRem(10);
-  }
-  .delete-all {
-    margin-left: pxToRem(10);
-    margin-right: 0;
-  }
-  .massive-file {
-    color: $color-white;
-    background: linear-gradient(
-      90deg,
-      $color-quivi-light-red,
-      $color-quivi-red
-    );
-    padding: pxToRem(10);
-    border-radius: pxToRem(25);
-    cursor: pointer;
-    display: flex;
-    input {
-      visibility: hidden;
-      width: 0;
-      height: 0;
-      opacity: 0;
-    }
-    .spinner {
-      background-color: $color-white !important;
-      margin-left: 10px;
-      width: 20px;
-      height: 20px;
-    }
-  }
-  &-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: pxToRem(20);
-  }
-  .massive-file {
-    display: flex;
-
-    input {
-      display: none;
-    }
-
-    .spinner {
-      margin-left: pxToRem(10);
-      width: pxToRem(20);
-      height: pxToRem(20);
-      background-color: red;
-      border-radius: pxToRem(50);
-    }
-  }
-
-  .product-form {
-    fieldset {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-
-      > *:not(.quivi-product-edit-list) {
-        width: calc(33.33333% - pxToRem(8));
-      }
-      .quivi-product-edit-list {
-        width: calc(50% - pxToRem(8));
-      }
-      .quivi-product-edit-thumbs {
-        width: 100%;
-      }
-    }
-  }
-}
-</style>

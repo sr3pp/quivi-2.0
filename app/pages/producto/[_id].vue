@@ -6,10 +6,11 @@ const { params } = useRoute();
 const { _id } = params;
 
 const productId = Array.isArray(_id) ? _id[0] : _id;
+const productPath = `/api/product/${String(productId ?? "")}`;
 
 const { data: product } = await useAsyncData<Product>(
   `product-${productId}`,
-  () => $fetch(`/api/product/${productId}` as string),
+  () => $fetch<Product>(productPath),
 );
 
 type ProductPageData = Product & {
@@ -27,13 +28,16 @@ if (!productData) {
   });
 }
 
-const relatedProducts = await $fetch(
-  `/api/product/related?productId=${productData._id}` as string,
-);
+const relatedProducts = await $fetch<Product[]>("/api/product/related", {
+  query: { productId: String(productData._id ?? "") },
+});
 
-const existences = await $fetch<number>(
-  `/api/product/get-existences?sae=${productData.sae}&type=${productData.meassure_unity || "P"}` as string,
-);
+const existences = await $fetch<number>("/api/product/get-existences", {
+  query: {
+    sae: String(productData.sae ?? ""),
+    type: productData.meassure_unity || "P",
+  },
+});
 productData.existences = existences;
 productData.qty = 1;
 
@@ -148,70 +152,3 @@ const getLabel = (key: string) => {
       template(#default="{ item }")
         ProductCard(:product="item")
 </template>
-
-<style lang="scss" scoped>
-.product-detail {
-  &-info {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    > * {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(20);
-      }
-    }
-  }
-
-  &-price {
-    display: flex;
-    justify-content: space-between;
-
-    .price-container {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .discount {
-      color: $color-quivi-red;
-      text-decoration: line-through;
-    }
-  }
-
-  &-actions {
-    display: flex;
-  }
-
-  &-detail {
-    display: flex;
-    text-transform: uppercase;
-
-    &:not(:last-child) {
-      margin-bottom: pxToRem(10);
-    }
-
-    .label {
-      margin-right: pxToRem(6);
-      font-weight: bold;
-      text-transform: capitalize;
-    }
-  }
-  &-no-existences {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 50%;
-    .sr-text {
-      --text-align: center;
-      &:not(:last-of-type) {
-        margin-bottom: pxToRem(10);
-      }
-    }
-  }
-}
-</style>

@@ -1,15 +1,29 @@
 <template lang="pug">
-aside.sidebar 
-    nav.sidebar-nav
-        ul.sidebar-menu
-            li.sidebar-menu-item(v-for="(item, i) in items" :key="i")
-                NuxtLink(:to="item.url")
-                    SvgIcon(:name="item.icon")
-                    span {{ item.label }}
-            li.sidebar-menu-item
-                button(@click="logout")
-                    SvgIcon(name="logout-o")
-                    span Logout
+aside(class="relative z-3 flex h-screen w-[3.125rem] items-center bg-[var(--color-quivi-darkest-red)] text-[var(--color-white)]")
+  nav(class="absolute left-1/4 top-1/2 -translate-y-1/2")
+    ul(class="flex flex-col")
+      li(
+        v-for="(item, i) in items"
+        :key="i"
+        class="group flex h-[3.125rem] items-center"
+      )
+        NuxtLink(
+          :to="item.url"
+          class="flex items-center bg-transparent text-current"
+        )
+          SvgIcon(class="mr-1 h-[1.5625rem] w-[1.5625rem] shrink-0 max-w-none")
+          span(
+            class="relative ml-2.5 max-w-0 overflow-hidden rounded-[0.3125rem] bg-[var(--color-quivi-light-red)] text-[var(--color-white)] transition-[max-width,padding] duration-300 ease-in-out group-hover:max-w-[12.5rem] group-hover:overflow-visible group-hover:p-2.5 before:absolute before:right-full before:top-1/2 before:h-2.5 before:w-2.5 before:translate-x-1/2 before:-translate-y-1/2 before:rotate-45 before:bg-[var(--color-quivi-light-red)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out group-hover:before:opacity-100"
+          ) {{ item.label }}
+      li(class="group flex h-[3.125rem] items-center")
+        button(
+          @click="logout"
+          class="flex items-center border-0 bg-transparent text-current"
+        )
+          SvgIcon(name="logout-o" class="mr-1 h-[1.5625rem] w-[1.5625rem] shrink-0 max-w-none")
+          span(
+            class="relative ml-2.5 max-w-0 overflow-hidden rounded-[0.3125rem] bg-[var(--color-quivi-light-red)] text-[var(--color-white)] transition-[max-width,padding] duration-300 ease-in-out group-hover:max-w-[12.5rem] group-hover:overflow-visible group-hover:p-2.5 before:absolute before:right-full before:top-1/2 before:h-2.5 before:w-2.5 before:translate-x-1/2 before:-translate-y-1/2 before:rotate-45 before:bg-[var(--color-quivi-light-red)] before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out group-hover:before:opacity-100"
+          ) Logout
 </template>
 
 <script lang="ts" setup>
@@ -29,87 +43,3 @@ const logout = async () => {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.sidebar {
-  position: relative;
-  z-index: 3;
-  height: 100vh;
-  width: pxToRem(50);
-  display: flex;
-  align-items: center;
-  background-color: $color-quivi-darkest-red;
-  color: $color-white;
-
-  &-nav {
-    position: absolute;
-    top: 50%;
-    left: 25%;
-    transform: translateY(-50%);
-  }
-
-  &-menu {
-    display: flex;
-    flex-direction: column;
-
-    &-item {
-      height: pxToRem(50);
-      display: flex;
-      align-items: center;
-      a,
-      button {
-        display: flex;
-        align-items: center;
-        color: currentColor;
-        background: none;
-        border: none;
-      }
-
-      span:not(.sr-icon) {
-        position: relative;
-        margin-left: pxToRem(10);
-        color: $color-white;
-        background-color: $color-quivi-light-red;
-        border-radius: pxToRem(5);
-        max-width: 0;
-        overflow: hidden;
-        transition:
-          max-width 0.3s ease-in-out,
-          padding 0.3s ease-in-out;
-
-        &::before {
-          opacity: 0;
-          content: "";
-          position: absolute;
-          top: 50%;
-          right: 100%;
-          transform: translate(50%, -50%) rotate(45deg);
-          background-color: $color-quivi-light-red;
-          width: pxToRem(10);
-          height: pxToRem(10);
-          transition: opacity 0.3s ease-in-out;
-        }
-      }
-
-      .sr-icon {
-        flex-shrink: 0;
-        width: pxToRem(25);
-        height: pxToRem(25);
-        margin-right: pxToRem(4);
-        max-width: inherit;
-      }
-
-      &:hover {
-        span:not(.sr-icon) {
-          overflow: visible;
-          padding: pxToRem(10);
-          max-width: pxToRem(200);
-          &:before {
-            opacity: 1;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

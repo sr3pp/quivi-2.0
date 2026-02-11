@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template lang="pug">
-section.sale-detail
+section(class="flex flex-col gap-5")
   SrText(:text="`Order: ${sale.order_no}`" class="title")
   SrText(:text="`Metodo de pago: ${getInvertedKey(sale.payment.method)}`" class="subtitle")
   
@@ -36,13 +36,3 @@ section.sale-detail
 
 
 </template>
-
-<style lang="scss">
-.sale-detail {
-  > * {
-    &:not(:last-child) {
-      margin-bottom: pxToRem(20);
-    }
-  }
-}
-</style>

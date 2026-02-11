@@ -1,5 +1,4 @@
 <template lang="pug">
-.quivi-shipping
   UContainer(:with-padding="true")
     .header-title
         SrText(text="Panel Envios" class="title text-center")
@@ -13,52 +12,56 @@
       :data="shipping"
     )
 
-    br
-    br
-
-    Pagination(:pagination="pagination")
+    div(class="mt-5")
+      UPagination(
+        v-model="pageModel"
+        :items-per-page="itemsPerPage"
+        :total="pagination.total || 0"
+        @update:page="handlePage"
+        color="primary"
+      )
 
   SrModal(ref="shippDetailModal" class="shipp-modal")
     template(#header)
       .shipp-modal-header
-        SrText(text="Envio" class="title")
+        p Envio
     template(#body v-if="currentShipping")
       UPageGrid
         div(class="col-span-'")
-          SrText(v-if="currentShipping.sale.length" :text="`orden no. ${currentShipping.sale.at(0)._id}`" class="subtitle")
+          p(v-if="currentShipping.sale.length") {{`orden no. ${currentShipping.sale.at(0)._id}`}}
         div(class="col-span-2")
           p.status-box 
             span {{ currentShipping.status }}
             UBadge(:color="currentShipping.status == 'delivered' ? 'primary' : currentShipping.status == 'shipping' ? 'warning' : 'error'" :label="`Envio: ${currentShipping.status}`")
         template(v-if="currentShipping.tracking.number")
           div(class="col-span-1 sm:col-span-2")
-            SrText(text="Tracking" class="subtitle")
+            p Tracking
           div(class="col-span-1/2 sm:col-span-1/4")
-            SrText(:text="currentShipping.tracking.store")
+            p {{currentShipping.tracking.store}}
           div(class="col-span-1/2 sm:col-span-1/4")
-            SrText(:text="currentShipping.tracking.number")
+            p {{currentShipping.tracking.number}}
           div(class="col-span-1/2 sm:col-span-1/4")
-            SrText(:text="currentShipping.tracking.url")
+            p {{currentShipping.tracking.url}}
           div(class="col-span-1/2 sm:col-span-1/4")
             div
               UButton(@click="sendTrackingMail" variant="secondary" label="Enviar al cliente" :loading="sending")
         template(v-else)
-          div(class="col-span-1 sm:col-span-1/3")
-            SrFormInput(v-model="newTracking.number" label="Numero de Rastreo")
-          div(class="col-span-1 sm:col-span-1/3")
-            SrFormInput(v-model="newTracking.store" label="Tienda")
-          div(class="col-span-1 sm:col-span-1/3")
-            SrFormInput(v-model="newTracking.url" label="Url")
+          UFormField(class="col-span-1 sm:col-span-1/3" label="Numero de Rastreo")
+            UInput(v-model="newTracking.number")
+          UFormField(class="col-span-1 sm:col-span-1/3" label="Tienda")
+            UInput(v-model="newTracking.store")
+          UFormField(class="col-span-1 sm:col-span-1/3" label="Url")
+            UInput(v-model="newTracking.url")
           div(class="col-span-1" class="flex-row justify-between" style="--flex-direction-sm: row")
             UButton(variant="secondary" label="Guardar" @click="saveTracking()" :loading="fetching")
             UButton(variant="secondary" label="Obtener Rastreo" @click="getTracking(currentShipping.sale.at(0).sae_order)" :loading="fetching")
 
       br
-      SrText(text="Destinatario" class="subtitle")
-      SrText(:text="`${currentShipping.name} ${currentShipping.last_name}`")
-      SrText(:text="currentShipping.email")
-      SrText(:text="currentShipping.phone")
-      SrText(v-if="currentShipping.address" :text="Object.values(currentShipping.address).filter(el => el).join(', ')")
+      p Destinatario
+      p {{`${currentShipping.name} ${currentShipping.last_name}`}}
+      p {{currentShipping.email}}
+      p {{currentShipping.phone}}
+      p(v-if="currentShipping.address") {{Object.values(currentShipping.address).filter(el => el).join(', ')}}
 </template>
 
 <script lang="ts" setup>
@@ -75,17 +78,19 @@ definePageMeta({
   layout: "panel",
 });
 
-const {
-  query: { page },
-} = useRoute();
+const route = useRoute();
+const router = useRouter();
+const pageQuery = computed(() => (route.query.page as string) || "1");
 
 const UButton = resolveComponent("UButton");
 
 const data = await $fetch<PanelShippingListResponse>(
-  "/api/shipping?page=" + (page || 1),
+  "/api/shipping?page=" + pageQuery.value,
 );
 const shipping = ref<PanelShippingDetail[]>(data.shipping);
-const pagination = ref<Record<string, unknown>>(data.pagination);
+const pagination = ref<{ total?: number; perPage?: number }>(data.pagination);
+const pageModel = ref(Number(pageQuery.value));
+const itemsPerPage = computed(() => Number(pagination.value.perPage ?? 10));
 const shippDetailModal = ref<PanelSalesModal | null>(null);
 const currentShipping = ref<PanelShippingDetail | null>(null);
 const fetching = ref(false);
@@ -211,57 +216,24 @@ const sendTrackingMail = async () => {
 };
 
 watch(
-  () => useRoute().query,
+  () => route.query,
   async ({ page }) => {
+    const currentPage = (page as string) || "1";
     const { data } = await useFetch<PanelShippingListResponse>(
-      "/api/shipping?page=" + page,
+      "/api/shipping?page=" + currentPage,
     );
     shipping.value = data.value?.shipping ?? [];
     pagination.value = data.value?.pagination ?? {};
+    pageModel.value = Number(currentPage);
   },
 );
+
+const handlePage = async (page: number) => {
+  await router.push({
+    query: {
+      ...route.query,
+      page,
+    },
+  });
+};
 </script>
-
-<style lang="scss">
-.quivi-shipping {
-  .header-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: pxToRem(20);
-    .sr-form-input {
-      margin-left: pxToRem(20);
-      padding: pxToRem(0);
-    }
-
-    .quivi-button {
-      margin-left: pxToRem(10);
-      min-width: inherit;
-    }
-
-    .sr-icon {
-      width: pxToRem(20);
-      height: pxToRem(20);
-    }
-  }
-  .status-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: pxToRem(10);
-  }
-  .shipp-modal {
-    &-header {
-      padding: pxToRem(20);
-    }
-  }
-
-  .quivi-button {
-    .sr-icon {
-      margin: auto;
-      width: pxToRem(16);
-      height: pxToRem(16);
-    }
-  }
-}
-</style>

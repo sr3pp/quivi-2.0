@@ -1,19 +1,18 @@
 <template lang="pug">
-.checkout-spei
-  UContainer(:with-padding="true")
-    SrText(:text="`Order: ${order_id}`" class="title")
-    SrText(text="Siguientes pasos" class="subtitle")
-    
-    UPageGrid(tag="ul")
-      div(tag="li" class="col-span-1")
-        SrText(:html="paymentStepsText[0]")
-      div(tag="li" v-for="(account, i) in accounts" :key="i" class="col-span-1 sm:col-span-1/3")
-        SrText(:text="`Banco: ${account.bank_name}`" class="subtitle")
-        SrText(:text="`Número de cuenta: ${account.account_number}`")
-        SrText(:text="`Clabe: ${account.CLABE}`")
-      div(tag="li" class="col-span-1")
-        p(v-html="paymentStepsText[1]")
-    UButton(to="/" label="Ir a la tienda")
+UContainer
+  p {{`Order: ${order_id}`}}
+  p Siguientes pasos:
+  
+  UPageGrid(tag="ul")
+    div(tag="li" class="col-span-1")
+      div(v-html="paymentStepsText[0]")
+    div(tag="li" v-for="(account, i) in accounts" :key="i" class="col-span-1 sm:col-span-1/3")
+      p {{`Banco: ${account.bank_name}`}}
+      p {{`Número de cuenta: ${account.account_number}`}}
+      p {{`Clabe: ${account.CLABE}`}}
+    div(tag="li" class="col-span-1")
+      div(v-html="paymentStepsText[1]")
+  UButton(to="/" label="Ir a la tienda")
 </template>
 
 <script lang="ts" setup>
@@ -42,31 +41,3 @@ await $fetch(`/api/send-mail`, {
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.checkout-spei {
-  display: flex;
-  min-height: 70vh;
-  .sr-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    max-width: pxToRem(800);
-    > * {
-      margin-bottom: pxToRem(20);
-    }
-  }
-
-  .spei-accounts {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
-    &-item {
-      &:not(:last-child) {
-        margin-bottom: pxToRem(20);
-      }
-    }
-  }
-}
-</style>

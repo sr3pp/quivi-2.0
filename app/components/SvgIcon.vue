@@ -29,11 +29,11 @@ const iconifyName = computed(() =>
 
 <style scoped>
 .sr-icon {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .sr-icon-sprite {
+  display: flex;
   fill: currentColor;
   width: 100%;
   height: 100%;
