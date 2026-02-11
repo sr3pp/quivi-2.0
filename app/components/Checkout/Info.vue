@@ -320,14 +320,14 @@ watch(
 );
 
 const processData = (event: FormSubmitEvent<Schema>) => {
-  console.log('Form submitted with data:', event.data);
+  console.log("Form submitted with data:", event.data);
   shipping.value = event.data.shipping;
   billingSw.value = event.data.billingSw;
   billingAddressSw.value = event.data.billingAddressSw ?? false;
   if (event.data.billingSw && event.data.billing) {
     billing.value = event.data.billing;
   }
-  console.log('Calling setStep(1)');
+  console.log("Calling setStep(1)");
   setStep(1);
 };
 
