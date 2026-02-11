@@ -1,4 +1,6 @@
-const shipping = ref<any>({
+import type { BillData, CheckoutStep, PaymentOption, ShippmentData } from "~/types";
+
+const defaultShipping = (): ShippmentData => ({
   name: "",
   last_name: "",
   email: "",
@@ -15,7 +17,7 @@ const shipping = ref<any>({
   },
 });
 
-const billing = ref<any>({
+const defaultBilling = (): BillData => ({
   name: "",
   phone: "",
   email: "",
@@ -34,11 +36,14 @@ const billing = ref<any>({
   },
 });
 
+const shipping = ref<ShippmentData>(defaultShipping());
+const billing = ref<BillData>(defaultBilling());
+
 const billingSw = ref<boolean>(false);
 const billingAddressSw = ref<boolean>(false);
 const paymentLock = ref<boolean>(false);
 
-const stepsState = ref<any>([
+const stepsState = ref<CheckoutStep[]>([
   {
     label: "Envío y facturacíon",
     enabled: true,
@@ -59,7 +64,7 @@ const stepsState = ref<any>([
   },
 ]);
 
-const paymentMethod = ref<{ name: string; value: string }>({
+const paymentMethod = ref<PaymentOption>({
   name: "",
   value: "",
 });
@@ -115,7 +120,7 @@ function syncData(): void {
 }
 
 export function useCheckout() {
-  function handlePayment(kind: string, data: any) {
+  function handlePayment(kind: string, data: unknown) {
     console.log(kind, data);
   }
 
@@ -127,7 +132,7 @@ export function useCheckout() {
       stepsState.value[step + 1].done = false;
     }
     stepsState.value[step].enabled = true;
-    const current = stepsState.value.find((step: any) => step.active);
+    const current = stepsState.value.find((activeStep) => activeStep.active);
     current!.active = false;
 
     const newStep = stepsState.value[step];
@@ -138,8 +143,8 @@ export function useCheckout() {
   }
 
   function clearCheckout() {
-    shipping.value = {};
-    billing.value = {};
+    shipping.value = defaultShipping();
+    billing.value = defaultBilling();
     billingSw.value = false;
     paymentMethod.value = { name: "", value: "" };
     syncLocalStorage();

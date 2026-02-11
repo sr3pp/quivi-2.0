@@ -6,7 +6,9 @@
 </template>
 
 <script lang="ts" setup>
-const paymentOptions = [
+import type { PaymentOption } from "~/types";
+
+const paymentOptions: Array<{ value: PaymentOption["value"]; label: string }> = [
   { value: "credit-card", label: "Tarjeta de crédito" },
   { value: "debit-card", label: "Tarjeta de débito" },
   { value: "paypal", label: "Paypal" },
@@ -18,9 +20,14 @@ const { paymentMethod, setStep, paymentLock } = useCheckout();
 const method = ref(paymentMethod.value?.value || "");
 const setPaymentMethod = (method: string) => {
   if (!method) return;
-  (paymentMethod.value as any) = paymentOptions.find(
+  const selected = paymentOptions.find(
     (el) => el.value == method,
   );
+  if (!selected) return;
+  paymentMethod.value = {
+    name: selected.label,
+    value: selected.value,
+  };
   paymentLock.value = true;
   setStep(2);
 };

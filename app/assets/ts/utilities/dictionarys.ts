@@ -1,4 +1,6 @@
-export const paymentKeyDict: any = {
+import type { PaymentCode, PaymentMethodKey } from "~/types";
+
+export const paymentKeyDict: Record<PaymentMethodKey, PaymentCode> = {
   "credit-card": "TRC",
   "debit-card": "TRD",
   paypal: "PYP",
@@ -6,9 +8,9 @@ export const paymentKeyDict: any = {
   cash: "EFE",
 };
 
-export const getInvertedKey = (k: string) => {
-  const method: any = Object.entries(paymentKeyDict).find(([key, value]) =>
-    k === value ? key : null,
+export const getInvertedKey = (k: PaymentCode): PaymentMethodKey => {
+  const method = Object.entries(paymentKeyDict).find(([, value]) =>
+    k === value ? true : false,
   );
-  return method[0];
+  return (method?.[0] as PaymentMethodKey) || "cash";
 };

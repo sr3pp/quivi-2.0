@@ -6,6 +6,6 @@ export interface AuthMeta {
 }
 
 export type SessionPayload = {
-  session: Record<string, any>;
+  session: Record<string, unknown>;
   user: User;
 } | null;

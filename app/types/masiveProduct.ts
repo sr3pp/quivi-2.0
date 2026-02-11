@@ -1,11 +1,11 @@
-export type NameId = { _id: any; name: string };
+export type NameId = { _id: unknown; name: string };
 
 export type ProductMassiveLookups = {
-  segmentIdByName: Map<string, any>;
-  brandIdByName: Map<string, any>;
-  categoryIdByName: Map<string, any>;
-  subcategoryIdByName: Map<string, any>;
-  motorIdByName: Map<string, any>;
-  carModelIdByName: Map<string, any>;
-  carBrandIdByName: Map<string, any>;
+  segmentIdByName: Map<string, unknown>;
+  brandIdByName: Map<string, unknown>;
+  categoryIdByName: Map<string, unknown>;
+  subcategoryIdByName: Map<string, unknown>;
+  motorIdByName: Map<string, unknown>;
+  carModelIdByName: Map<string, unknown>;
+  carBrandIdByName: Map<string, unknown>;
 };

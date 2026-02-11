@@ -70,7 +70,11 @@ const safeLegend = `Quivi.mx no almacena datos de tarjetas de crédito o débito
 const getSatValue = (key: string, value: string) => {
   if (["cfdi", "regime"].includes(key)) {
     const name = key == "cfdi" ? "usos" : "regimenes";
-    return props.sat[name].find((el: any) => el.value == value).name;
+    const satGroups = props.sat as Record<
+      string,
+      Array<{ value: string; name: string }>
+    >;
+    return satGroups[name]?.find((el) => el.value == value)?.name || value;
   }
 
   return value;

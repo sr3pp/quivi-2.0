@@ -15,42 +15,42 @@ ul.flex.flex-col.gap-4
 </template>
 
 <script lang="ts" setup>
-import type { FilterItem } from "~/types";
+import type { CarBrandDoc, FilterItem, MotorDoc, NamedDoc } from "~/types";
 
 const props = defineProps<{
   filters?: string;
 }>();
 
-const getCarBrands = async (): Promise<any[]> => {
-  const { data: brands }: any = await useFetch("/api/car-brand");
-  return brands.value;
+const getCarBrands = async (): Promise<CarBrandDoc[]> => {
+  const { data: brands } = await useFetch<CarBrandDoc[]>("/api/car-brand");
+  return brands.value ?? [];
 };
 
 const carBrands = await getCarBrands();
 
-const carBrandsOptions = carBrands.map((brand: any) => ({
+const carBrandsOptions = carBrands.map((brand) => ({
   label: brand.name.toUpperCase(),
   value: brand._id,
   models: brand.models,
 }));
 
-const getCategories = async (): Promise<any[]> => {
-  const { data: categories }: any = await useFetch("/api/category");
-  return categories.value;
+const getCategories = async (): Promise<NamedDoc[]> => {
+  const { data: categories } = await useFetch<NamedDoc[]>("/api/category");
+  return categories.value ?? [];
 };
 const categories = await getCategories();
-const categoryOptions = categories.map((category: any) => ({
+const categoryOptions = categories.map((category) => ({
   label: category.name.toUpperCase(),
   value: category._id,
 }));
 
-const getMotors = async (): Promise<any[]> => {
-  const { data: motors }: any = await useFetch("/api/motor");
-  return motors.value;
+const getMotors = async (): Promise<MotorDoc[]> => {
+  const { data: motors } = await useFetch<MotorDoc[]>("/api/motor");
+  return motors.value ?? [];
 };
 
 const motors = await getMotors();
-const motorsOptions = motors.map((motor: any) => ({
+const motorsOptions = motors.map((motor) => ({
   label: motor.name.toUpperCase(),
   value: motor._id,
 }));
@@ -87,8 +87,8 @@ const filtersForm = ref<FilterItem[]>([
     key: "years",
     options: createYearList()
       .reverse()
-      .map((year: any) => ({
-        label: year,
+      .map((year) => ({
+        label: String(year),
         value: year,
       })),
   },
@@ -123,7 +123,7 @@ const getSelectedValue = (item: FilterItem) => {
 };
 
 const filter = async () => {
-  const filters: Record<string, any> = {};
+  const filters: Record<string, string | number> = {};
   filtersForm.value.forEach((element) => {
     const value = getSelectedValue(element);
     if (value) {
@@ -142,7 +142,7 @@ const setChildren = (item: FilterItem) => {
     const subBrand = filtersForm.value.find((f) => f.key === "car_models");
     if (!subBrand) return;
 
-    subBrand.options = models.map((model: any) => ({
+    subBrand.options = models.map((model) => ({
       label: model.name.toUpperCase(),
       value: model._id,
     }));
@@ -154,9 +154,9 @@ const setChildren = (item: FilterItem) => {
     if (!selectedLabel) {
       newMotors = motors;
     } else {
-      newMotors = motors.filter((motor: any) => {
+      newMotors = motors.filter((motor) => {
         const { models } = motor;
-        const model = models.find((model: any) => model.name == selectedLabel);
+        const model = models.find((model) => model.name == selectedLabel);
         return model;
       });
     }
@@ -164,7 +164,7 @@ const setChildren = (item: FilterItem) => {
     const motorFilter = filtersForm.value.find((f) => f.key === "motors");
     if (!motorFilter) return;
 
-    motorFilter.options = newMotors.map((motor: any) => ({
+    motorFilter.options = newMotors.map((motor) => ({
       label: motor.name.toUpperCase(),
       value: motor._id,
     }));

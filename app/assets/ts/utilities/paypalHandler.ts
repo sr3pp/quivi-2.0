@@ -1,4 +1,4 @@
-import type { Product } from "~/types";
+import type { PaypalCreateOrderResponse, Product } from "~/types";
 import { buildOrderId } from "./index";
 
 export class paypalHandler {
@@ -21,7 +21,9 @@ export class paypalHandler {
       };
     });
 
-    const { links }: any = await $fetch("/api/payment/paypal", {
+    const { links } = await $fetch<PaypalCreateOrderResponse>(
+      "/api/payment/paypal",
+      {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,9 +33,12 @@ export class paypalHandler {
         products: productList,
         total: total,
       },
-    });
+      },
+    );
 
-    window.location = links[1].href;
+    if (links?.[1]?.href) {
+      window.location.href = links[1].href;
+    }
   }
 
   async confirm(orderID: string) {

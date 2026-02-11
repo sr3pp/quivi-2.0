@@ -7,7 +7,7 @@ const { _id } = params;
 
 const productId = Array.isArray(_id) ? _id[0] : _id;
 
-const { data: product }: any = await useAsyncData<Product>(
+const { data: product } = await useAsyncData<Product>(
   `product-${productId}`,
   () => $fetch(`/api/product/${productId}` as string),
 );
@@ -16,7 +16,7 @@ const relatedProducts = await $fetch(
   `/api/product/related?productId=${product.value?._id}` as string,
 );
 
-const { data: existences }: any = await $fetch(
+const existences = await $fetch<number>(
   `/api/product/get-existences?sae=${product.value.sae}&type=${product.value.meassure_unity || "P"}` as string,
 );
 product.value.existences = existences;
@@ -48,15 +48,21 @@ const updateQty = (value: number) => {
   else product.value.qty += value;
 };
 
-const printValue = (value: any) => {
+const printValue = (value: unknown) => {
   if (Array.isArray(value)) {
-    if (typeof value[0] === "object") {
-      return value.map((v: any) => v.name).join(", ");
+    if (typeof value[0] === "object" && value[0] !== null) {
+      return value
+        .map((v) =>
+          typeof v === "object" && v && "name" in v
+            ? String((v as { name?: string }).name ?? "")
+            : String(v),
+        )
+        .join(", ");
     } else {
       return value.join(", ");
     }
-  } else if (typeof value === "object") {
-    return value.name;
+  } else if (typeof value === "object" && value !== null && "name" in value) {
+    return String((value as { name?: string }).name ?? "");
   } else {
     return String(value);
   }

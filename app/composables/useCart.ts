@@ -43,7 +43,7 @@ const active: Ref<boolean> = ref(false);
 export function useCart() {
   function addToCart(product: Product, qty: number) {
     const productExists: Product | undefined = cart.value.products.find(
-      (p: any) => p.web === product.web,
+      (p) => p.web === product.web,
     );
 
     if (productExists) {

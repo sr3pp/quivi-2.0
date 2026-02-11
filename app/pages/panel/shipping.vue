@@ -64,7 +64,13 @@
 <script lang="ts" setup>
 import { h, resolveComponent } from "vue";
 import type { TableColumn } from "@nuxt/ui";
-import type { PanelShippingRow } from "~/types";
+import type {
+  PanelSalesModal,
+  PanelShippingDetail,
+  PanelShippingListResponse,
+  PanelShippingRow,
+  ShippingTracking,
+} from "~/types";
 definePageMeta({
   layout: "panel",
 });
@@ -75,11 +81,13 @@ const {
 
 const UButton = resolveComponent("UButton");
 
-const data: any = await $fetch("/api/shipping?page=" + (page || 1));
-const shipping: any = ref(data.shipping);
-const pagination: any = ref(data.pagination);
-const shippDetailModal: any = ref(null);
-const currentShipping: any = ref(null);
+const data = await $fetch<PanelShippingListResponse>(
+  "/api/shipping?page=" + (page || 1),
+);
+const shipping = ref<PanelShippingDetail[]>(data.shipping);
+const pagination = ref<Record<string, unknown>>(data.pagination);
+const shippDetailModal = ref<PanelSalesModal | null>(null);
+const currentShipping = ref<PanelShippingDetail | null>(null);
 const fetching = ref(false);
 const sending = ref(false);
 const search = ref("");
@@ -135,25 +143,29 @@ const columns: TableColumn<PanelShippingRow>[] = [
 ];
 
 const searchShipping = async () => {
-  const data: any = await $fetch("/api/shipping/search?search=" + search.value);
-  shipping.value = data.shipment;
-  pagination.value = data.pagination;
+  const response = await $fetch<{
+    shipment: PanelShippingDetail[];
+    pagination: Record<string, unknown>;
+  }>("/api/shipping/search?search=" + search.value);
+  shipping.value = response.shipment;
+  pagination.value = response.pagination;
 };
 
-const shippDetail = (_shipp: any) => {
-  const shipp = shipping.value.find((el: any) => el.order === _shipp.order);
+const shippDetail = (_shipp: PanelShippingRow) => {
+  const shipp = shipping.value.find((el) => el.order === _shipp.order);
+  if (!shipp) return;
   currentShipping.value = shipp;
   currentShipping.value.tracking = shipp.tracking || {};
-  shippDetailModal.value.toggle();
+  shippDetailModal.value?.toggle();
 };
 
 const getTracking = async (orderSae: string) => {
   fetching.value = true;
   try {
-    const trackingInfo: any = await $fetch(
+    const trackingInfo = await $fetch<ShippingTracking>(
       "/api/shipping/get-tracking?orderId=" + orderSae,
     );
-    if (trackingInfo.number) {
+    if (trackingInfo.number && currentShipping.value) {
       currentShipping.value.tracking = trackingInfo;
       currentShipping.value.status = "shipping";
       fetching.value = false;
@@ -169,6 +181,7 @@ const getTracking = async (orderSae: string) => {
 };
 
 const saveTracking = async () => {
+  if (!currentShipping.value) return;
   currentShipping.value.tracking = newTracking.value;
   currentShipping.value.status = "shipping";
   await $fetch("/api/shipping", {
@@ -183,6 +196,7 @@ const saveTracking = async () => {
 };
 
 const sendTrackingMail = async () => {
+  if (!currentShipping.value) return;
   sending.value = true;
   await $fetch("/api/send-mail", {
     method: "POST",
@@ -199,9 +213,11 @@ const sendTrackingMail = async () => {
 watch(
   () => useRoute().query,
   async ({ page }) => {
-    const { data }: any = await useFetch("/api/shipping?page=" + page);
-    shipping.value = data.value.shipping;
-    pagination.value = data.value.pagination;
+    const { data } = await useFetch<PanelShippingListResponse>(
+      "/api/shipping?page=" + page,
+    );
+    shipping.value = data.value?.shipping ?? [];
+    pagination.value = data.value?.pagination ?? {};
   },
 );
 </script>

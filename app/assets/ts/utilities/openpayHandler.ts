@@ -1,12 +1,16 @@
+import type { OpenpayChargeResponse, OpenpayPayInput } from "~/types";
 import { buildOrderId } from "./index";
 
 export class openpayHandler {
   constructor() {}
 
-  async pay(data: any, callback?: Function) {
+  async pay(
+    data: OpenpayPayInput,
+    callback?: (orderId: string, extra?: string) => void,
+  ) {
     const orderId = buildOrderId();
     const { paymentMethod, total, shippmentData, paymentPlan } = data;
-    const dataObj: any = {
+    const dataObj: Record<string, unknown> = {
       method: paymentMethod.value.includes("card")
         ? "card"
         : paymentMethod.value === "spei"
@@ -40,14 +44,14 @@ export class openpayHandler {
       dataObj.due_date = new Date().setDate(new Date().getDate() + 3);
     }
 
-    const response = await $fetch("/api/payment/openpay", {
+    const response = await $fetch<OpenpayChargeResponse>("/api/payment/openpay", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: dataObj,
     });
-    const { payment_method, status, id }: any = response;
+    const { payment_method, id } = response;
 
     if (payment_method.url) {
       // For card payments: pre-register order before redirecting

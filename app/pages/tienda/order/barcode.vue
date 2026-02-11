@@ -12,9 +12,12 @@
 <script lang="ts" setup>
 import type { SaleOrder } from "~/types";
 
-const { public: config }: any = useRuntimeConfig();
-const baseUrl = config.openpay.barcodeUrl;
-const merchId = config.openpay.merchantId;
+const {
+  public: { openpay },
+} = useRuntimeConfig();
+const config = openpay as { barcodeUrl: string; merchantId: string };
+const baseUrl = config.barcodeUrl;
+const merchId = config.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
@@ -40,8 +43,8 @@ await $fetch(`/api/send-mail`, {
 });
 
 const printRecipt = () => {
-  const reciptEl: any = (iframe.value as HTMLIFrameElement).contentWindow;
-  reciptEl.focus();
+  const reciptEl = iframe.value?.contentWindow;
+  reciptEl?.focus();
 };
 </script>
 

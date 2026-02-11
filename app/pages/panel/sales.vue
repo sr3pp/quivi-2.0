@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { h, resolveComponent } from "vue";
 import type { TableColumn } from "@nuxt/ui";
-import type { PanelSaleRow } from "~/types";
+import type { PanelSaleRow, PanelSalesModal } from "~/types";
 import { toPrice } from "~/assets/ts/utilities";
 
 definePageMeta({
@@ -38,11 +38,11 @@ const UButton = resolveComponent("UButton");
 const orderSw = ref(false);
 
 const salesModal: Ref<Component | null> = ref(null);
-const saleDetailModal: Ref<Component | null> = ref(null);
+const saleDetailModal: Ref<PanelSalesModal | null> = ref(null);
 
-const currentSale: Ref<any> = ref(null);
+const currentSale = ref<PanelSaleRow | null>(null);
 
-const { data: sales } = await useFetch("/api/sales");
+const { data: sales } = await useFetch<PanelSaleRow[]>("/api/sales");
 
 const columns: TableColumn<PanelSaleRow>[] = [
   {
@@ -297,17 +297,18 @@ const searchSale = async () => {
   }
 };
 
-const saleDetail = (sale: any) => {
+const saleDetail = (sale: PanelSaleRow) => {
   currentSale.value = sales.value.find(
-    (_sale: any) => _sale.order_no === sale.order_no,
+    (_sale) => _sale.order_no === sale.order_no,
   );
-  (saleDetailModal.value as any).toggle();
+  saleDetailModal.value?.toggle();
 };
 
-const deleteSale = async (_sale: any) => {
+const deleteSale = async (_sale: PanelSaleRow) => {
   const sale = sales.value.find(
-    (sale: any) => sale.order_no === _sale.order_no,
+    (saleItem) => saleItem.order_no === _sale.order_no,
   );
+  if (!sale?._id) return;
 
   await $fetch(`/api/sales`, {
     method: "DELETE",
@@ -315,7 +316,7 @@ const deleteSale = async (_sale: any) => {
   });
 };
 
-const saveSale = (_sale: any) => {
+const saveSale = (_sale: unknown) => {
   console.log(_sale);
 };
 </script>

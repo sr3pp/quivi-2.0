@@ -83,18 +83,25 @@ UForm.product-form(:schema="schema" :state="state" @submit="onSubmit")
 import { computed, reactive, ref, watch } from "vue";
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { NamedOption } from "~/types";
+import type {
+  CarBrandDoc,
+  CarModelDoc,
+  NamedDoc,
+  NamedOption,
+  ProductFormProduct,
+  ProductFormSubmitData,
+} from "~/types";
 
 const props = defineProps<{
-  product?: any | null;
-  productBrands: Array<any>;
-  categories: Array<any>;
-  subcategories: Array<any>;
-  carBrands: Array<any>;
-  carModels: Array<any>;
+  product?: ProductFormProduct | null;
+  productBrands: NamedDoc[];
+  categories: NamedDoc[];
+  subcategories: NamedDoc[];
+  carBrands: CarBrandDoc[];
+  carModels: CarModelDoc[];
 }>();
 
-const emit = defineEmits<{ submit: [any] }>();
+const emit = defineEmits<{ submit: [ProductFormSubmitData] }>();
 
 const schema = z
   .object({
@@ -129,19 +136,19 @@ console.log("props.product", props.productBrands);
 
 const newThumb = ref("");
 const brandOptions = computed<NamedOption<string>[]>(() =>
-  props.productBrands.map((brand: any) => ({
+  props.productBrands.map((brand) => ({
     value: brand._id,
     name: brand.name,
   })),
 );
 const categoryOptions = computed<NamedOption<string>[]>(() =>
-  props.categories.map((category: any) => ({
+  props.categories.map((category) => ({
     value: category._id,
     name: category.name,
   })),
 );
 const subcategoryOptions = computed<NamedOption<string>[]>(() =>
-  props.subcategories.map((subcategory: any) => ({
+  props.subcategories.map((subcategory) => ({
     value: subcategory._id,
     name: subcategory.name,
   })),
@@ -155,14 +162,14 @@ const yearsOptions = computed<NamedOption<number>[]>(() =>
 );
 
 const carBrandsOptions = computed<NamedOption<string>[]>(() =>
-  props.carBrands.map((brand: any) => ({
+  props.carBrands.map((brand) => ({
     value: brand._id,
     name: brand.name,
   })),
 );
 
 const carModelsOptions = computed<NamedOption<string>[]>(() =>
-  props.carModels.map((model: any) => ({
+  props.carModels.map((model) => ({
     value: model._id,
     name: model.name,
   })),
@@ -190,7 +197,7 @@ const state = reactive<z.infer<typeof schema>>({
 });
 
 const mapItems = (
-  ids: Array<any> | undefined,
+  ids: string[] | undefined,
   options: NamedOption<string>[],
 ) => {
   if (!ids || !Array.isArray(ids)) return [];
@@ -204,7 +211,7 @@ const mapYears = (years: Array<number> | undefined) => {
   return years.map((year) => ({ value: year, name: String(year) }));
 };
 
-const resetState = (product?: any | null) => {
+const resetState = (product?: ProductFormProduct | null) => {
   state.sae = product?.sae ?? "";
   state.web = product?.web ?? "";
   state.name = product?.name ?? "";
@@ -266,11 +273,11 @@ const removeThumb = (idx: number) => {
   state.thumbs.splice(idx, 1);
 };
 
-const onSubmit = (event: FormSubmitEvent<FormState>) => {
-  const data = { ...event.data } as any;
-  data.years = data.yearsItems.map((item: any) => item.value);
-  data.car_brands = data.carBrandsItems.map((item: any) => item.value);
-  data.models = data.modelsItems.map((item: any) => item.value);
+const onSubmit = (event: FormSubmitEvent<z.infer<typeof schema>>) => {
+  const data: ProductFormSubmitData = { ...event.data };
+  data.years = data.yearsItems.map((item) => item.value);
+  data.car_brands = data.carBrandsItems.map((item) => item.value);
+  data.models = data.modelsItems.map((item) => item.value);
   delete data.yearsItems;
   delete data.carBrandsItems;
   delete data.modelsItems;

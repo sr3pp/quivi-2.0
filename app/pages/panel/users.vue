@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import type { TableColumn } from "@nuxt/ui";
-import type { User } from "~/types";
+import type { User, UserFormInput, UserPasswordInput } from "~/types";
 
 const UButton = resolveComponent("UButton");
 
@@ -43,6 +43,7 @@ const currentUser: Ref<User | null> = ref(null);
 const userModalTitle = computed(() =>
   currentUser.value ? "Editar usuario" : "Crear usuario",
 );
+const getUserId = (user: User) => user.id || user._id || "";
 
 const getAdminLevelLabel = (level: number | undefined): string => {
   if (level === undefined) return "Usuario";
@@ -70,9 +71,7 @@ const columns: TableColumn<User>[] = [
     cell: ({ row }) => {
       const userIndex =
         users.value?.findIndex(
-          (u) =>
-            (u.id || (u as any)._id) ===
-            (row.original.id || (row.original as any)._id),
+          (u) => getUserId(u) === getUserId(row.original),
         ) ?? -1;
       return h("div", { class: "flex items-center gap-2" }, [
         h(UButton, {
@@ -97,7 +96,7 @@ const columns: TableColumn<User>[] = [
           size: "sm",
           "aria-label": "Delete",
           onClick: () =>
-            deleteUser(row.original.id || (row.original as any)._id, userIndex),
+            deleteUser(getUserId(row.original), userIndex),
         }),
       ]);
     },
@@ -114,22 +113,17 @@ const newUser = () => {
   modalSw.value = true;
 };
 
-const saveUser = async (_user: any) => {
+const saveUser = async (_user: UserFormInput) => {
   if (currentUser.value) return updateUser(_user);
 
   try {
-    const payload: any = {
-      name: `${(_user as any).profile?.name ?? ""} ${(_user as any).profile?.lastname ?? ""}`.trim(),
-      email: (_user as any).email,
-      password: (_user as any).password,
-      admin_level: Number((_user as any).admin_level ?? 0),
-      profile: (_user as any).profile,
+    const payload = {
+      name: `${_user.profile?.name ?? ""} ${_user.profile?.lastname ?? ""}`.trim(),
+      email: _user.email,
+      password: _user.password,
+      admin_level: Number(_user.admin_level ?? 0),
+      profile: _user.profile,
     };
-
-    delete payload.password_confirmation;
-    if (payload.profile) {
-      delete payload.profile?.password_confirmation;
-    }
 
     const { user } = await $fetch<{ user: User }>("/api/auth/sign-up/email", {
       method: "POST",
@@ -161,22 +155,21 @@ const editUser = (user: User) => {
   modalSw.value = true;
 };
 
-const updateUser = async (_user: any) => {
+const updateUser = async (_user: UserFormInput) => {
   try {
     const { password_confirmation, ...rest } = _user;
     const user: User = await $fetch<User>(`/api/users`, {
       method: "PUT",
       body: {
-        id: (currentUser.value as any).id || (currentUser.value as any)._id,
+        id: currentUser.value ? getUserId(currentUser.value) : "",
         ...rest,
       },
     });
 
     users.value?.splice(
       users.value.findIndex(
-        (u: any) =>
-          (u.id || (u as any)._id) ===
-          ((currentUser.value as any).id || (currentUser.value as any)._id),
+        (u) =>
+          getUserId(u) === (currentUser.value ? getUserId(currentUser.value) : ""),
       ),
       1,
       user,
@@ -192,13 +185,13 @@ const changePassword = (user: User) => {
   passwordModalSw.value = true;
 };
 
-const savePassword = async (_password: any) => {
+const savePassword = async (_password: UserPasswordInput) => {
   try {
     const { password_confirmation, ...rest } = _password;
     await $fetch(`/api/users/password`, {
       method: "PUT",
       body: {
-        id: (currentUser.value as any).id || (currentUser.value as any)._id,
+        id: currentUser.value ? getUserId(currentUser.value) : "",
         ...rest,
       },
     });

@@ -64,7 +64,7 @@ const [productBrands, categories, subcategories, carBrands, carModels] =
 const search = ref(_search as string);
 const filters = ref(_filters as string);
 const modalSw = ref(false);
-const products: any = ref([]);
+const products = ref<PanelProductRow[]>([]);
 const pagination = ref({});
 const currentProduct: Ref<PanelProductRow | null> = ref(null);
 
@@ -134,20 +134,20 @@ const newProduct = () => {
   modalSw.value = true;
 };
 
-const editProduct = (_product: any) => {
-  const product = products.value.find((p: any) => p.sae === _product.sae);
+const editProduct = (_product: PanelProductRow) => {
+  const product = products.value.find((p) => p.sae === _product.sae);
   currentProduct.value = product ?? null;
   modalSw.value = true;
 };
 
-const updateProduct = async (data: any) => {
+const updateProduct = async (data: Record<string, unknown>) => {
   if (!currentProduct.value) {
     return saveProduct(data);
   }
   data._id = currentProduct.value._id;
 
   try {
-    const product = await $fetch("/api/product", {
+    await $fetch("/api/product", {
       method: "PUT",
       body: data,
     });
@@ -157,17 +157,18 @@ const updateProduct = async (data: any) => {
   }
 };
 
-const deleteProduct = async (_product: any) => {
-  const product = products.value.find((p: any) => p.sae === _product.sae);
+const deleteProduct = async (_product: PanelProductRow) => {
+  const product = products.value.find((p) => p.sae === _product.sae);
+  if (!product?._id) return;
   const id = product._id;
   await $fetch(`/api/product/${id}`, {
     method: "DELETE",
   });
-  const idx = products.value.findIndex((p: any) => p.sae === _product.sae);
+  const idx = products.value.findIndex((p) => p.sae === _product.sae);
   products.value.splice(idx, 1);
 };
 
-const saveProduct = async (product: any) => {
+const saveProduct = async (product: Record<string, unknown>) => {
   await $fetch("/api/product", {
     method: "POST",
     body: product,

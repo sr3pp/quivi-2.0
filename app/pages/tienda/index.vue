@@ -75,7 +75,7 @@ const handlePage = async (page: number) => {
   await refresh();
 };
 
-const filterProducts = async (filters: any) => {
+const filterProducts = async (filters: Record<string, string | number>) => {
   const urlFilters = `${Object.entries(filters)
     .map(([key, value]) => `${key}.${value}`)
     .join("|")}`;

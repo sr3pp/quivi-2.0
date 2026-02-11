@@ -113,8 +113,6 @@ const { cart, toggleCart, totalCartProducts } = useCart();
 
 const { isLoggedIn, logout, session } = useAuth();
 
-const { user } = session as any;
-
 watch(
   () => route.value.name,
   () => {

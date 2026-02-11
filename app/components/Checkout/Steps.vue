@@ -10,7 +10,7 @@ ul.quivi-checkout-steps
 const { stepsState, setStep } = useCheckout();
 
 const setStepHandler = (idx: number) => {
-  const currentIdx = stepsState.value.findIndex((step: any) => step.active);
+  const currentIdx = stepsState.value.findIndex((step) => step.active);
   if (currentIdx < idx) return;
   setStep(idx);
 };

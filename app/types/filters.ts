@@ -1,7 +1,7 @@
 export interface FilterOption {
   label: string;
-  value: any;
-  models?: any[];
+  value: string | number;
+  models?: Array<{ _id: string; name: string }>;
 }
 
 export interface FilterItem {

@@ -1,4 +1,5 @@
 import type { AuthMeta } from "~/types";
+import type { SessionPayload } from "~/types";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const authMeta = (to.meta.auth || {}) as AuthMeta;
@@ -15,12 +16,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo("/", { redirectCode: 302 });
     }
     try {
-      const session = await $fetch("/api/auth/get-session", {
+      const session = await $fetch<SessionPayload>("/api/auth/get-session", {
         headers,
         credentials: "include",
       });
       const requiredLevel = authMeta.minAdminLevel ?? 0;
-      const userLevel = (session as any)?.user?.admin_level ?? 0;
+      const userLevel = session?.user?.admin_level ?? 0;
       if (!session || requiredLevel > userLevel) {
         return navigateTo("/", { redirectCode: 302 });
       }
@@ -38,7 +39,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
       return navigateTo("/");
     }
     const requiredLevel = authMeta.minAdminLevel ?? 0;
-    const userLevel = (session.value as any)?.user?.admin_level ?? 0;
+    const userLevel = session.value?.user?.admin_level ?? 0;
     if (requiredLevel > userLevel) {
       return navigateTo("/");
     }

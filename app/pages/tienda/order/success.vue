@@ -33,11 +33,12 @@ await $fetch(`/api/send-mail`, {
 });
 
 const getPaymentMethod = (name: string) => {
-  const r: any = Object.entries(paymentKeyDict).find(
-    ([key, value]: [string, any]) => {
-      return value == name ? key : null;
-    },
-  );
+  const r = Object.entries(paymentKeyDict).find(([, value]) => {
+    return value == name ? true : false;
+  });
+  if (!r) {
+    return name;
+  }
   return r[0].replace(/-/g, " ");
 };
 </script>

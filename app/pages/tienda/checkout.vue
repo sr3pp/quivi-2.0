@@ -31,9 +31,14 @@ UContainer.py-10
 import {
   openpayHandler,
   paypalHandler,
-  buildOrderId,
   paymentKeyDict,
 } from "~/assets/ts/utilities";
+import type {
+  CheckoutCartProduct,
+  OpenpayVerificationResponse,
+  PaymentCode,
+  SaleOrderDraft,
+} from "~/types";
 
 const {
   id: transactionId,
@@ -69,20 +74,20 @@ const { data } = await useAsyncData("checkout-config", async () => {
 });
 
 const { terms, sat } = data.value as {
-  terms: Object;
-  sat: Object;
+  terms: { meta: { content: { sections: unknown[] } } };
+  sat: { meta: { content: Record<string, unknown> } };
 };
 
 const termsLegend2: string =
   "Serás redirigido a un sitio externo a <span class='highlight'>Quivi.mx</span>";
 
 const loadingPayment: Ref<boolean> = ref(false);
-const verifyingPayment: Ref<Boolean> = ref(false);
-const termsModalSw: Ref<Boolean> = ref(false);
-const termsSw: Ref<Boolean> = ref(false);
+const verifyingPayment: Ref<boolean> = ref(false);
+const termsModalSw: Ref<boolean> = ref(false);
+const termsSw: Ref<boolean> = ref(false);
 
-const saveOrder = async (order: any) => {
-  const user = {};
+const saveOrder = async (order: SaleOrderDraft) => {
+  const user = {} as Record<string, never>;
 
   await $fetch("/api/order", {
     method: "POST",
@@ -94,7 +99,9 @@ const saveOrder = async (order: any) => {
 };
 
 const storePayment = async (orderId: string, reference: string) => {
-  const { order }: any = await proccesOrder(orderId);
+  const result = await proccesOrder(orderId);
+  const order = result?.order;
+  if (!order) return;
   saveOrder(order);
   resetStorage();
   await navigateTo(
@@ -103,7 +110,9 @@ const storePayment = async (orderId: string, reference: string) => {
 };
 
 const speiHandler = async (orderId: string) => {
-  const { order }: any = await proccesOrder(orderId);
+  const result = await proccesOrder(orderId);
+  const order = result?.order;
+  if (!order) return;
   saveOrder(order);
   resetStorage();
   await navigateTo(`/tienda/order/spei?order_id=${order.order_no}`);
@@ -111,7 +120,7 @@ const speiHandler = async (orderId: string) => {
 
 // Pre-register card payments so sales always exist before redirect
 const cardPendingHandler = async (orderId: string, transactionId: string) => {
-  const result: any = await proccesOrder(orderId, transactionId, false);
+  const result = await proccesOrder(orderId, transactionId, false);
   if (result && result.order) {
     await saveOrder(result.order);
   }
@@ -172,15 +181,30 @@ const proccesOrder = async (
   const user = null;
 
   const partidas = cart.value.products.map(
-    (product: any) => `${product.qty},${product.sae},${product.price}`,
+    (product: CheckoutCartProduct) =>
+      `${product.qty},${product.sae},${product.price}`,
   );
 
-  const data: any = {
+  const paymentMethodCode: PaymentCode | "" = paymentMethod.value.value
+    ? paymentKeyDict[paymentMethod.value.value]
+    : "";
+
+  const data: {
+    transactionId: string | string[] | undefined;
+    partidas: string[];
+    shippmentData: unknown;
+    billSw: boolean;
+    paymentMethod: PaymentCode | "";
+    total: number;
+    user: null;
+    order_id: string;
+    billing?: unknown;
+  } = {
     transactionId,
     partidas,
     shippmentData: shipping.value,
     billSw: billingSw.value,
-    paymentMethod: paymentKeyDict[(paymentMethod.value as any).value] || "",
+    paymentMethod: paymentMethodCode,
     total: cart.value.total,
     user,
     order_id: id,
@@ -198,10 +222,10 @@ const proccesOrder = async (
       body: data,
     });
 
-    const order: any = {
+    const order: SaleOrderDraft = {
       user,
-      products: cart.value.products.map((product: any) => ({
-        product: product._id,
+      products: cart.value.products.map((product: CheckoutCartProduct) => ({
+        product: String(product._id),
         quantity: product.qty,
         price: product.price,
         discount: product.discount,
@@ -211,7 +235,7 @@ const proccesOrder = async (
       status: paid,
       shipping: shipping.value,
       payment: {
-        method: paymentKeyDict[(paymentMethod.value as any).value] || "",
+        method: paymentMethodCode,
         transaction: transaction || "",
         status: paid,
         installments: 1,
@@ -236,7 +260,7 @@ const proccesOrder = async (
 const transactionHandler = async () => {
   if (transactionId) {
     verifyingPayment.value = true;
-    const { status, payment_method, reference, barcode_url }: any =
+    const { status, payment_method, reference }: OpenpayVerificationResponse =
       await $fetch("/api/payment/openpay/verify-transaction", {
         method: "POST",
         headers: {
@@ -252,7 +276,7 @@ const transactionHandler = async () => {
 
       try {
         // Update existing sale payment status if already pre-registered
-        const updated: any = await $fetch("/api/sales/update", {
+        const updated = await $fetch("/api/sales/update", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -266,11 +290,12 @@ const transactionHandler = async () => {
 
         if (!updated) {
           // Fallback: create the order now if it wasn't pre-registered
-          const { order }: any = await proccesOrder(
+          const result = await proccesOrder(
             registeredOrder as string,
             transactionId as string,
             true,
           );
+          const order = result?.order;
           if (order) {
             await saveOrder(order);
           }
@@ -286,8 +311,8 @@ const transactionHandler = async () => {
             `/tienda/order/barcode?order_id=${registeredOrder}&reference=${reference}`,
           );
         }
-      } catch (error: any) {
-        throw new Error(error);
+      } catch (error) {
+        throw new Error(error instanceof Error ? error.message : String(error));
       }
     } else {
       //if not success, save order to unfinished orders.
@@ -298,11 +323,13 @@ const transactionHandler = async () => {
     const confirm = await paypal.confirm(paypal_order_id as string);
 
     if (confirm === "APPROVED") {
-      const { order }: any = await proccesOrder(
+      const result = await proccesOrder(
         registeredOrder as string,
         paypal_order_id as string,
         true,
       );
+      const order = result?.order;
+      if (!order) return;
       saveOrder(order);
       resetStorage();
       await navigateTo(`/tienda/order/success?order_id=${registeredOrder}`);
