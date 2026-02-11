@@ -1,9 +1,4 @@
-import type { User } from "~/types";
-
-type SessionPayload = {
-  session: Record<string, any>;
-  user: User;
-} | null;
+import type { SessionPayload } from "~/types";
 
 export const useAuth = () => {
   const sessionState = useState<SessionPayload>("auth-session", () => null);

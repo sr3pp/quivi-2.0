@@ -27,6 +27,7 @@
 <script lang="ts" setup>
 import { h, resolveComponent } from "vue";
 import type { TableColumn } from "@nuxt/ui";
+import type { PanelSaleRow } from "~/types";
 import { toPrice } from "~/assets/ts/utilities";
 
 definePageMeta({
@@ -43,18 +44,7 @@ const currentSale: Ref<any> = ref(null);
 
 const { data: sales } = await useFetch("/api/sales");
 
-type Sale = {
-  _id?: string;
-  order_no?: string;
-  sae_order?: string;
-  products?: Array<any>;
-  total?: number;
-  status?: string;
-  createdAt?: string;
-  [key: string]: any;
-};
-
-const columns: TableColumn<Sale>[] = [
+const columns: TableColumn<PanelSaleRow>[] = [
   {
     accessorKey: "order_no",
     header: "Order No",

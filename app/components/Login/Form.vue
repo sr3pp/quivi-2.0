@@ -25,15 +25,13 @@ const schema = z.object({
     .min(6, "La contraseña debe tener al menos 6 caracteres"),
 });
 
-type Schema = z.output<typeof schema>;
-
 // Form state
 const formState = reactive({
   email: "",
   password: "",
 });
 
-const login = async (event: FormSubmitEvent<Schema>) => {
+const login = async (event: FormSubmitEvent<z.output<typeof schema>>) => {
   try {
     await useAuth().login(event.data.email, event.data.password);
   } catch (error) {

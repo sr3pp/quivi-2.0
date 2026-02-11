@@ -10,6 +10,7 @@ import {
   Product as ProductModel,
 } from "~~/server/Models";
 import type { Product } from "~~/app/types/product";
+import type { NameId, ProductMassiveLookups } from "~~/app/types/masiveProduct";
 
 const processName = (name: string) => {
   return String(name).toLowerCase().trim();
@@ -41,7 +42,6 @@ const bulkWriteBatched = async (
   }
 };
 
-type NameId = { _id: any; name: string };
 const toIdMap = (docs: NameId[]) => new Map(docs.map((d) => [d.name, d._id]));
 
 const processRelation = async (rows: any[], model: any, idx: number) => {
@@ -157,17 +157,7 @@ export default defineEventHandler(async (event) => {
   const carModelIdByName = toIdMap(models as any);
   const carBrandIdByName = toIdMap(carBrands as any);
 
-  type Lookups = {
-    segmentIdByName: Map<string, any>;
-    brandIdByName: Map<string, any>;
-    categoryIdByName: Map<string, any>;
-    subcategoryIdByName: Map<string, any>;
-    motorIdByName: Map<string, any>;
-    carModelIdByName: Map<string, any>;
-    carBrandIdByName: Map<string, any>;
-  };
-
-  const lookups: Lookups = {
+  const lookups: ProductMassiveLookups = {
     segmentIdByName,
     brandIdByName,
     categoryIdByName,
@@ -234,7 +224,7 @@ export default defineEventHandler(async (event) => {
     row: any,
     key: string,
     index: number,
-    l: Lookups,
+    l: ProductMassiveLookups,
   ) => {
     const cell = row?.[index];
 

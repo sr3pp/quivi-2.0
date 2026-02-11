@@ -1,7 +1,4 @@
-type AuthMeta = {
-  required?: boolean;
-  minAdminLevel?: number;
-};
+import type { AuthMeta } from "~/types";
 
 export default defineNuxtRouteMiddleware(async (to) => {
   const authMeta = (to.meta.auth || {}) as AuthMeta;

@@ -42,10 +42,6 @@ const props = withDefaults(
   },
 );
 
-const emit = defineEmits<{
-  (e: "submit", data: Schema): void;
-}>();
-
 const showPassword = computed(() => props.mode === "create");
 const submitLabel = computed(() =>
   props.mode === "create" ? "Crear" : "Actualizar",
@@ -85,9 +81,12 @@ const createSchema = baseSchema
     message: "Las contraseñas no coinciden",
   });
 
-type CreateSchema = z.output<typeof createSchema>;
-type BaseSchema = z.output<typeof baseSchema>;
-type Schema = CreateSchema | BaseSchema;
+const emit = defineEmits<{
+  (
+    e: "submit",
+    data: z.output<typeof createSchema> | z.output<typeof baseSchema>,
+  ): void;
+}>();
 
 const schema = computed(() => (showPassword.value ? createSchema : baseSchema));
 
@@ -135,7 +134,11 @@ watch(
   { immediate: true },
 );
 
-const onSubmit = (event: FormSubmitEvent<Schema>) => {
+const onSubmit = (
+  event: FormSubmitEvent<
+    z.output<typeof createSchema> | z.output<typeof baseSchema>
+  >,
+) => {
   emit("submit", event.data);
 };
 </script>

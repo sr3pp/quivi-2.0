@@ -1,18 +1,5 @@
 <script lang="ts" setup>
-type CarouselCta = {
-  label: string;
-  to?: string;
-  href?: string;
-  target?: string;
-  color?: "primary" | "secondary";
-  variant?: "solid" | "outline" | "ghost";
-};
-
-type ResponsiveImage = {
-  desktop?: string;
-  mobile?: string;
-  alt?: string;
-};
+import type { CarouselCta, ResponsiveImage } from "~/types";
 
 const props = defineProps<{
   title?: string;

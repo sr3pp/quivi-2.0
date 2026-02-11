@@ -83,8 +83,7 @@ UForm.product-form(:schema="schema" :state="state" @submit="onSubmit")
 import { computed, reactive, ref, watch } from "vue";
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-
-type Option = { value: string; name: string };
+import type { NamedOption } from "~/types";
 
 const props = defineProps<{
   product?: any | null;
@@ -126,52 +125,50 @@ const schema = z
   })
   .passthrough();
 
-type FormState = z.infer<typeof schema>;
-
 console.log("props.product", props.productBrands);
 
 const newThumb = ref("");
-const brandOptions = computed<Option[]>(() =>
+const brandOptions = computed<NamedOption<string>[]>(() =>
   props.productBrands.map((brand: any) => ({
     value: brand._id,
     name: brand.name,
   })),
 );
-const categoryOptions = computed<Option[]>(() =>
+const categoryOptions = computed<NamedOption<string>[]>(() =>
   props.categories.map((category: any) => ({
     value: category._id,
     name: category.name,
   })),
 );
-const subcategoryOptions = computed<Option[]>(() =>
+const subcategoryOptions = computed<NamedOption<string>[]>(() =>
   props.subcategories.map((subcategory: any) => ({
     value: subcategory._id,
     name: subcategory.name,
   })),
 );
 
-const yearsOptions = computed<Option[]>(() =>
+const yearsOptions = computed<NamedOption<number>[]>(() =>
   Array.from({ length: new Date().getFullYear() - 1980 + 1 }, (_, i) => ({
     value: i + 1980,
     name: String(i + 1980),
   })),
 );
 
-const carBrandsOptions = computed<Option[]>(() =>
+const carBrandsOptions = computed<NamedOption<string>[]>(() =>
   props.carBrands.map((brand: any) => ({
     value: brand._id,
     name: brand.name,
   })),
 );
 
-const carModelsOptions = computed<Option[]>(() =>
+const carModelsOptions = computed<NamedOption<string>[]>(() =>
   props.carModels.map((model: any) => ({
     value: model._id,
     name: model.name,
   })),
 );
 
-const state = reactive<FormState>({
+const state = reactive<z.infer<typeof schema>>({
   sae: "",
   web: "",
   name: "",
@@ -192,11 +189,14 @@ const state = reactive<FormState>({
   modelsItems: [],
 });
 
-const mapItems = (ids: Array<any> | undefined, options: Option[]) => {
+const mapItems = (
+  ids: Array<any> | undefined,
+  options: NamedOption<string>[],
+) => {
   if (!ids || !Array.isArray(ids)) return [];
   return ids
     .map((id) => options.find((opt) => opt.value === id))
-    .filter(Boolean) as Option[];
+    .filter(Boolean) as NamedOption<string>[];
 };
 
 const mapYears = (years: Array<number> | undefined) => {

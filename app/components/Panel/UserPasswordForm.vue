@@ -16,7 +16,7 @@ import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 
 const emit = defineEmits<{
-  (e: "submit", data: Schema): void;
+  (e: "submit", data: z.output<typeof schema>): void;
 }>();
 
 const schema = z
@@ -33,8 +33,6 @@ const schema = z
     message: "Las contraseñas no coinciden",
   });
 
-type Schema = z.output<typeof schema>;
-
 const formState = reactive({
   password: "",
   password_confirmation: "",
@@ -45,7 +43,7 @@ const resetForm = () => {
   formState.password_confirmation = "";
 };
 
-const onSubmit = (event: FormSubmitEvent<Schema>) => {
+const onSubmit = (event: FormSubmitEvent<z.output<typeof schema>>) => {
   emit("submit", event.data);
   resetForm();
 };

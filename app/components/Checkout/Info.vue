@@ -73,6 +73,8 @@
 
 <script lang="ts" setup>
 import { z } from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
+import type { LabeledOption } from "~/types";
 
 const props = defineProps({
   sat: {
@@ -96,7 +98,6 @@ const stateOptions = estados
   }));
 
 const { usos, regimenes } = props.sat;
-type Option = { value: string; label: string };
 
 const usosOptions = computed(() =>
   (usos || [])
@@ -205,13 +206,15 @@ const schema = z
     }
   });
 
-type Schema = z.output<typeof schema>;
-type FormSubmitEvent<T> = { data: T };
-type FormState = Omit<Schema, "billing"> & {
-  billing: z.output<typeof billingRequiredSchema>;
-};
-
-const emptyAddress = () => ({
+const emptyAddress = (): {
+  street: string;
+  ext_num: string;
+  int_num: string;
+  neighborhood: string;
+  state: string;
+  city: string;
+  zip: string;
+} => ({
   street: "",
   ext_num: "",
   int_num: "",
@@ -221,7 +224,11 @@ const emptyAddress = () => ({
   zip: "",
 });
 
-const formState = reactive<FormState>({
+const formState = reactive<
+  Omit<z.output<typeof schema>, "billing"> & {
+    billing: z.output<typeof billingRequiredSchema>;
+  }
+>({
   shipping: {
     name: "",
     last_name: "",
@@ -242,8 +249,8 @@ const formState = reactive<FormState>({
   },
 });
 
-const shippingCityOptions = ref<Option[]>([]);
-const billingCityOptions = ref<Option[]>([]);
+const shippingCityOptions = ref<LabeledOption[]>([]);
+const billingCityOptions = ref<LabeledOption[]>([]);
 
 const updateMunicipios = (type: "shipping" | "billing", state: string) => {
   const municipios =
@@ -319,7 +326,7 @@ watch(
   },
 );
 
-const processData = (event: FormSubmitEvent<Schema>) => {
+const processData = (event: FormSubmitEvent<z.output<typeof schema>>) => {
   console.log("Form submitted with data:", event.data);
   shipping.value = event.data.shipping;
   billingSw.value = event.data.billingSw;

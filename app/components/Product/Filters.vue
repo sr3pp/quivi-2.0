@@ -15,6 +15,8 @@ ul.flex.flex-col.gap-4
 </template>
 
 <script lang="ts" setup>
+import type { FilterItem } from "~/types";
+
 const props = defineProps<{
   filters?: string;
 }>();
@@ -61,15 +63,6 @@ const createYearList = () => {
     (_, i) => i + startYear,
   );
   return years;
-};
-
-type FilterOption = { label: string; value: any; models?: any[] };
-type FilterItem = {
-  label: string;
-  value: FilterOption | string | null;
-  placeholder: string;
-  options: FilterOption[];
-  key: string;
 };
 
 const filtersForm = ref<FilterItem[]>([

@@ -46,8 +46,6 @@ const schema = z.object({
   message: z.string().min(1, "El mensaje es requerido").trim(),
 });
 
-type Schema = z.output<typeof schema>;
-
 // Form state
 const formState = reactive({
   name: "",
@@ -57,7 +55,9 @@ const formState = reactive({
   message: "",
 });
 
-const sendContactForm = async (event: FormSubmitEvent<Schema>) => {
+const sendContactForm = async (
+  event: FormSubmitEvent<z.output<typeof schema>>,
+) => {
   sending.value = true;
   const data = {
     context: event.data,

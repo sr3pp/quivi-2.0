@@ -39,6 +39,7 @@
 
 <script lang="ts" setup>
 import type { TableColumn } from "@nuxt/ui";
+import type { PanelProductRow } from "~/types";
 import PanelProductForm from "~/components/Panel/ProductForm.vue";
 import { fetchProducts } from "@/assets/ts/utilities";
 
@@ -65,15 +66,7 @@ const filters = ref(_filters as string);
 const modalSw = ref(false);
 const products: any = ref([]);
 const pagination = ref({});
-const currentProduct: Ref<Product | null> = ref(null);
-
-type Product = {
-  _id: string;
-  sae: string;
-  web: string;
-  name: string;
-  [key: string]: any;
-};
+const currentProduct: Ref<PanelProductRow | null> = ref(null);
 
 const prodctData = ref(
   await fetchProducts(route.path, page as string, _search as string, _filters),
@@ -82,7 +75,7 @@ const prodctData = ref(
 products.value = prodctData.value.products;
 pagination.value = prodctData.value.pagination;
 
-const columns: TableColumn<Product>[] = [
+const columns: TableColumn<PanelProductRow>[] = [
   {
     accessorKey: "sae",
     header: "SAE",

@@ -1,8 +1,5 @@
 <script setup lang="ts">
-type WelcomeImages = {
-  primary?: string;
-  secondary?: string;
-};
+import type { WelcomeImages } from "~/types";
 
 defineProps<{
   title: String;

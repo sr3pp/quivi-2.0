@@ -64,6 +64,7 @@
 <script lang="ts" setup>
 import { h, resolveComponent } from "vue";
 import type { TableColumn } from "@nuxt/ui";
+import type { PanelShippingRow } from "~/types";
 definePageMeta({
   layout: "panel",
 });
@@ -88,16 +89,7 @@ const newTracking = ref({
   url: "",
 });
 
-type Shipping = {
-  order?: string;
-  name?: string;
-  last_name?: string;
-  createdAt?: string;
-  status?: string;
-  [key: string]: any;
-};
-
-const columns: TableColumn<Shipping>[] = [
+const columns: TableColumn<PanelShippingRow>[] = [
   {
     accessorKey: "order",
     header: "Order",
