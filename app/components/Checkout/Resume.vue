@@ -1,7 +1,7 @@
 <template lang="pug">
-UPageGrid.quivi-checkout-resume
-    div(class="col-span-1 sm:col-span-2")
-        SrText(text="Datos de Personales" class="subtitle")
+UPageGrid
+    div(class="col-span-12 sm:col-span-6 md:col-span-4")
+        p.font-bebas.text-3xl Datos de Personales
         template(v-for="(value, key) in shippmentData")
             p(v-if="typeof value == 'string'")
               strong {{ keyDict[key] }}: 
@@ -9,18 +9,18 @@ UPageGrid.quivi-checkout-resume
             template(v-else-if="typeof value == 'object'")
               br
               br
-              SrText(text="Dirección de envio" class="subtitle")
+              p.font-bebas.text-3xl Dirección de envio
               p(v-for="(v, k) in value")
                 strong {{ keyDict[k] }}: 
                 span {{ v }}
 
-    div(class="col-span-1 sm:col-span-2")
-        SrText(text="Metodo de pago" class="subtitle")
-        SrText(:text="paymentMethod.name")
+    div(class="col-span-12 sm:col-span-6 md:col-span-8")
+        p.font-bebas.text-3xl Metodo de pago
+        p {{ paymentMethod.label || paymentMethod.value || "No seleccionado" }}
         br
         br
         template(v-if="billingSw")
-          SrText(text="Datos de Facturacion" class="subtitle")
+          p.font-bebas.text-3xl Datos de Facturacion
           template(v-for="(value, key) in billData")
             p(v-if="typeof value == 'string'")
               strong {{ keyDict[key] || key }}: 

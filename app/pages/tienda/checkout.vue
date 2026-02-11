@@ -1,37 +1,30 @@
 <template lang="pug">
-.checkout
-    .checkout-loading(v-if="verifyingPayment")
-        UContainer
-            SrText(text="Verificando Pago..." class="title" alignment="center")
-    UContainer(:with-padding="true")
-        SrText(text="Checkout" class="title" alignment="center")
-
-        UPageGrid
-            div(class="col-span-1 sm:col-span-3/4" class="column")
-              CheckoutSteps
-              ClientOnly
-                TransitionGroup(name="fade")
-                  CheckoutInfo(v-show="stepsState[0].active" :sat="sat" key="1")
-                  CheckoutPayment(v-show="stepsState[1].active" key="2")
-                  CheckoutResume(v-show="stepsState[2].active" :sat="sat" key="3")
-                        
-            div(class="col-span-1 sm:col-span-1/4")
-              .cart-resume
-                ClientOnly
-                    CartList(:products="cart.products" :editable="false")
-                    CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
-                UButton(label="Pagar" :disabled="!paymentLock" kind="primary" @click="termsModal.toggle()")
-    SrModal(ref="termsModal" class="modal-terms")
-        template(#body)
-            QuiviTerms(:terms="terms" )
-            .check
-              SrFormBox( v-model="termsSw" type="checkbox")
-              SrText(@click="termsSw = !termsSw" :html="termsLegend")
-        template(#footer)
-          SrText(text="Para continuar acepta los términos y condiciones")
-          SrText(:html="termsLegend2")
-          br
-          UButton(label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
+UContainer
+    div(v-if="verifyingPayment" class="col-span-12")
+      p Verificando Pago...
+    UPageGrid(v-else)
+        div(class="col-span-1 sm:col-span-8" class="column")
+          CheckoutSteps
+          ClientOnly
+            TransitionGroup(name="fade")
+              CheckoutInfo(v-show="stepsState[0].active" :sat="sat.meta.content" key="1")
+              CheckoutPayment(v-show="stepsState[1].active" key="2")
+              CheckoutResume(v-show="stepsState[2].active" :sat="sat.meta.content" key="3")
+                    
+        div(class="col-span-1 sm:col-span-4")
+          ClientOnly
+              CartList(:products="cart.products" :editable="false")
+              CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
+          UButton(label="Pagar" :disabled="!paymentLock" kind="primary" @click="termsModalSw = true")
+    UModal.terms-modal( v-model:open="termsModalSw")
+      template(#title)
+        p Para continuar acepta los términos y condiciones
+      template(#body)
+        p terms here
+        UCheckbox(v-model="termsSw" label="Acepta los términos y condiciones para proceder al pago" class="check")
+      template(#footer)
+        p(v-html="termsLegend2")
+        UButton(label="Pagar" @click="processPayment" :disabled="!termsSw" :loading="loadingPayment")
 </template>
 
 <script lang="ts" setup>
@@ -61,22 +54,34 @@ const {
   clearCheckout,
 } = useCheckout();
 
-const [{ page: termsPage }, { page: satPage }] = await Promise.all([
-  usePageContent("/_config/terms", "config"),
-  usePageContent("/_config/sat", "config"),
-]);
-const terms = computed(() => termsPage.value ?? {});
-const sat = computed(() => satPage.value ?? {});
+const { data } = await useAsyncData("checkout-config", async () => {
+  const terms = await queryCollection("config")
+    .where("stem", "=", "_config/terms")
+    .first();
+  const sat = await queryCollection("config")
+    .where("stem", "=", "_config/sat")
+    .first();
 
-const termsLegend: string =
-  "Acepta los <span class='highlight'>términos y condiciones</span> para proceder al pago";
+  return {
+    terms,
+    sat,
+  };
+});
+
+const { terms, sat } = data.value as {
+  terms: Object;
+  sat: Object;
+};
+
+console.log("terms", terms);
+console.log("sat", sat);
+
 const termsLegend2: string =
   "Serás redirigido a un sitio externo a <span class='highlight'>Quivi.mx</span>";
 
 const loadingPayment: Ref<boolean> = ref(false);
 const verifyingPayment: Ref<Boolean> = ref(false);
 const termsModalSw: Ref<Boolean> = ref(false);
-const termsModal: Ref<any> = ref(null);
 const termsSw: Ref<Boolean> = ref(false);
 
 const saveOrder = async (order: any) => {
@@ -329,7 +334,7 @@ onMounted(() => {
     position: fixed;
     z-index: 3;
     background-color: rgba($color-white, 0.5);
-    backdrop-filter: blur(unit(5));
+    backdrop-filter: blur(pxToRem(5));
     display: flex;
     align-items: center;
   }

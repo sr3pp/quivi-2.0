@@ -2,7 +2,7 @@
 ul.quivi-checkout-steps
   li.quivi-checkout-steps-item(v-for="(step, i) in  stepsState" :key="i" :class="{active: step.active, done: step.done}")
     button.quivi-checkout-steps-item-label(@click="setStepHandler(i)" :disabled="!step.enabled")
-      SrText(:text="step.label" class="subtitle")
+      p {{ step.label }}
       span.quivi-checkout-steps-item-status
 </template>
 

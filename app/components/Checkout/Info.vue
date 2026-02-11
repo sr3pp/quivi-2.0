@@ -1,12 +1,79 @@
 <template lang="pug">
-.quivi-checkout-info
-  SrForm.quivi-checkout-form(:fieldsets="saleForm" @submit="processData" submit="hidden")
-    template(#submit)
-      UButton(label="Continuar")
+  UForm.flex.flex-col.gap-6(:state="formState" :schema="schema" @submit="processData")
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")
+      legend.font-bebas.text-3xl Datos personales
+      UFormField(label="Nombre" name="shipping.name" required)
+        UInput.w-full(v-model="formState.shipping.name" placeholder="Nombre")
+      UFormField(label="Apellidos" name="shipping.last_name" required)
+        UInput.w-full(v-model="formState.shipping.last_name" placeholder="Apellidos")
+      UFormField(label="E-mail" name="shipping.email" required)
+        UInput.w-full(v-model="formState.shipping.email" type="email" placeholder="correo@dominio.com")
+      UFormField(label="Telefono" name="shipping.phone" required)
+        UInput.w-full(v-model="formState.shipping.phone" type="tel" placeholder="Telefono")
+
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")
+      legend.font-bebas.text-3xl Direccion de envio
+      UFormField(label="Calle" name="shipping.address.street" required)
+        UInput.w-full(v-model="formState.shipping.address.street" placeholder="Calle")
+      UFormField(label="Numero exterior" name="shipping.address.ext_num" required)
+        UInput.w-full(v-model="formState.shipping.address.ext_num" placeholder="Numero exterior")
+      UFormField(label="Numero interior" name="shipping.address.int_num")
+        UInput.w-full(v-model="formState.shipping.address.int_num" placeholder="Numero interior")
+      UFormField(label="Colonia" name="shipping.address.neighborhood" required)
+        UInput.w-full(v-model="formState.shipping.address.neighborhood" placeholder="Colonia")
+      UFormField(label="Estado" name="shipping.address.state" required)
+        USelect.w-full(v-model="formState.shipping.address.state" :items="stateOptions")
+      UFormField(label="Municipio" name="shipping.address.city" required)
+        USelect.w-full(v-model="formState.shipping.address.city" :items="shippingCityOptions")
+      UFormField(label="Codigo postal" name="shipping.address.zip" required)
+        UInput.w-full(v-model="formState.shipping.address.zip" placeholder="Codigo postal")
+
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")
+      legend.font-bebas.text-3xl Facturacion
+      UFormField(name="billingSw")
+        UCheckbox(v-model="formState.billingSw" label="Requiero Factura")
+
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")(v-if="formState.billingSw")
+      legend.font-bebas.text-3xl Datos de facturacion
+      UFormField(label="Nombre / Razon Social" name="billing.name" required)
+        UInput.w-full(v-model="formState.billing.name" placeholder="Nombre / Razon Social")
+      UFormField(label="Telefono" name="billing.phone" required)
+        UInput.w-full(v-model="formState.billing.phone" type="tel" placeholder="Telefono")
+      UFormField(label="E-mail" name="billing.email" required)
+        UInput.w-full(v-model="formState.billing.email" type="email" placeholder="correo@dominio.com")
+      UFormField(label="RFC" name="billing.rfc" required)
+        UInput.w-full(v-model="formState.billing.rfc" placeholder="RFC")
+      UFormField(label="CFDI" name="billing.cfdi" required)
+        USelect.w-full(v-model="formState.billing.cfdi" :items="usosOptions")
+      UFormField(label="Regimen" name="billing.regime" required)
+        USelect.w-full(v-model="formState.billing.regime" :items="regimenesOptions")
+
+    fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")(v-if="formState.billingSw")
+      legend.font-bebas.text-3xl Direccion de facturacion
+      UFormField(label="Usar direccion de envio" name="billingAddressSw")
+        UCheckbox(v-model="formState.billingAddressSw" label="Usar direccion de envio")
+      UFormField(label="Calle" name="billing.address.street" required)
+        UInput.w-full(v-model="formState.billing.address.street" :disabled="formState.billingAddressSw" placeholder="Calle")
+      UFormField(label="Numero exterior" name="billing.address.ext_num" required)
+        UInput.w-full(v-model="formState.billing.address.ext_num" :disabled="formState.billingAddressSw" placeholder="Numero exterior")
+      UFormField(label="Numero interior" name="billing.address.int_num")
+        UInput.w-full(v-model="formState.billing.address.int_num" :disabled="formState.billingAddressSw" placeholder="Numero interior")
+      UFormField(label="Colonia" name="billing.address.neighborhood" required)
+        UInput.w-full(v-model="formState.billing.address.neighborhood" :disabled="formState.billingAddressSw" placeholder="Colonia")
+      UFormField(label="Estado" name="billing.address.state" required)
+        USelect.w-full(v-model="formState.billing.address.state" :items="stateOptions" :disabled="formState.billingAddressSw")
+      UFormField(label="Municipio" name="billing.address.city" required)
+        USelect.w-full(v-model="formState.billing.address.city" :items="billingCityOptions" :disabled="formState.billingAddressSw")
+      UFormField(label="Codigo postal" name="billing.address.zip" required)
+        UInput.w-full(v-model="formState.billing.address.zip" :disabled="formState.billingAddressSw" placeholder="Codigo postal")
+
+    .mt-4
+      UButton(type="submit" label="Continuar")
 </template>
 
 <script lang="ts" setup>
-import { validateForm, dataFromForm } from "@/assets/ts/utils";
+import { z } from "zod";
+import type { FormSubmitEvent } from "@nuxt/ui";
 
 const props = defineProps({
   sat: {
@@ -20,484 +87,282 @@ const { shipping, billing, billingSw, billingAddressSw, setStep } =
 
 const { estados } = await $fetch("/api/content?page=_config/estados");
 
-const stateOptions = estados.map((state: any) => ({
-  value: state.name,
-  name: state.name,
-}));
-
-const processData = (data: any) => {
-  if ("errors" in data) {
-    //display errors
-    console.log(data.errors);
-  } else {
-    shipping.value = data.shipping;
-    billingSw.value = data.billingSw;
-    if (billingSw.value) {
-      billing.value = data.billing;
-    }
-    setStep(1);
-  }
-};
+const stateOptions = estados
+  .filter(
+    (state: any) => state?.name != null && String(state.name).trim() !== "",
+  )
+  .map((state: any) => ({
+    value: String(state.name).trim(),
+    label: String(state.name).trim(),
+  }));
 
 const { usos, regimenes } = props.sat;
+type Option = { value: string; label: string };
 
-const saleForm = ref([
-  {
-    name: "Datos personales",
-    fields: [
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.name",
-          required: true,
-          label: "Nombre",
-          value: "",
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.last_name",
-          required: true,
-          label: "Apellidos",
-          value: "",
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.email",
-          required: true,
-          label: "E-mail",
-          value: "",
-          type: "email",
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.phone",
-          required: true,
-          label: "Telefono",
-          value: "",
-        },
-      },
-    ],
-  },
-  {
-    name: "Direccion de envio",
-    fields: [
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.address.street",
-          required: true,
-          label: "Calle",
-          value: "",
-          oninput: (e: any) => {
-            updateBillingAddress("shipping.address.street", e);
-          },
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.address.ext_num",
-          label: "Numero exterior",
-          required: true,
-          value: "",
-          oninput: (e: any) => {
-            updateBillingAddress("shipping.address.ext_num", e);
-          },
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.address.int_num",
-          label: "Numero interior",
-          value: "",
-          oninput: (e: any) => {
-            updateBillingAddress("shipping.address.int_num", e);
-          },
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.address.neighborhood",
-          required: true,
-          label: "Colonia",
-          value: "",
-          oninput: (e: any) => {
-            updateBillingAddress("shipping.address.neighborhood", e);
-          },
-        },
-      },
-      {
-        component: "SrFormSelect",
-        props: {
-          name: "shipping.address.state",
-          required: true,
-          label: "_",
-          value: "",
-          options: stateOptions,
-          onchange: (e: any) => {
-            setMunicipio("shipping", e);
-            updateBillingAddress("shipping.address.state", e);
-          },
-        },
-      },
-      {
-        component: "SrFormSelect",
-        props: {
-          name: "shipping.address.city",
-          label: "_",
-          required: true,
-          value: "",
-          options: [],
-          onchange: (e: any) => {
-            updateBillingAddress("shipping.address.city", e);
-          },
-        },
-      },
-      {
-        component: "SrFormInput",
-        props: {
-          name: "shipping.address.zip",
-          required: true,
-          label: "Codigo postal",
-          value: "",
-          oninput: (e: any) => {
-            updateBillingAddress("shipping.address.zip", e);
-          },
-        },
-      },
-    ],
-  },
-  {
-    name: "Facturacion",
-    fields: [
-      {
-        component: "SrFormBox",
-        props: {
-          type: "checkbox",
-          label: "Requiero Factura",
-          name: "billingSw",
-          modelValue: billingSw.value,
-          onchange: (e: any) => {
-            const sw = e.target.checked;
-            appendBilling(sw);
-          },
-        },
-      },
-    ],
-  },
-]);
-
-const updateBillingAddress = (key: string, e: any) => {
-  if (billingAddressSw.value) {
-    saleForm.value.forEach((fieldset: any) => {
-      fieldset.fields.forEach((field: any) => {
-        if (field.props.name === key.replace("shipping", "billing")) {
-          field.props.value = e.target.value;
-          if (field.props.name === "billing.address.state") {
-            setMunicipio("billing", e);
-          }
-        }
-      });
-    });
-  }
-};
-
-const appendBilling = (sw: boolean) => {
-  billingSw.value = sw;
-  const fieldsets = [
-    {
-      name: "Datos de facturación",
-      fields: [
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.name",
-            required: true,
-            label: "Nombre / Razón Social",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.phone",
-            required: true,
-            label: "Telefono",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.email",
-            required: true,
-            label: "E-mail",
-            type: "email",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.rfc",
-            required: true,
-            label: "RFC",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormSelect",
-          props: {
-            name: "billing.cfdi",
-            required: true,
-            label: "_",
-            value: "",
-            options: usos,
-          },
-        },
-        {
-          component: "SrFormSelect",
-          props: {
-            name: "billing.regime",
-            required: true,
-            label: "_",
-            value: "",
-            options: regimenes,
-          },
-        },
-        {
-          component: "SrFormBox",
-          props: {
-            type: "checkbox",
-            label: "Usar direccion de envio",
-            value: false,
-            name: "billingAddressSw",
-            onchange: () => {
-              setBillAddress();
-            },
-          },
-        },
-      ],
-    },
-    {
-      name: "Direccion de facturación",
-      fields: [
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.address.street",
-            required: true,
-            label: "Calle",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.address.ext_num",
-            label: "Numero exterior",
-            required: true,
-            value: "",
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.address.int_num",
-            label: "Numero interior",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.address.neighborhood",
-            required: true,
-            label: "Colonia",
-            value: "",
-          },
-        },
-        {
-          component: "SrFormSelect",
-          props: {
-            name: "billing.address.state",
-            label: "_",
-            required: true,
-            value: "",
-            options: stateOptions,
-            onChange: (e: InputEvent) => {
-              setMunicipio("billing", e);
-              updateBillingAddress("billing.address.state", e);
-            },
-          },
-        },
-        {
-          component: "SrFormSelect",
-          props: {
-            name: "billing.address.city",
-            label: "_",
-            required: true,
-            value: "",
-            options: [],
-          },
-        },
-        {
-          component: "SrFormInput",
-          props: {
-            name: "billing.address.zip",
-            required: true,
-            label: "Codigo postal",
-            value: "",
-          },
-        },
-      ],
-    },
-  ];
-  if (sw) {
-    fieldsets.forEach((fieldset: any) => {
-      saleForm.value.push(fieldset);
-    });
-  } else {
-    saleForm.value.splice(
-      saleForm.value.length - fieldsets.length,
-      fieldsets.length,
-    );
-  }
-};
-
-const findField = (fieldName: string): any => {
-  let field;
-
-  saleForm.value.some((fieldset: any) => {
-    fieldset.fields.some((_field: any) => {
-      if (_field.props.name === fieldName) {
-        field = _field;
-        return _field;
+const usosOptions = computed(() =>
+  (usos || [])
+    .filter((item: any) => {
+      const val = typeof item === "object" ? item?.value : item;
+      return val != null && String(val).trim() !== "";
+    })
+    .map((item: any) => {
+      if (typeof item === "object" && item.value != null) {
+        return {
+          value: String(item.value).trim(),
+          label: item.label || item.name || String(item.value).trim(),
+        };
       }
-    });
+      return { value: String(item).trim(), label: String(item).trim() };
+    }),
+);
+
+const regimenesOptions = computed(() =>
+  (regimenes || [])
+    .filter((item: any) => {
+      const val = typeof item === "object" ? item?.value : item;
+      return val != null && String(val).trim() !== "";
+    })
+    .map((item: any) => {
+      if (typeof item === "object" && item.value != null) {
+        return {
+          value: String(item.value).trim(),
+          label: item.label || item.name || String(item.value).trim(),
+        };
+      }
+      return { value: String(item).trim(), label: String(item).trim() };
+    }),
+);
+
+const optionalText = z.string().optional().or(z.literal(""));
+const requiredText = (message: string) => z.string().min(1, message).trim();
+
+const addressSchema = z.object({
+  street: requiredText("La calle es requerida"),
+  ext_num: requiredText("El numero exterior es requerido"),
+  int_num: optionalText,
+  neighborhood: requiredText("La colonia es requerida"),
+  state: requiredText("El estado es requerido"),
+  city: requiredText("El municipio es requerido"),
+  zip: requiredText("El codigo postal es requerido"),
+});
+
+const billingSchema = z.object({
+  name: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  rfc: z.string(),
+  cfdi: z.string(),
+  regime: z.string(),
+  address: z.object({
+    street: z.string(),
+    ext_num: z.string(),
+    int_num: z.string().optional().or(z.literal("")),
+    neighborhood: z.string(),
+    state: z.string(),
+    city: z.string(),
+    zip: z.string(),
+  }),
+});
+
+const billingRequiredSchema = z.object({
+  name: requiredText("El nombre es requerido"),
+  phone: requiredText("El telefono es requerido"),
+  email: z
+    .string()
+    .min(1, "El correo electronico es requerido")
+    .email("Ingresa un correo electronico valido"),
+  rfc: requiredText("El RFC es requerido"),
+  cfdi: requiredText("El CFDI es requerido"),
+  regime: requiredText("El regimen es requerido"),
+  address: addressSchema,
+});
+
+const schema = z
+  .object({
+    shipping: z.object({
+      name: requiredText("El nombre es requerido"),
+      last_name: requiredText("Los apellidos son requeridos"),
+      email: z
+        .string()
+        .min(1, "El correo electronico es requerido")
+        .email("Ingresa un correo electronico valido"),
+      phone: requiredText("El telefono es requerido"),
+      address: addressSchema,
+    }),
+    billingSw: z.boolean(),
+    billingAddressSw: z.boolean().optional(),
+    billing: billingSchema.optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.billingSw) return;
+    const result = billingRequiredSchema.safeParse(data.billing ?? {});
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        ctx.addIssue({
+          ...issue,
+          path: ["billing", ...issue.path],
+        });
+      });
+    }
   });
 
-  return field;
+type Schema = z.output<typeof schema>;
+type FormState = Omit<Schema, "billing"> & {
+  billing: z.output<typeof billingRequiredSchema>;
 };
 
-const setBillAddress = () => {
-  if (!billingSw.value) return;
+const emptyAddress = () => ({
+  street: "",
+  ext_num: "",
+  int_num: "",
+  neighborhood: "",
+  state: "",
+  city: "",
+  zip: "",
+});
 
-  billingAddressSw.value = !billingAddressSw.value;
+const formState = reactive<FormState>({
+  shipping: {
+    name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    address: emptyAddress(),
+  },
+  billingSw: false,
+  billingAddressSw: false,
+  billing: {
+    name: "",
+    phone: "",
+    email: "",
+    rfc: "",
+    cfdi: "",
+    regime: "",
+    address: emptyAddress(),
+  },
+});
 
-  saleForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      if (field.props.name.includes("billing.address")) {
-        field.props.disabled = billingAddressSw.value;
-        if (
-          field.props.name === "billing.address.state" &&
-          billingAddressSw.value
-        ) {
-          const field = findField("shipping.address.state");
-          if (field.props.value) {
-            setMunicipio("billing", {
-              target: { value: field.props.value },
-            } as any);
-          }
-        }
-      }
-    });
-  });
+const shippingCityOptions = ref<Option[]>([]);
+const billingCityOptions = ref<Option[]>([]);
 
-  if (billingAddressSw.value) {
-    saleForm.value.forEach((fieldset: any) => {
-      fieldset.fields.forEach((field: any) => {
-        if (field.props.name.includes("billing.address")) {
-          field.props.disabled = true;
-          field.props.value = findField(
-            field.props.name.replace("billing", "shipping"),
-          ).props.value;
-        }
-      });
-    });
-  }
-};
-
-const setMunicipio = (key: string, event: InputEvent) => {
-  const value = (event.target as HTMLInputElement).value;
-
-  const municipios = estados.find(
-    (state: any) => state.name === value,
-  )?.municipios;
-
-  const setMunicipios = (field: any, municipios: any) => {
-    field.props.options = municipios.map((municipio: any) => ({
-      value: municipio,
-      name: municipio,
+const updateMunicipios = (type: "shipping" | "billing", state: string) => {
+  const municipios =
+    estados.find((item: any) => item.name === state)?.municipios ?? [];
+  const options = municipios
+    .filter((m: any) => m != null && String(m).trim() !== "")
+    .map((municipio: any) => ({
+      value: String(municipio).trim(),
+      label: String(municipio).trim(),
     }));
-  };
-
-  const field = findField(`${key}.address.city`);
-
-  if (field) {
-    setMunicipios(field, municipios);
-  }
-
-  return municipios;
-};
-
-const accessObject = (keys: string[], field: any, data: any) => {
-  const [key, ...rest] = keys;
-  if (!data[key]) return;
-  if (rest.length) {
-    accessObject(rest, field, data[key]);
+  if (type === "shipping") {
+    shippingCityOptions.value = options;
   } else {
-    field.props.value = data[key];
-    if (field.props.value && field.props.name === "billing.address.state") {
-      setMunicipio("billing", {
-        target: { value: data[key] },
-      } as any);
-    }
-    if (field.props.value && field.props.name === "shipping.address.state") {
-      setMunicipio("shipping", {
-        target: { value: data[key] },
-      } as any);
-    }
-    if (
-      billingAddressSw.value &&
-      field.props.name.includes("billing.address")
-    ) {
-      field.props.disabled = true;
-    }
+    billingCityOptions.value = options;
+  }
+  if (!municipios.includes(formState[type].address.city)) {
+    formState[type].address.city = "";
   }
 };
 
-const fillForm = (data: any) => {
-  saleForm.value.forEach((fieldset: any) => {
-    fieldset.fields.forEach((field: any) => {
-      const name = field.props.name;
-      if (name.includes(".")) {
-        const keys = name.split(".");
-        accessObject(keys, field, data);
-      } else {
-        field.props.value = data[name];
-      }
-    });
-  });
+const syncBillingAddress = () => {
+  formState.billing.address = {
+    ...formState.shipping.address,
+  };
+  updateMunicipios("billing", formState.shipping.address.state);
+};
+
+watch(
+  () => formState.shipping.address.state,
+  (value) => {
+    updateMunicipios("shipping", value);
+    if (formState.billingAddressSw) {
+      formState.billing.address.state = value;
+      updateMunicipios("billing", value);
+    }
+  },
+);
+
+watch(
+  () => formState.billing.address.state,
+  (value) => {
+    if (!formState.billingAddressSw) {
+      updateMunicipios("billing", value);
+    }
+  },
+);
+
+watch(
+  () => formState.shipping.address,
+  () => {
+    if (formState.billingAddressSw) {
+      syncBillingAddress();
+    }
+  },
+  { deep: true },
+);
+
+watch(
+  () => formState.billingSw,
+  (value) => {
+    if (!value) {
+      formState.billingAddressSw = false;
+    }
+  },
+);
+
+watch(
+  () => formState.billingAddressSw,
+  (value) => {
+    if (value) {
+      syncBillingAddress();
+    }
+  },
+);
+
+const processData = (event: FormSubmitEvent<Schema>) => {
+  console.log('Form submitted with data:', event.data);
+  shipping.value = event.data.shipping;
+  billingSw.value = event.data.billingSw;
+  billingAddressSw.value = event.data.billingAddressSw ?? false;
+  if (event.data.billingSw && event.data.billing) {
+    billing.value = event.data.billing;
+  }
+  console.log('Calling setStep(1)');
+  setStep(1);
 };
 
 onMounted(() => {
-  if (billingSw.value) {
-    appendBilling(true);
+  formState.billingSw = billingSw.value;
+  formState.billingAddressSw = billingAddressSw.value;
+  if (shipping.value) {
+    formState.shipping = {
+      ...formState.shipping,
+      ...shipping.value,
+      address: {
+        ...formState.shipping.address,
+        ...(shipping.value.address || {}),
+      },
+    };
   }
-  fillForm({
-    shipping: shipping.value,
-    billing: billing.value,
-    billingSw: billingSw.value,
-  });
+  if (billing.value) {
+    formState.billing = {
+      ...formState.billing,
+      ...billing.value,
+      address: {
+        ...formState.billing.address,
+        ...(billing.value.address || {}),
+      },
+    };
+  }
+  if (formState.shipping.address.state) {
+    updateMunicipios("shipping", formState.shipping.address.state);
+  }
+  if (formState.billing.address.state) {
+    updateMunicipios("billing", formState.billing.address.state);
+  }
+  if (formState.billingAddressSw) {
+    syncBillingAddress();
+  }
 });
 </script>
 

@@ -70,7 +70,7 @@ watch(search, () => {
 
 <template lang="pug">
 UContainer
-  SrFormSelect(v-model="catalog.brand" v-if="catalog.card" :options="brands" label="Marca")
+  USelect(v-model="catalog.brand" v-if="catalog.card" :items="brands" label="Marca")
   div.catalog-card(v-if="catalog.card")
     NuxtImg(:src="catalog.card.thumb" alt="placeholder" :editable="true" @media-gallery="EmitHandler($event, catalog.card, (data) => editPicture(data, $emit('media-modal')))")
     div  
