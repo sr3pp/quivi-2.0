@@ -12,14 +12,15 @@
             div(class="col-span-1 sm:col-span-2")
                 Bill(:bill="order.bill" v-if="order.bill")
 
-        UButton(label="Ir a Tienda" href="/")
+        UButton(label="Ir a Tienda" to="/")
 
 </template>
 
 <script lang="ts" setup>
 import { paymentKeyDict } from "@/assets/ts/utilities";
+import type { SaleOrder } from "~/types";
 const { order_id } = useRoute().query;
-const order = await $fetch(`/api/sales/${order_id}`);
+const order = await $fetch<SaleOrder>(`/api/sales/${order_id}`);
 
 await $fetch(`/api/send-mail`, {
   method: "POST",

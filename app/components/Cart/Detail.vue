@@ -14,8 +14,6 @@ div.flex.flex-col.gap-2.border-t-2.border-gray-200.pt-4
     div.flex.justify-between.font-bold.text-lg
       p.title Total:
       p.title {{ toPrice(total) }}
-
-    UButton(href="/tienda/checkout" label="Pagar" class="mx-auto")
 </template>
 
 <script lang="ts" setup>

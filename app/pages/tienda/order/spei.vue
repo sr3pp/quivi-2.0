@@ -13,10 +13,12 @@
         SrText(:text="`Clabe: ${account.CLABE}`")
       div(tag="li" class="col-span-1")
         p(v-html="paymentStepsText[1]")
-    UButton(href="/" label="Ir a la tienda")
+    UButton(to="/" label="Ir a la tienda")
 </template>
 
 <script lang="ts" setup>
+import type { SaleOrder } from "~/types";
+
 const { order_id } = useRoute().query;
 const [{ page: businessPage }, { page: contactPage }] = await Promise.all([
   usePageContent("/_config/business", "config"),
@@ -29,12 +31,12 @@ const paymentStepsText = [
   `Envia un correo con tu <strong>número de orden</strong> en el <strong>asunto</strong> y el comprobante de pago a esta dirección: <strong>${contactMail}</strong>`,
 ];
 
-const order = await $fetch(`/api/sales/${order_id}`);
+const order = await $fetch<SaleOrder>(`/api/sales/${order_id}`);
 await $fetch(`/api/send-mail`, {
   method: "POST",
   body: {
     template: "sale",
-    to: order.shipping.email,
+    to: order.shipment.email,
     subject: "Resumen de compra Quivi.mx",
     context: order,
   },

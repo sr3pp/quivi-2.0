@@ -11,7 +11,7 @@ ul.flex.flex-col.gap-4
             )
     li.flex.justify-between
       UButton(@click="filter" label="Filtrar")
-      UButton(v-if="filters" href="/tienda" label="Limpiar Filtros")
+      UButton(v-if="filters" to="/tienda" label="Limpiar Filtros")
 </template>
 
 <script lang="ts" setup>

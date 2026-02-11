@@ -6,19 +6,19 @@
         SrText(:html="steps[0]")
         SrText(:html="steps[1]")
         iframe(:src="reciptUrl" width="100%" height="1000px" ref="iframe")
-        UButton(label="Imprimir" :href="reciptUrl" target="_blank")
+        UButton(label="Imprimir" :to="reciptUrl" target="_blank")
 </template>
 
 <script lang="ts" setup>
+import type { SaleOrder } from "~/types";
+
 const { public: config }: any = useRuntimeConfig();
 const baseUrl = config.openpay.barcodeUrl;
 const merchId = config.openpay.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
-const { page: contactPage } = await usePageContent("/_config/contact", {
-  collection: "config",
-});
+const { page: contactPage } = await usePageContent("/_config/contact", "config");
 const email = contactPage.value?.email ?? "";
 
 const iframe: Ref<HTMLIFrameElement | null> = ref(null);
@@ -28,7 +28,7 @@ const steps = [
   `Envia un correo con tu <strong>número de orden</strong> en el <strong>asunto</strong> y el comprobante de pago a esta dirección: <strong>${email}</strong>.`,
 ];
 
-const order = await $fetch(`/api/sales/${order_id}`);
+const order = await $fetch<SaleOrder>(`/api/sales/${order_id}`);
 await $fetch(`/api/send-mail`, {
   method: "POST",
   body: {

@@ -3,6 +3,7 @@ export { Product } from "./product";
 export { saeOrder } from "./saeOrder";
 export { BillData } from "./BillData";
 export { ShippmentData } from "./ShippmentData";
+export { SaleOrder } from "./SaleOrder";
 export { Cart } from "./Cart";
 export { Address } from "./Address";
 export {

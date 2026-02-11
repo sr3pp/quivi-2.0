@@ -12,6 +12,7 @@ UDrawer(v-model:open="isOpen" direction="right")
           p.font-bebas.text-xl.text-center Tu carrito está vacío
   template(#footer)
     CartDetail(:total="cart.total" :subtotal="cart.subtotal" :shipping="cart.shipping" :qty="totalCartProducts")
+    UButton(to="/tienda/checkout" label="Pagar" class="mx-auto")
 </template>
 
 <script lang="ts" setup>

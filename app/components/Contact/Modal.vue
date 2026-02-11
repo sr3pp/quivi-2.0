@@ -29,7 +29,7 @@ UModal(v-model:open="modalSw" :ui="{ content: 'max-w-2xl' }")
               p 55 7476 3104
           ul.flex.justify-between.gap-2.mt-auto
             li.flex.gap-2.text-primary(v-for="(item, i) in social" :key="i")
-              NuxtLink(:href="item.url" target="_blank" :aria-label="item.label")
+              NuxtLink(:to="item.url" target="_blank" :aria-label="item.label")
                 SvgIcon.size-6(:name="item.icon")
         div(class="col-span-1 sm:col-span-6")
           NuxtImg.h-full.object-cover(src="/img/contacto.jpg" alt="Assesor trabajando")

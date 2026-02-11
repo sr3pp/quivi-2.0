@@ -9,7 +9,7 @@ UCard(:ui="{ header: 'p-0 sm:px-0', footer: 'flex justify-between items-center' 
     p(v-if="!product.discount") {{ toPrice(product.price) }}
     p(v-else) {{ toPrice(processDiscount(product)) }}
   template(#footer)
-    UButton(:href="`/producto/${product._id}`" size="xl" label="Ver Mas" color="secondary" :loading="false" :disabled="false")
+    UButton(:to="`/producto/${product._id}`" size="xl" label="Ver Mas" color="secondary" :loading="false" :disabled="false")
     UTooltip(:text="product.extra" :content="{align: 'end',side: 'top',sideOffset: 2}")
       UButton(icon="i-lucide-info" aria-label="Detalles")
                 
