@@ -84,7 +84,6 @@ export default defineNuxtConfig({
   modules: [
     "@vueuse/nuxt",
     "nuxt-swiper",
-    "@nuxtjs/eslint-module",
     "@nuxt/content",
     // "@productdevbook/chatwoot",
     "@nuxt/ui",
