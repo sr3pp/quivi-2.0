@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
-import type { Cart, Product } from "~/types";
+import type { Product } from "~/types";
 
 const { params } = useRoute();
 const { _id } = params;
@@ -12,17 +12,32 @@ const { data: product } = await useAsyncData<Product>(
   () => $fetch(`/api/product/${productId}` as string),
 );
 
+type ProductPageData = Product & {
+  qty: number;
+  existences: number;
+  sae: string;
+  meassure_unity?: string;
+};
+
+const productData = product.value as ProductPageData | undefined;
+if (!productData) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: "Producto no encontrado",
+  });
+}
+
 const relatedProducts = await $fetch(
-  `/api/product/related?productId=${product.value?._id}` as string,
+  `/api/product/related?productId=${productData._id}` as string,
 );
 
 const existences = await $fetch<number>(
-  `/api/product/get-existences?sae=${product.value.sae}&type=${product.value.meassure_unity || "P"}` as string,
+  `/api/product/get-existences?sae=${productData.sae}&type=${productData.meassure_unity || "P"}` as string,
 );
-product.value.existences = existences;
-product.value.qty = 1;
+productData.existences = existences;
+productData.qty = 1;
 
-const qty = ref(product.value.qty);
+const qty = ref<number>(productData.qty);
 
 const detailExcludes = [
   "__v",
@@ -44,8 +59,9 @@ const detailExcludes = [
 const { cart, addToCart } = useCart();
 
 const updateQty = (value: number) => {
-  if (!product.value.qty) product.value.qty = 1 + value;
-  else product.value.qty += value;
+  const nextQty = qty.value + value;
+  qty.value = nextQty;
+  productData.qty = nextQty;
 };
 
 const printValue = (value: unknown) => {
@@ -69,7 +85,7 @@ const printValue = (value: unknown) => {
 };
 
 const setTotal = (value: number) => {
-  product.value.qty = value;
+  productData.qty = value;
 };
 
 const getLabel = (key: string) => {

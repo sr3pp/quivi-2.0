@@ -274,13 +274,13 @@ const removeThumb = (idx: number) => {
 };
 
 const onSubmit = (event: FormSubmitEvent<z.infer<typeof schema>>) => {
-  const data: ProductFormSubmitData = { ...event.data };
-  data.years = data.yearsItems.map((item) => item.value);
-  data.car_brands = data.carBrandsItems.map((item) => item.value);
-  data.models = data.modelsItems.map((item) => item.value);
-  delete data.yearsItems;
-  delete data.carBrandsItems;
-  delete data.modelsItems;
+  const { yearsItems, carBrandsItems, modelsItems, ...rest } = event.data;
+  const data: ProductFormSubmitData = {
+    ...rest,
+    years: yearsItems.map((item) => item.value),
+    car_brands: carBrandsItems.map((item) => item.value),
+    models: modelsItems.map((item) => item.value),
+  };
   emit("submit", data);
 };
 </script>

@@ -1,11 +1,19 @@
-import type { Product } from "./product";
-
 export interface ObjectIdRef {
   _id: string;
 }
 
-export interface ProductFormProduct extends Partial<Product> {
+export interface ProductFormProduct {
   _id?: string;
+  sae?: string;
+  web?: string;
+  name?: string;
+  description?: string;
+  price?: number;
+  priority?: number;
+  discount?: number;
+  extra?: string | null;
+  meassure_unity?: string;
+  line?: string | null;
   brand?: string | ObjectIdRef;
   category?: string | ObjectIdRef;
   subcategory?: string | ObjectIdRef;
@@ -15,12 +23,10 @@ export interface ProductFormProduct extends Partial<Product> {
   thumbs?: string[];
 }
 
-export interface ProductFormSubmitData
-  extends Record<string, unknown>,
-    ProductFormProduct {
-  yearsItems: Array<{ value: number; name: string }>;
-  carBrandsItems: Array<{ value: string; name: string }>;
-  modelsItems: Array<{ value: string; name: string }>;
+export interface ProductFormSubmitData extends ProductFormProduct {
+  years: number[];
+  car_brands: string[];
+  models: string[];
 }
 
 export interface SatOption {
