@@ -1,9 +1,6 @@
 <script lang="ts" setup>
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
 import type { Cart, Product } from "~/types";
-import "swiper/css";
-
-import "swiper/css/pagination";
 
 const { params } = useRoute();
 const { _id } = params;

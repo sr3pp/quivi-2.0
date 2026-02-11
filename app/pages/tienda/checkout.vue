@@ -1,5 +1,5 @@
 <template lang="pug">
-UContainer
+UContainer.py-10
     div(v-if="verifyingPayment" class="col-span-12")
       p Verificando Pago...
     UPageGrid(v-else)

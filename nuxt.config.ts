@@ -83,7 +83,6 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     "@vueuse/nuxt",
-    "nuxt-swiper",
     "@nuxt/content",
     // "@productdevbook/chatwoot",
     "@nuxt/ui",

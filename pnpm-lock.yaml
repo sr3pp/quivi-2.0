@@ -60,9 +60,6 @@ importers:
       normalize.css:
         specifier: ^8.0.1
         version: 8.0.1
-      nuxt-swiper:
-        specifier: ^1.2.2
-        version: 1.2.2(magicast@0.5.1)
       read-excel-file:
         specifier: ^5.8.8
         version: 5.8.8
@@ -5491,9 +5488,6 @@ packages:
   nuxt-studio@1.3.1:
     resolution: {integrity: sha512-ceWGIq4M9OeDk3jAxk0IZf98h5pziZZQka1RHLqzYkpZYvUbONJgyYaXYJn46WPpSmEJQfVJPLRBzQhsct7Q/w==}
 
-  nuxt-swiper@1.2.2:
-    resolution: {integrity: sha512-y4s/srISP4OuhXbYg9/W1/6EWnbcoHRGEKBKAvGP0I2h0b3enhqZNEk7854M3F89ys8waacBXektPzamgl5xwQ==}
-
   nuxt@4.3.1:
     resolution: {integrity: sha512-bl+0rFcT5Ax16aiWFBFPyWcsTob19NTZaDL5P6t0MQdK63AtgS6fN6fwvwdbXtnTk6/YdCzlmuLzXhSM22h0OA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -6497,10 +6491,6 @@ packages:
     resolution: {integrity: sha512-VvrHQ+9uniE+Mvx3+C9IEe/lWasXCU0nXMY2kZeLrHNICuRiC8uMPyM14UEaMOFA5mhyQqEkB02VoQ16n3DLaw==}
     engines: {node: '>=16'}
     hasBin: true
-
-  swiper@10.3.1:
-    resolution: {integrity: sha512-24Wk3YUdZHxjc9faID97GTu6xnLNia+adMt6qMTZG/HgdSUt4fS0REsGUXJOgpTED0Amh/j+gRGQxsLayJUlBQ==}
-    engines: {node: '>= 4.7.0'}
 
   swrv@1.1.0:
     resolution: {integrity: sha512-pjllRDr2s0iTwiE5Isvip51dZGR7GjLH1gCSVyE8bQnbAx6xackXsFdojau+1O5u98yHF5V73HQGOFxKUXO9gQ==}
@@ -13843,13 +13833,6 @@ snapshots:
       - uploadthing
       - vue
 
-  nuxt-swiper@1.2.2(magicast@0.5.1):
-    dependencies:
-      '@nuxt/kit': 3.20.2(magicast@0.5.1)
-      swiper: 10.3.1
-    transitivePeerDependencies:
-      - magicast
-
   nuxt@4.3.1(@parcel/watcher@2.5.1)(@types/node@25.0.3)(@vue/compiler-sfc@3.5.28)(better-sqlite3@12.6.2)(cac@6.7.14)(db0@0.3.4(better-sqlite3@12.6.2))(eslint@9.39.2(jiti@2.6.1))(ioredis@5.9.2)(lightningcss@1.30.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.55.1)(sass@1.97.3)(terser@5.44.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass@1.97.3)(terser@5.44.1)(yaml@2.8.2))(yaml@2.8.2):
     dependencies:
       '@dxup/nuxt': 0.3.2(magicast@0.5.1)
@@ -15257,8 +15240,6 @@ snapshots:
       csso: 5.0.5
       picocolors: 1.1.1
       sax: 1.4.3
-
-  swiper@10.3.1: {}
 
   swrv@1.1.0(vue@3.5.28(typescript@5.9.3)):
     dependencies:
