@@ -97,7 +97,7 @@ const storePayment = async (orderId: string, reference: string) => {
   const { order }: any = await proccesOrder(orderId);
   saveOrder(order);
   resetStorage();
-  useRouter().push(
+  await navigateTo(
     `/tienda/order/barcode?order_id=${orderId}&reference=${reference}`,
   );
 };
@@ -106,7 +106,7 @@ const speiHandler = async (orderId: string) => {
   const { order }: any = await proccesOrder(orderId);
   saveOrder(order);
   resetStorage();
-  useRouter().push(`/tienda/order/spei?order_id=${order.order_no}`);
+  await navigateTo(`/tienda/order/spei?order_id=${order.order_no}`);
 };
 
 // Pre-register card payments so sales always exist before redirect
@@ -279,10 +279,10 @@ const transactionHandler = async () => {
 
         //if payment method is not cash redirect to success page
         if (payment_method.type !== "store") {
-          useRouter().push(`/tienda/order/success?order_id=${registeredOrder}`);
+          await navigateTo(`/tienda/order/success?order_id=${registeredOrder}`);
         } else {
           //if payment method is cash redirect to barcode page
-          useRouter().push(
+          await navigateTo(
             `/tienda/order/barcode?order_id=${registeredOrder}&reference=${reference}`,
           );
         }
@@ -305,7 +305,7 @@ const transactionHandler = async () => {
       );
       saveOrder(order);
       resetStorage();
-      useRouter().push(`/tienda/order/success?order_id=${registeredOrder}`);
+      await navigateTo(`/tienda/order/success?order_id=${registeredOrder}`);
     }
   }
 };

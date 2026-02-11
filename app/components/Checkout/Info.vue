@@ -73,7 +73,6 @@
 
 <script lang="ts" setup>
 import { z } from "zod";
-import type { FormSubmitEvent } from "@nuxt/ui";
 
 const props = defineProps({
   sat: {
@@ -207,6 +206,7 @@ const schema = z
   });
 
 type Schema = z.output<typeof schema>;
+type FormSubmitEvent<T> = { data: T };
 type FormState = Omit<Schema, "billing"> & {
   billing: z.output<typeof billingRequiredSchema>;
 };
