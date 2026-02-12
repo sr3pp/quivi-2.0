@@ -1,7 +1,7 @@
 import { saeHelper } from "~~/server/utils/sae";
 
 export default defineEventHandler(async (event) => {
-  const { public: config } = useRuntimeConfig();
+  const config = useRuntimeConfig();
   const {
     partidas: _partidas,
     shippmentData,

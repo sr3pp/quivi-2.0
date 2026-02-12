@@ -9,6 +9,13 @@ export default defineEventHandler(async (event) => {
     const sale: any = { ...data };
     delete sale.shipping;
 
+    if (sale?.order_no) {
+      const existing = await Sale.findOne({ order_no: sale.order_no });
+      if (existing) {
+        return existing;
+      }
+    }
+
     if ("billing" in sale) {
       delete sale.billing;
       billing.address.country = "MX";
@@ -27,6 +34,16 @@ export default defineEventHandler(async (event) => {
     sale.shipment = shipped._id;
     if (user) {
       sale.user = user._id;
+    }
+
+    // Openpay flows must always start as unpaid. Payment completion is verified server-side.
+    const paymentMethod = String(sale?.payment?.method || "");
+    if (paymentMethod !== "PYP") {
+      sale.status = false;
+      if (sale.payment) {
+        sale.payment.status = false;
+        sale.payment.transaction = "";
+      }
     }
 
     const sold = await Sale.create(sale);

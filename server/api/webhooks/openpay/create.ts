@@ -1,6 +1,6 @@
 import { Openpay } from "~~/server/utils/openpay";
 
-const { public: config } = useRuntimeConfig();
+const config = useRuntimeConfig();
 
 export default defineEventHandler(async ($event) => {
   const { user, url, password, event_types } = await readBody($event);

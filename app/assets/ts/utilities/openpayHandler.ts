@@ -6,7 +6,7 @@ export class openpayHandler {
 
   async pay(
     data: OpenpayPayInput,
-    callback?: (orderId: string, extra?: string) => void,
+    callback?: (orderId: string, extra?: string) => Promise<void> | void,
   ) {
     const orderId = buildOrderId();
     const { paymentMethod, total, shippmentData, paymentPlan } = data;
@@ -56,21 +56,17 @@ export class openpayHandler {
     );
     const { payment_method, id } = response;
 
+    // Ensure order persistence callbacks finish before redirect/opening payment pages.
     if (payment_method.url) {
-      // For card payments: pre-register order before redirecting
       if (callback) {
-        try {
-          callback(orderId, id);
-        } catch (e) {
-          // swallow callback errors to not block redirect
-        }
+        await callback(orderId, id);
       }
       window.location.href = payment_method.url;
     } else if (payment_method.url_spei && callback) {
+      await callback(orderId);
       window.open(payment_method.url_spei, "_blank");
-      callback(orderId);
     } else if (payment_method.type == "store" && callback) {
-      callback(orderId, payment_method.reference);
+      await callback(orderId, payment_method.reference);
     }
   }
 }

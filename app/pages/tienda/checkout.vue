@@ -3,7 +3,7 @@ div(class="relative min-h-[80vh]")
   UContainer.py-10
     div(
       v-if="verifyingPayment"
-      class="fixed inset-0 z-[3] flex items-center justify-center bg-[rgba(255,255,255,0.5)] backdrop-blur-[0.3125rem]"
+      class="fixed inset-0 z-[3] flex items-center justify-center bg-[rgba(255,255,255,0.5)] backdrop-blur-[5px]"
     )
       p Verificando Pago...
     UPageGrid(v-else)
@@ -141,7 +141,7 @@ const storePayment = async (orderId: string, reference?: string) => {
   const result = await proccesOrder(orderId);
   const order = result?.order;
   if (!order) return;
-  saveOrder(order);
+  await saveOrder(order);
   resetStorage();
   await navigateTo(
     `/tienda/order/barcode?order_id=${orderId}&reference=${reference ?? ""}`,
@@ -152,7 +152,7 @@ const speiHandler = async (orderId: string) => {
   const result = await proccesOrder(orderId);
   const order = result?.order;
   if (!order) return;
-  saveOrder(order);
+  await saveOrder(order);
   resetStorage();
   await navigateTo(`/tienda/order/spei?order_id=${order.order_no}`);
 };
@@ -166,44 +166,50 @@ const cardPendingHandler = async (orderId: string, transactionId?: string) => {
 };
 
 const processPayment = async () => {
-  if (termsSw.value) {
-    termsModalSw.value = false;
-  }
-  loadingPayment.value = true;
-
-  if (
-    ["credit-card", "debit-card", "cash", "spei"].includes(
-      paymentMethod.value.value,
-    )
-  ) {
-    const data = {
-      paymentMethod: paymentMethod.value,
-      total: cart.value.total,
-      shippmentData: shipping.value,
-    };
-
-    //TODO add payment plan (MSI)
-    /*
-      if all the products in the cart are available for MSI
-      and the user selected the MSI option:
-        availablePayments = [3, 6, 9, 12, 18];
-        data.payment_plan = {
-          payments: availablePayments[x];
-        }
-    */
-
-    const openpay = new openpayHandler();
-    if (paymentMethod.value.value === "cash") {
-      openpay.pay(data, storePayment);
-    } else if (paymentMethod.value.value === "spei") {
-      openpay.pay(data, speiHandler);
-    } else {
-      // credit/debit card: pre-register, then redirect handled by Openpay
-      openpay.pay(data, cardPendingHandler);
+  try {
+    if (termsSw.value) {
+      termsModalSw.value = false;
     }
-  } else if (paymentMethod.value.value == "paypal") {
-    const paypal = new paypalHandler();
-    paypal.pay(cart.value.products, cart.value.total);
+    loadingPayment.value = true;
+
+    if (
+      ["credit-card", "debit-card", "cash", "spei"].includes(
+        paymentMethod.value.value,
+      )
+    ) {
+      const data = {
+        paymentMethod: paymentMethod.value,
+        total: cart.value.total,
+        shippmentData: shipping.value,
+      };
+
+      //TODO add payment plan (MSI)
+      /*
+        if all the products in the cart are available for MSI
+        and the user selected the MSI option:
+          availablePayments = [3, 6, 9, 12, 18];
+          data.payment_plan = {
+            payments: availablePayments[x];
+          }
+      */
+
+      const openpay = new openpayHandler();
+      if (paymentMethod.value.value === "cash") {
+        await openpay.pay(data, storePayment);
+      } else if (paymentMethod.value.value === "spei") {
+        await openpay.pay(data, speiHandler);
+      } else {
+        // credit/debit card: pre-register, then redirect handled by Openpay
+        await openpay.pay(data, cardPendingHandler);
+      }
+    } else if (paymentMethod.value.value == "paypal") {
+      const paypal = new paypalHandler();
+      await paypal.pay(cart.value.products, cart.value.total);
+    }
+  } catch (error) {
+    console.error("Payment processing failed", error);
+  } finally {
+    loadingPayment.value = false;
   }
 };
 
@@ -327,20 +333,28 @@ const transactionHandler = async () => {
           body: {
             order_no: registeredOrderId,
             status: true,
-            payment: { status: true, transaction: transactionId },
+            payment: { status: true, transaction: asString(transactionId) ?? "" },
           },
         }).catch(() => null);
 
         if (!updated) {
-          // Fallback: create the order now if it wasn't pre-registered
-          const result = await proccesOrder(
-            registeredOrderId ?? "",
-            asString(transactionId) ?? "",
-            true,
+          // Only fallback when there is no existing sale for this order id.
+          const existingSale = await $fetch(
+            `/api/sales/${String(registeredOrderId ?? "")}` as string,
+          ).catch(
+            () => null,
           );
-          const order = result?.order;
-          if (order) {
-            await saveOrder(order);
+
+          if (!existingSale) {
+            const result = await proccesOrder(
+              registeredOrderId ?? "",
+              asString(transactionId) ?? "",
+              true,
+            );
+            const order = result?.order;
+            if (order) {
+              await saveOrder(order);
+            }
           }
         }
         resetStorage();
@@ -373,7 +387,7 @@ const transactionHandler = async () => {
       );
       const order = result?.order;
       if (!order) return;
-      saveOrder(order);
+      await saveOrder(order);
       resetStorage();
       await navigateTo(`/tienda/order/success?order_id=${registeredOrderId ?? ""}`);
     }

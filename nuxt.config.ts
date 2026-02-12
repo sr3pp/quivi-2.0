@@ -10,6 +10,21 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    openpay: {
+      url:
+        process.env.OPENPAY_PRODUCTION === "true"
+          ? process.env.OPENPAY_URL
+          : process.env.OPENPAY_DEV_URL,
+      key:
+        process.env.OPENPAY_PRODUCTION === "true"
+          ? process.env.OPENPAY_KEY
+          : process.env.OPENPAY_DEV_KEY,
+      merchantId:
+        process.env.OPENPAY_PRODUCTION === "true"
+          ? process.env.OPENPAY_MERCHANT_ID
+          : process.env.OPENPAY_DEV_MERCHANT_ID,
+      production: process.env.OPENPAY_PRODUCTION === "true",
+    },
     betterAuth: {
       secret: process.env.BETTER_AUTH_SECRET || process.env.JWT_SECRET,
       baseURL: process.env.BETTER_AUTH_URL,
@@ -45,23 +60,14 @@ export default defineNuxtConfig({
         testMail: process.env.EMAIL_TEST_MAIL,
       },
       openpay: {
-        url:
-          process.env.OPENPAY_PRODUCTION === "true"
-            ? process.env.OPENPAY_URL
-            : process.env.OPENPAY_DEV_URL,
         barcodeUrl:
           process.env.OPENPAY_PRODUCTION === "true"
             ? process.env.OPENPAY_BARCODE_URL
             : process.env.OPENPAY_BARCODE_DEV_URL,
-        key:
-          process.env.OPENPAY_PRODUCTION === "true"
-            ? process.env.OPENPAY_KEY
-            : process.env.OPENPAY_DEV_KEY,
         merchantId:
           process.env.OPENPAY_PRODUCTION === "true"
             ? process.env.OPENPAY_MERCHANT_ID
             : process.env.OPENPAY_DEV_MERCHANT_ID,
-        production: process.env.OPENPAY_PRODUCTION === "true",
       },
       paypal: {
         url:

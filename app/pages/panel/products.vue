@@ -9,7 +9,7 @@ div
           SvgIcon(name="lupa-o" class="size-5")
       UButton(@click="newProduct" variant="secondary" label="Nuevo producto" class="mr-2.5")
       label(
-        class="flex cursor-pointer rounded-[1.5625rem] bg-gradient-to-r from-[var(--color-quivi-light-red)] to-[var(--color-quivi-red)] p-2.5 text-[var(--color-white)]"
+        class="flex cursor-pointer rounded-[25px] bg-gradient-to-r from-[var(--color-quivi-light-red)] to-[var(--color-quivi-red)] p-2.5 text-[var(--color-white)]"
       )
         span Carga Massiva
         Spinner(v-if="uploading" class="ml-2.5 !h-5 !w-5 !bg-[var(--color-white)]")

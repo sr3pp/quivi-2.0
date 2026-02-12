@@ -1,5 +1,3 @@
-const { public: config } = useRuntimeConfig();
-
 export default defineEventHandler(async (event) => {
   //list all webhooks
   return {

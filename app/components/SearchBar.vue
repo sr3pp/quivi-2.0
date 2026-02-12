@@ -1,17 +1,17 @@
 <template lang="pug">
-div(class="relative flex h-[3.125rem] w-full rounded-lg border border-[var(--color-quivi-gray)] bg-[var(--color-white)]")
+div(class="relative flex h-[50px] w-full rounded-lg border border-[var(--color-quivi-gray)] bg-[var(--color-white)]")
   UInput(
     type="text"
     placeholder="Buscar"
     v-model="search"
     @input="runSearch"
     class="h-full w-full"
-    :ui="{ base: 'h-full rounded-lg border-none bg-transparent px-2 pr-[3.75rem] text-base text-[var(--color-text-color)] ring-0 focus:ring-0' }"
+    :ui="{ base: 'h-full rounded-lg border-none bg-transparent px-2 pr-[60px] text-base text-[var(--color-text-color)] ring-0 focus:ring-0' }"
   )
   button(
     v-if="results.length"
     @click="results = []"
-    class="absolute right-10 top-0 z-[3] flex h-full w-8 items-center justify-center bg-transparent text-[1.125rem] font-bebas text-[var(--color-quivi-gray)]"
+    class="absolute right-10 top-0 z-[3] flex h-full w-8 items-center justify-center bg-transparent text-[18px] font-bebas text-[var(--color-quivi-gray)]"
     aria-label="Limpiar resultados"
   )
     span x
@@ -22,10 +22,10 @@ div(class="relative flex h-[3.125rem] w-full rounded-lg border border-[var(--col
   )
     SvgIcon(class="size-4 text-[var(--color-white)]" name="lupa-o")
   div(
-    class="absolute left-0 top-full z-[2] flex w-full flex-col overflow-hidden rounded-b-lg border border-t-0 border-[rgba(91,91,95,0.3)] bg-[var(--color-white)] opacity-0 shadow-[0_0.25rem_1.25rem_rgba(91,91,95,0.3)] transition-[max-height,opacity] duration-300 ease-in-out"
-    :class="results.length ? 'max-h-[18.75rem] opacity-100' : 'max-h-0'"
+    class="absolute left-0 top-full z-[2] flex w-full flex-col overflow-hidden rounded-b-lg border border-t-0 border-[rgba(91,91,95,0.3)] bg-[var(--color-white)] opacity-0 shadow-[0_4px_20px_rgba(91,91,95,0.3)] transition-[max-height,opacity] duration-300 ease-in-out"
+    :class="results.length ? 'max-h-[300px] opacity-100' : 'max-h-0'"
   )
-    ul(class="h-full overflow-auto pb-[3.125rem]")
+    ul(class="h-full overflow-auto pb-[50px]")
       li(v-for="(result, i) in results" :key="i")
         NuxtLink(
           :to="result.url"
@@ -41,7 +41,7 @@ div(class="relative flex h-[3.125rem] w-full rounded-lg border border-[var(--col
             p {{ result.name }}
             p {{ result.brand.name }}
             p {{ result.web }}
-    div(class="absolute bottom-0 left-0 h-10 w-full bg-[var(--color-white)] shadow-[0_-0.25rem_0.625rem_rgba(91,91,95,0.1)]")
+    div(class="absolute bottom-0 left-0 h-10 w-full bg-[var(--color-white)] shadow-[0_-4px_10px_rgba(91,91,95,0.1)]")
       NuxtLink(
         :to="`/tienda?search=${search}`"
         class="flex h-full w-full items-center justify-center text-[var(--color-quivi-green)]"

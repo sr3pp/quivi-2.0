@@ -1,4 +1,4 @@
-const { public: config } = useRuntimeConfig();
+const config = useRuntimeConfig();
 
 export default defineEventHandler(async (event) => {
   const { webhookId } = getRouterParams(event);
