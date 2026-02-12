@@ -300,9 +300,7 @@ const searchSale = async () => {
 
 const saleDetail = (sale: PanelSaleRow) => {
   currentSale.value =
-    salesList.value.find(
-    (_sale) => _sale.order_no === sale.order_no,
-    ) ?? null;
+    salesList.value.find((_sale) => _sale.order_no === sale.order_no) ?? null;
   saleDetailModal.value?.toggle();
 };
 

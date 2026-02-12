@@ -79,12 +79,18 @@ const { data } = await useAsyncData("checkout-config", async () => {
 });
 
 const termsSections = computed<unknown[]>(() => {
-  const sections = (data.value?.terms as { meta?: { content?: { sections?: unknown[] } } } | null)?.meta?.content?.sections;
+  const sections = (
+    data.value?.terms as {
+      meta?: { content?: { sections?: unknown[] } };
+    } | null
+  )?.meta?.content?.sections;
   return Array.isArray(sections) ? sections : [];
 });
 
 const satContent = computed<Record<string, unknown>>(() => {
-  const content = (data.value?.sat as { meta?: { content?: Record<string, unknown> } } | null)?.meta?.content;
+  const content = (
+    data.value?.sat as { meta?: { content?: Record<string, unknown> } } | null
+  )?.meta?.content;
   return content ?? {};
 });
 
@@ -310,14 +316,14 @@ const transactionHandler = async () => {
       await $fetch<OpenpayVerificationResponse>(
         "/api/payment/openpay/verify-transaction" as string,
         {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: {
+            transactionId,
+          },
         },
-        body: {
-          transactionId,
-        },
-      },
       );
 
     if (status === "completed") {
@@ -333,7 +339,10 @@ const transactionHandler = async () => {
           body: {
             order_no: registeredOrderId,
             status: true,
-            payment: { status: true, transaction: asString(transactionId) ?? "" },
+            payment: {
+              status: true,
+              transaction: asString(transactionId) ?? "",
+            },
           },
         }).catch(() => null);
 
@@ -341,9 +350,7 @@ const transactionHandler = async () => {
           // Only fallback when there is no existing sale for this order id.
           const existingSale = await $fetch(
             `/api/sales/${String(registeredOrderId ?? "")}` as string,
-          ).catch(
-            () => null,
-          );
+          ).catch(() => null);
 
           if (!existingSale) {
             const result = await proccesOrder(
@@ -361,7 +368,9 @@ const transactionHandler = async () => {
 
         //if payment method is not cash redirect to success page
         if (payment_method.type !== "store") {
-          await navigateTo(`/tienda/order/success?order_id=${registeredOrderId ?? ""}`);
+          await navigateTo(
+            `/tienda/order/success?order_id=${registeredOrderId ?? ""}`,
+          );
         } else {
           //if payment method is cash redirect to barcode page
           await navigateTo(
@@ -389,7 +398,9 @@ const transactionHandler = async () => {
       if (!order) return;
       await saveOrder(order);
       resetStorage();
-      await navigateTo(`/tienda/order/success?order_id=${registeredOrderId ?? ""}`);
+      await navigateTo(
+        `/tienda/order/success?order_id=${registeredOrderId ?? ""}`,
+      );
     }
   }
 };

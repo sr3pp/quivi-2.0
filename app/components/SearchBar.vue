@@ -91,13 +91,16 @@ const runSearch = async () => {
   }
 
   results.value = [];
-  const { data: fetchResults } = await useFetch<SearchResultsResponse>(props.endpoint, {
-    method: "POST",
-    body: {
-      search: search.value,
+  const { data: fetchResults } = await useFetch<SearchResultsResponse>(
+    props.endpoint,
+    {
+      method: "POST",
+      body: {
+        search: search.value,
+      },
+      signal: controller.signal,
     },
-    signal: controller.signal,
-  });
+  );
 
   const payload = fetchResults.value ?? null;
   results.value = payload?.products ?? [];
