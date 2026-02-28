@@ -10,6 +10,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { ConfigCollectionItem } from "@nuxt/content";
 import type { SaleOrder } from "~/types";
 
 const {
@@ -21,10 +22,12 @@ const merchId = config.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
-const { page: contactPage } = await usePageContent(
-  "/_config/contact",
-  "config",
-);
+const configData = inject("config", []) as ConfigCollectionItem[];
+
+const contactPage = computed(() => {
+  return configData.find((c) => c.stem === "config/contact");
+});
+
 const email = contactPage.value?.email ?? "";
 
 const iframe: Ref<HTMLIFrameElement | null> = ref(null);

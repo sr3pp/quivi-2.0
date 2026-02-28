@@ -1,10 +1,31 @@
 import mongoose from "mongoose";
-const { public: config } = useRuntimeConfig();
-export default async () => {
-  try {
-    await mongoose.connect(config.mongo.url);
-    console.log("DB connection established.");
-  } catch (err) {
-    console.log("DB connection failed.", err);
+
+let dbConnectionPromise: Promise<typeof mongoose> | null = null;
+
+export const connectToDatabase = async () => {
+  if (mongoose.connection.readyState === 1) return mongoose;
+
+  if (!dbConnectionPromise) {
+    const config = useRuntimeConfig();
+    const mongoUrl = config.public.mongo.url;
+
+    if (!mongoUrl) {
+      throw new Error("Mongo URL is missing. Set MONGO_URL.");
+    }
+
+    dbConnectionPromise = mongoose.connect(mongoUrl).catch((error) => {
+      dbConnectionPromise = null;
+      throw error;
+    });
   }
+
+  await dbConnectionPromise;
+  return mongoose;
 };
+
+export default defineNitroPlugin((nitroApp) => {
+  nitroApp.hooks.hook("request", async (event) => {
+    if (!event.path?.startsWith("/api/")) return;
+    await connectToDatabase();
+  });
+});

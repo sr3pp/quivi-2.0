@@ -44,6 +44,7 @@ import type {
   PaymentCode,
   SaleOrderDraft,
 } from "~/types";
+import type { ConfigCollectionItem } from "@nuxt/content";
 
 const {
   id: routeTransactionId,
@@ -64,34 +65,16 @@ const {
   clearCheckout,
 } = useCheckout();
 
-const { data } = await useAsyncData("checkout-config", async () => {
-  const terms = await queryCollection("config")
-    .where("stem", "=", "_config/terms")
-    .first();
-  const sat = await queryCollection("config")
-    .where("stem", "=", "_config/sat")
-    .first();
+const config = inject("config", []) as ConfigCollectionItem[];
 
-  return {
-    terms,
-    sat,
-  };
+const termsSections = computed(() => {
+  const item = config.find((c) => c.stem === "config/terms");
+  return item?.meta?.sections ?? [];
 });
 
-const termsSections = computed<unknown[]>(() => {
-  const sections = (
-    data.value?.terms as {
-      meta?: { content?: { sections?: unknown[] } };
-    } | null
-  )?.meta?.content?.sections;
-  return Array.isArray(sections) ? sections : [];
-});
-
-const satContent = computed<Record<string, unknown>>(() => {
-  const content = (
-    data.value?.sat as { meta?: { content?: Record<string, unknown> } } | null
-  )?.meta?.content;
-  return content ?? {};
+const satContent = computed(() => {
+  const item = config.find((c) => c.stem === "config/sat");
+  return item?.meta ?? {};
 });
 
 const normalizeQueryValue = (

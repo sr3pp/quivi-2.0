@@ -5,6 +5,7 @@ export { BillData } from "./BillData";
 export { ShippmentData } from "./ShippmentData";
 export { SaleOrder } from "./SaleOrder";
 export { AuthMeta, SessionPayload } from "./auth";
+export { BusinessConfig, BusinessBankAccount, BusinessSocial } from "./business";
 export {
   PanelProductRow,
   PanelShippingRow,

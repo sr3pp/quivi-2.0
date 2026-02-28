@@ -29,26 +29,90 @@ div
 </template>
 
 <script lang="ts" setup>
+import type { BusinessConfig } from "~/types";
+
 definePageMeta({
   layout: "panel",
 });
+
 const newBank = ref({
   bank_name: "",
   account_number: "",
 });
 
-const { data: business } = await useFetch("/api/content?page=_config/business");
+const emptyBusiness = (): BusinessConfig => ({
+  address: {},
+  bank_accounts: [],
+  social: [],
+});
 
-const updateBusiness = async () => {
-  try {
-    await $fetch("/api/content?page=_config/business", {
-      method: "PUT",
-      body: business.value,
-    });
-  } catch (error) {
-    console.error(error);
+const normalizeBusiness = (value: unknown): BusinessConfig => {
+  const fallback = emptyBusiness();
+
+  if (!value || typeof value !== "object") {
+    return fallback;
   }
+
+  const raw = value as Record<string, unknown>;
+
+  const address =
+    raw.address && typeof raw.address === "object"
+      ? Object.entries(raw.address as Record<string, unknown>).reduce<
+          Record<string, string>
+        >((acc, [key, item]) => {
+          if (typeof item === "string") {
+            acc[key] = item;
+          }
+          return acc;
+        }, {})
+      : fallback.address;
+
+  const bank_accounts = Array.isArray(raw.bank_accounts)
+    ? raw.bank_accounts
+        .filter(
+          (item): item is { bank_name?: unknown; account_number?: unknown } =>
+            !!item && typeof item === "object",
+        )
+        .map((item) => ({
+          bank_name: typeof item.bank_name === "string" ? item.bank_name : "",
+          account_number:
+            typeof item.account_number === "string" ? item.account_number : "",
+        }))
+    : fallback.bank_accounts;
+
+  const social = Array.isArray(raw.social)
+    ? raw.social
+        .filter(
+          (item): item is { label?: unknown; url?: unknown; icon?: unknown } =>
+            !!item && typeof item === "object",
+        )
+        .map((item) => ({
+          label: typeof item.label === "string" ? item.label : "",
+          url: typeof item.url === "string" ? item.url : "",
+          icon: typeof item.icon === "string" ? item.icon : undefined,
+        }))
+    : fallback.social;
+
+  return {
+    address,
+    bank_accounts,
+    social,
+  };
 };
+
+const business = ref<BusinessConfig>(emptyBusiness());
+
+const { data } = await useAsyncData<BusinessConfig>("business", async () => {
+  const item = await queryCollection("config")
+    .where("stem", "=", "config/business")
+    .first();
+
+  return normalizeBusiness(item?.meta ?? item);
+});
+
+if (data.value) {
+  business.value = data.value;
+}
 
 const addAccount = () => {
   business.value.bank_accounts.push({ ...newBank.value });

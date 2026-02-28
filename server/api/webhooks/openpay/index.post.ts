@@ -2,13 +2,14 @@ import { getContent } from "~~/server/utils/getContent";
 import { mailHandler } from "~~/server/utils/mailHandler";
 import { Sale } from "~~/server/Models";
 import { join } from "pathe";
+import type { Model } from "mongoose";
 
 const baseDir = process.cwd();
 
 export default defineEventHandler(async (event) => {
   const data = await readBody(event);
   const _config = getContent(
-    join(baseDir, "content", "_config", "contact.json"),
+    join(baseDir, "content", "config", "contact.json"),
   );
 
   const mainData = {
@@ -23,7 +24,8 @@ export default defineEventHandler(async (event) => {
   if (data.type === "charge.succeeded") {
     //update order status
     try {
-      const sale = await Sale.findOneAndUpdate(
+      const saleModel = Sale as Model<Record<string, unknown>>;
+      const sale = await saleModel.findOneAndUpdate(
         { order_no: mainData.orderId },
         {
           status: true,

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ConfigCollectionItem } from '@nuxt/content';
+
 const modalSw = ref(false);
 
 const toggleTermsModal = () => {
@@ -9,7 +11,16 @@ defineExpose({
   toggleTermsModal,
 });
 
-const terms = await $fetch("/api/content?page=_config/terms");
+const config = inject("config") as ConfigCollectionItem[];
+
+const terms = computed(() => {
+  const item = config.find((c) => c.stem === "config/terms");
+  return {
+    title: item?.meta.title ?? "",
+    fecha: item?.meta.fecha ?? "",
+    sections: item?.meta.sections ?? [],
+  };
+});
 </script>
 
 <template lang="pug">

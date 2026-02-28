@@ -5,16 +5,22 @@ const props = defineProps<{
   title?: string;
   description?: string;
   eyebrow?: string;
-  image?: ResponsiveImage;
+  image: {
+    src: ResponsiveImage;
+    alt: string;
+  }
   cta?: CarouselCta;
   alignment?: "left" | "center" | "right";
 }>();
 
 const desktopImage = computed(
-  () => props.image?.desktop || props.image?.mobile,
+  () => props.image.src?.lg || props.image.src?.md || props.image.src?.sm,
 );
-const mobileImage = computed(() => props.image?.mobile || desktopImage.value);
-const alt = computed(() => props.image?.alt || props.title || "Slide");
+const portraitImage = computed(
+  () => props.image.src?.md || props.image.src?.sm,
+);
+const mobileImage = computed(() => props.image.src?.sm || desktopImage.value);
+const alt = computed(() => props.image.alt || props.title || "Slide");
 </script>
 
 <template>
@@ -53,7 +59,6 @@ const alt = computed(() => props.image?.alt || props.title || "Slide");
       <div v-if="cta" class="flex gap-2 flex-wrap">
         <UButton
           :to="cta.to"
-          :href="cta.href"
           :target="cta.target"
           :color="cta.color || 'secondary'"
           :variant="cta.variant || 'solid'"

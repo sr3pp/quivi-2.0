@@ -17,6 +17,7 @@ UPageGrid
 
 <script lang="ts" setup>
 import { fetchProducts } from "@/assets/ts/utilities";
+import type { ConfigCollectionItem } from "@nuxt/content";
 const route = useRoute();
 const router = useRouter();
 
@@ -25,10 +26,13 @@ const filters = computed(() => (route.query.filters as string) || "");
 const pageQuery = computed(() => (route.query.page as string) || "1");
 const perPage = 12;
 
-const [{ page: contentPage }, { page: shipmentPage }] = await Promise.all([
-  usePageContent(route.path),
-  usePageContent("_config/shipping", "config"),
-]);
+const config = inject("config", []) as ConfigCollectionItem[];
+
+const shipmentPage = computed(() => {
+  return config.find((c) => c.stem === "config/shipment");
+});
+
+const { page: contentPage } = await usePageContent(route.path);
 
 const shipment = computed(
   () => shipmentPage.value || { meta: { content: { limite: 0, costo: 0 } } },

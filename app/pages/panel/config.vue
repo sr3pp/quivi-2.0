@@ -70,20 +70,34 @@ const newPromotion: any = ref({
   options: [],
   key: "",
 });
-const [
-  gallery,
-  { data: comercios },
-  { data: distribuidores },
-  { data: promotions },
-  { data: shipping },
-]: any = await Promise.all([
-  $fetch("/api/admin/gallery"),
-  useFetch("/api/content?page=_config/comercios"),
-  useFetch("/api/content?page=_config/distribuidores"),
-  useFetch("/api/content?page=_config/promotions"),
-  useFetch("/api/content?page=_config/shipping"),
-]);
 
+const { data: config } = await useAsyncData("config", async () => {
+  const gallery = $fetch("/api/admin/gallery");
+  const config = await queryCollection("config").all()
+  
+  const { comercios, distribuidores, promotions, shipping } = config.reduce((acc: any, item: any) => {
+    if (item.stem.includes("comercios")) {
+      acc.comercios = item.data;
+    } else if (item.stem.includes("distribuidores")) {
+      acc.distribuidores = item.data;
+    } else if (item.stem.includes("promotions")) {
+      acc.promotions = item.data;
+    } else if (item.stem.includes("shipping")) {
+      acc.shipping = item.data;
+    }
+    return acc;
+  }, {});
+
+  return {
+    gallery,
+    comercios,
+    distribuidores,
+    promotions,
+    shipping,
+  }
+})
+
+const { comercios, distribuidores, promotions, shipping } = config.value || {};
 const promotionOptions = [
   {
     name: "Cupon",
@@ -98,31 +112,6 @@ const promotionOptions = [
     value: "msi",
   },
 ];
-
-const updateConfig = async () => {
-  try {
-    await Promise.all([
-      $fetch("/api/content?page=_config/comercios", {
-        method: "PUT",
-        body: comercios.value,
-      }),
-      $fetch("/api/content?page=_config/distribuidores", {
-        method: "PUT",
-        body: distribuidores.value,
-      }),
-      $fetch("/api/content?page=_config/promotions", {
-        method: "PUT",
-        body: promotions.value,
-      }),
-      $fetch("/api/content?page=_config/shipping", {
-        method: "PUT",
-        body: shipping.value,
-      }),
-    ]);
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const showGallery = (picture: any, key: string, objName?: string) => {
   newComercio.value.key = "";

@@ -9,27 +9,15 @@ const loading = ref(false);
 
 const { data } = await useAsyncData("main-data", async () => {
   const navigation = await queryCollectionNavigation("pages", ["order"]);
-  const businessInfo = await queryCollection("config")
-    .where("stem", "LIKE", "_config/business")
-    .first();
-  const distribuidoresInfo = await queryCollection("config")
-    .where("stem", "LIKE", "_config/distribuidores")
-    .first();
-  const faqsInfo = await queryCollection("config")
-    .where("stem", "LIKE", "_config/faqs")
-    .first();
-  const contactInfo = await queryCollection("config")
-    .where("stem", "LIKE", "_config/contact")
-    .first();
+  const config = await queryCollection("config").all();
 
   return {
     navigation,
-    businessInfo,
-    distribuidoresInfo,
-    faqsInfo,
-    contactInfo,
+    config
   };
 });
+
+provide("config", data.value?.config ?? []);
 
 const navigation = computed(() =>
   (data.value?.navigation ?? []).sort((a: any, b: any) => {
@@ -38,10 +26,24 @@ const navigation = computed(() =>
     return (orderA as number) - (orderB as number);
   }),
 );
-const business = computed(() => data.value?.businessInfo ?? null);
-const distribuidores = computed(() => data.value?.distribuidoresInfo ?? null);
-const faqs = computed(() => data.value?.faqsInfo ?? null);
-const contact = computed(() => data.value?.contactInfo ?? null);
+
+const business = computed(() => {
+  const config = data.value?.config ?? [];
+  return config.find((item: any) => item.stem === "config/business");
+});
+const distribuidores = computed(() => {
+  const config = data.value?.config ?? [];
+  return config.find((item: any) => item.stem === "config/distribuidores");
+});
+const faqs = computed(() => {
+  const config = data.value?.config ?? [];
+  return config.find((item: any) => item.stem === "config/faqs");
+});
+const contact = computed(() => {
+  const config = data.value?.config ?? [];
+  return config.find((item: any) => item.stem === "config/contact");
+});
+
 const social = computed(
   () =>
     (business.value?.meta?.content as { social?: Array<any> } | undefined)
@@ -98,7 +100,7 @@ UApp(tag="main")
   Transition(name="page", mode="out-in")
     Loading(v-if="loading")
     
-  NuxtPage(@cartModal="toggleCart")
+  NuxtPage
 
   ContactModal(ref="contactModal" :social="social")
   LoginModal(ref="loginModal")

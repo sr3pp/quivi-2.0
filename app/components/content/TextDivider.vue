@@ -1,24 +1,24 @@
 <script setup lang="ts">
-defineProps<{
+withDefaults(defineProps<{
   title?: string;
   text?: string;
-  variant?: string | number;
-  image?: {
-    src: string;
-    alt?: string;
-  };
+  variant?: "default" | "with-image";
+  imageSrc?: string;
+  imageAlt?: string;
   link?: {
     href: string;
     label: string;
   };
-}>();
+}>(), {
+  variant: "default",
+});
 </script>
 
 <template>
   <section>
     <UContainer
       class="grid grid-cols-12 gap-4 py-10"
-      :class="variant == '2' ? 'max-w-lg' : ''"
+      :class="variant == 'with-image' ? 'max-w-lg' : ''"
     >
       <article
         v-if="title"
@@ -33,8 +33,8 @@ defineProps<{
           {{ text }}
         </p>
       </article>
-      <figure v-if="image" class="col-span-1 sm:col-span-2 md:col-span-3">
-        <NuxtImg :src="image.src" :alt="image.alt" class="mx-auto" />
+      <figure v-if="imageSrc" class="col-span-1 sm:col-span-2 md:col-span-3">
+        <NuxtImg :src="imageSrc" :alt="imageAlt" class="mx-auto" />
       </figure>
       <div v-if="link" class="w-full flex justify-center col-span-12">
         <UButton :to="link.href" color="secondary">

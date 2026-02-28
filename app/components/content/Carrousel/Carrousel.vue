@@ -1,51 +1,61 @@
 <script lang="ts" setup>
 import CarrouselSlide from "./CarrouselSlide.vue";
+import type { CarouselCta } from "~/types";
 
-const props = withDefaults(
-  defineProps<{
-    autoplay?: boolean;
-    arrows?: boolean;
-    dots?: boolean;
-  }>(),
-  {
-    autoplay: false,
-    arrows: true,
-    dots: true,
-  },
+const props = defineProps<{
+    name: string;
+}>();
+
+const { data: slider } = await useAsyncData(
+  `carousel-slides-${props.name}`,
+  () => queryCollection("sliders").where("stem", "=", `sliders/${props.name}`).first()
 );
+const slides = computed(() => slider.value?.slides || []);
 
-const slots = useSlots();
+const { autoplay = false, arrows = true, dots = true } = slider.value || {};
 
-const autoplayOptions = computed(() => {
-  return props.autoplay
-    ? { delay: 5000, stopOnMouseEnter: true, stopOnInteraction: true }
-    : false;
-});
+const toCarouselCta = (cta?: {
+  label?: string;
+  text?: string;
+  to?: string;
+  link?: string;
+  target?: string;
+  color?: "primary" | "secondary";
+  variant?: "solid" | "outline" | "ghost";
+}): CarouselCta | undefined => {
+  if (!cta) return undefined;
 
-const slotSlides = computed(() => (slots.default?.() || []).filter(Boolean));
-const slotItems = computed(() =>
-  slotSlides.value.map((vnode, index) => ({
-    vnode,
-    key: vnode.key ?? `slide-${index}`,
-  })),
-);
-const useSlotSlides = computed(() => slotItems.value.length > 0);
+  const label = cta.label || cta.text;
+  const to = cta.to || cta.link;
+
+  if (!label || !to) return undefined;
+
+  return {
+    label,
+    to,
+    target: cta.target,
+    color: cta.color,
+    variant: cta.variant,
+  };
+};
 </script>
 
 <template>
   <UCarousel
-    v-if="useSlotSlides"
-    :items="slotItems"
     :arrows="arrows"
     :dots="dots"
-    :autoplay="autoplayOptions"
+    :autoplay="autoplay"
+    :items="slides"
     class="content-carousel"
   >
-    <template #default="{ item }">
-      <component
-        :is="item.vnode || CarrouselSlide"
-        v-bind="item.vnode?.props"
-        :key="item.key"
+    <template #default="{ item: slide }">
+      <CarrouselSlide
+        class="content-carousel__item"
+        :title="slide.title"
+        :description="slide.description"
+        :eyebrow="slide.eyebrow"
+        :image="slide.image"
+        :cta="toCarouselCta(slide.cta)"
       />
     </template>
   </UCarousel>

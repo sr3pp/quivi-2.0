@@ -26,9 +26,11 @@
 <script lang="ts" setup>
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
+import type { ConfigCollectionItem } from "@nuxt/content";
 
-const content = await $fetch("/api/content?page=_config/contact");
-const contactEmail = content.email;
+const config = inject("config", []) as ConfigCollectionItem[];
+
+const contactEmail = config.find((c) => c.stem === "config/contact")?.meta.email ?? "";
 
 const sending = ref(false);
 const sent = ref(false);

@@ -16,15 +16,23 @@ UContainer
 </template>
 
 <script lang="ts" setup>
+import type { ConfigCollectionItem } from "@nuxt/content";
 import type { SaleOrder } from "~/types";
 
 const { order_id } = useRoute().query;
-const [{ page: businessPage }, { page: contactPage }] = await Promise.all([
-  usePageContent("/_config/business", "config"),
-  usePageContent("/_config/contact", "config"),
-]);
-const accounts = businessPage.value?.bank_accounts ?? [];
-const contactMail = contactPage.value?.email ?? "";
+
+const config = inject("config", []) as ConfigCollectionItem[];
+
+const businessPage = computed(() => {
+  return config.find((c) => c.stem === "config/business");
+});
+
+const contactPage = computed(() => {
+  return config.find((c) => c.stem === "config/contact");
+});
+
+const accounts = businessPage.value?.meta.bank_accounts ?? [];
+const contactMail = contactPage.value?.meta.email ?? "";
 const paymentStepsText = [
   "Realiza la transferencia o deposito a alguna de estas cuentas: <br><small>(Usar número de orden como referencia de pago)</small>",
   `Envia un correo con tu <strong>número de orden</strong> en el <strong>asunto</strong> y el comprobante de pago a esta dirección: <strong>${contactMail}</strong>`,

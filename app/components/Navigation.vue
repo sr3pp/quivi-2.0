@@ -25,8 +25,8 @@ nav(
           SvgIcon(class="w-[30px] h-[40px] text-[var(--color-quivi-light-red)]" name="lupa-o" v-if="!searchActive")
           SvgIcon(class="w-[30px] h-[40px] text-[var(--color-quivi-light-red)]" name="x-o" v-else)
           span(class="hidden text-[12px] font-inria text-[var(--color-text-color)] sm:inline-block sm:text-base") Busqueda
-      li(class="hidden sm:flex w-[80px] mr-2.5")
-        a(class="whitespace-nowrap" :href="`tel:${contact.phone}`") {{ contact.phone }}
+      li(class="hidden sm:flex w-[80px] mr-2.5" v-if="contactPhone")
+        a(class="whitespace-nowrap" :href="`tel:${contactPhone}`") {{ contactPhone }}
       li(class="w-[30px] sm:w-[80px] mr-2.5")
         button(
           class="cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
@@ -106,7 +106,7 @@ nav(
       ol(
         class="flex flex-col overflow-hidden max-h-0 transition-[max-height,opacity,padding-top] duration-300 sm:absolute sm:left-0 sm:top-3.5 sm:min-w-[250px] sm:rounded-b-[18px] sm:bg-gradient-to-r sm:from-[var(--color-quivi-gray)] sm:to-[var(--color-quivi-darkest-gray)] sm:shadow-[0_10px_10px_rgba(51,47,46,0.3)] sm:group-hover:max-h-screen sm:group-hover:pt-7"
         :class="item.active ? 'max-h-screen' : ''"
-        v-if="item.children && item.children.length"
+        v-if="item.children && item.children.length > 1"
         role="list"
       )
         li(
@@ -155,7 +155,8 @@ const props = defineProps({
   },
   contact: {
     type: Object,
-    required: true,
+    required: false,
+    default: null,
   },
 });
 
@@ -171,6 +172,7 @@ const btnColor4: string = colorQuiviDarkYellow;
 const { toggleCart, totalCartProducts } = useCart();
 
 const { isLoggedIn, logout } = useAuth();
+const contactPhone = computed(() => (props.contact as any)?.phone ?? "");
 
 watch(
   () => route.value.name,

@@ -32,7 +32,7 @@ const relatedProducts = await $fetch<Product[]>("/api/product/related", {
   query: { productId: String(productData._id ?? "") },
 });
 
-const existences = await $fetch<number>("/api/product/get-existences", {
+const {data: existences} = await $fetch<{data: number}>("/api/product/get-existences", {
   query: {
     sae: String(productData.sae ?? ""),
     type: productData.meassure_unity || "P",
@@ -112,42 +112,43 @@ const getLabel = (key: string) => {
 </script>
 
 <template lang="pug">
+  div
     UContainer.py-10
-        UPageGrid
-            div(class="col-span-1 sm:col-span-6")
-              ProductThumbs(:thumbs="product.thumbs" :productName="product.name" :productId="product.web")
-            div(class="col-span-1 sm:col-span-6")
-                .flex.flex-col.gap-6(v-if="product")
-                    p {{ product.name }}
-                    p {{ `Refaccion: ${product.web}` }}
-                    p {{ product.extra }}
+      UPageGrid
+        div(class="col-span-1 sm:col-span-6")
+          ProductThumbs(:thumbs="product.thumbs" :productName="product.name" :productId="product.web")
+        div(class="col-span-1 sm:col-span-6")
+          .flex.flex-col.gap-6(v-if="product")
+            p {{ product.name }}
+            p {{ `Refaccion: ${product.web}` }}
+            p {{ product.extra }}
 
-                    .flex.justify-between.gap-4
-                        .flex.flex-col.gap-2
-                          p(v-if="product.discount && product.discount > 0" class="title") {{ toPrice(processDiscount(product)) }}
-                          p.line-through.text-primary-dark(:class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}") {{ toPrice(product.price) }}
-                        .flex.flex-col.gap-1(v-if="!existences")
-                          p.text-sm PRODUCTO NO DISPONIBLE
-                          UButton.text-center.justify-center(size="lg") Solicitar información
-                        div(v-else)
-                          UInputNumber(v-model="qty" :max="product.existences" @updateQty="($event) => qty += $event")
-                          UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" color="secondary")
-                    .flex.justify-between
-                        UButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
-                        UButton(to="/tienda" label="Ir a la tienda" :loading="false" :disabled="false" color="secondary")
-            div.flex.flex-col.gap-2(class="col-span-12 sm:col-span-6")
-                p.font-bebas.text-3xl ESPECIFICACIONES DEL PRODUCTO
-                ul.flex.flex-col.gap-1
-                    template(v-for="([key, value], i) in Object.entries(product)")
-                        li.product-detail-detail(v-if="!detailExcludes.includes(key)" :key="i")
-                            SrText.label(:text="`${getLabel(key)}:`")
-                            SrText(:text="printValue(value)")
-            div.flex.flex-col.gap-2(class="col-span-12 sm:col-span-6")
-                p.font-bebas.text-3xl DESCRIPCION DEL PRODUCTO
-                p {{ product.description }}
+            .flex.justify-between.gap-4
+              .flex.flex-col.gap-2
+                p(v-if="product.discount && product.discount > 0" class="title") {{ toPrice(processDiscount(product)) }}
+                p.line-through.text-primary-dark(:class="{'subtitle discount': product.discount && product.discount > 0, 'title': !product.discount || product.discount == 0}") {{ toPrice(product.price) }}
+              .flex.flex-col.gap-1(v-if="!existences")
+                p.text-sm PRODUCTO NO DISPONIBLE
+                UButton.text-center.justify-center(size="lg") Solicitar información
+              div(v-else)
+                UInputNumber(v-model="qty" :max="product.existences" @updateQty="($event) => qty += $event")
+                UButton(v-if="qty == product.existences" label="Verificar existencias" size="lg" color="secondary")
+            .flex.justify-between
+              UButton(@click="addToCart(product, qty)" label="Agregar al carrito" :disabled="existences > 0 && product.qty <= product.existences ? false : true")
+              UButton(to="/tienda" label="Ir a la tienda" :loading="false" :disabled="false" color="secondary")
+        div.flex.flex-col.gap-2(class="col-span-12 sm:col-span-6")
+          p.font-bebas.text-3xl ESPECIFICACIONES DEL PRODUCTO
+          ul.flex.flex-col.gap-1
+            template(v-for="([key, value], i) in Object.entries(product)")
+              li.product-detail-detail(v-if="!detailExcludes.includes(key)" :key="i")
+                p.label {{ getLabel(key) }}:
+                p {{ printValue(value) }}
+        div.flex.flex-col.gap-2(class="col-span-12 sm:col-span-6")
+          p.font-bebas.text-3xl DESCRIPCION DEL PRODUCTO
+          p {{ product.description }}
 
     UContainer.py-10(:with-padding="true")
-        p.font-bebas.text-3xl PRODUCTOS RELACIONADOS
+      p.font-bebas.text-3xl PRODUCTOS RELACIONADOS
     UCarousel(v-if="relatedProducts.length" :items="relatedProducts" :arrows="relatedProducts.length > 4" :dots="false" :ui="{ item: 'basis-full sm:basis-1/3' }")
       template(#default="{ item }")
         ProductCard(:product="item")

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import type { Model } from "mongoose";
 import Bill from "./Bill";
 import Product from "./Product";
 import User from "./User";
@@ -40,4 +41,10 @@ const schema = new mongoose.Schema(
   },
   { timestamps: true, strict: true, strictQuery: true },
 );
-export default mongoose.models.Sale || mongoose.model("Sale", schema, "sale");
+type SaleModel = Model<Record<string, unknown>>;
+
+const Sale =
+  (mongoose.models.Sale as SaleModel | undefined) ||
+  mongoose.model("Sale", schema, "sale");
+
+export default Sale;
