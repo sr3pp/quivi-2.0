@@ -49,11 +49,7 @@ div(class="relative flex h-[50px] w-full rounded-lg border border-[var(--color-q
 </template>
 
 <script lang="ts" setup>
-import type { Product } from "~/types";
-
-interface SearchResultsResponse {
-  products: Product[];
-}
+import type { Product, SearchResultsResponse } from "~/types";
 
 const props = defineProps({
   endpoint: {

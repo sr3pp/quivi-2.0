@@ -26,9 +26,9 @@
 <script lang="ts" setup>
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { ConfigCollectionItem } from "@nuxt/content";
+import type { ConfigEntry } from "~/types";
 
-const config = inject("config", []) as ConfigCollectionItem[];
+const config = inject("config", []) as ConfigEntry[];
 
 const contactEmail = config.find((c) => c.stem === "config/contact")?.meta.email ?? "";
 

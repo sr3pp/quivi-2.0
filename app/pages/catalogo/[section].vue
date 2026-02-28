@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { path } = useRoute();
 
-const { data: page } = await useAsyncData(`catalogo-${path}`, async () => queryCollection('pages').where('path', 'LIKE', `${path}%`).first());
+const { data: page } = await useAsyncData(`catalogo-${path}`, async () => queryCollection('pages').path(path).first());
 
 </script>
 

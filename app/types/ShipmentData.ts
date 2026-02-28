@@ -1,11 +1,9 @@
 import type { Address } from "./Address";
 
-export interface BillData {
+export interface ShipmentData {
   name: string;
+  last_name: string;
   email: string;
   phone: string;
-  cfdi: string;
-  rfc: string;
-  regime: string;
   address: Address;
 }

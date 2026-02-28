@@ -1,6 +1,6 @@
 import type { BillData } from "./BillData";
 import type { Product } from "./product";
-import type { ShippmentData } from "./ShippmentData";
+import type { ShipmentData } from "./ShipmentData";
 
 export type PaymentMethodKey =
   | "credit-card"
@@ -66,7 +66,7 @@ export interface SaleOrderDraft {
   order_no: string;
   sae_order: string | null;
   status: boolean;
-  shipping: ShippmentData;
+  shipping: ShipmentData;
   payment: {
     method: PaymentCode | "";
     transaction: string;
@@ -81,7 +81,11 @@ export interface SaleOrderDraft {
 export interface OpenpayPayInput {
   paymentMethod: PaymentOption;
   total: number;
-  shippmentData: ShippmentData;
+  shipmentData: ShipmentData;
+  /**
+   * @deprecated Use `shipmentData` instead.
+   */
+  shippmentData?: ShipmentData;
   paymentPlan?: number;
 }
 

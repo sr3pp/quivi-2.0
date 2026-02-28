@@ -4,8 +4,8 @@ UPageGrid
       p.font-bebas.text-3xl Encuentra lo que necesitas.
       ProductFilters(@filter="filterProducts" :filters="filters")
     div(class="column products col-span-12 sm:col-span-4 md:col-span-9 flex flex-col gap-6")
-      p.bg-primary-dark.text-white.font-bebas.mr-auto.p-2.text-xl {{`Envios gratis en compras superiores a: ${shipment.meta.content.limite} MXN`}}
-      ContentRenderer(v-if="contentPage?.body" :value="contentPage")
+      p.bg-primary-dark.text-white.font-bebas.mr-auto.p-2.text-xl {{`Envios gratis en compras superiores a: ${shipment.limite || 10} MXN`}}
+      ContentRenderer(v-if="page?.body" :value="page")
       .search-label(v-if="search || filters")
           p.font-bebas.text-2xl Resultados de la busqueda
       UPageGrid.pr-4
@@ -17,7 +17,7 @@ UPageGrid
 
 <script lang="ts" setup>
 import { fetchProducts } from "@/assets/ts/utilities";
-import type { ConfigCollectionItem } from "@nuxt/content";
+import type { ConfigEntry, ShippingConfig, ShippingPayload } from "~/types";
 const route = useRoute();
 const router = useRouter();
 
@@ -26,22 +26,39 @@ const filters = computed(() => (route.query.filters as string) || "");
 const pageQuery = computed(() => (route.query.page as string) || "1");
 const perPage = 12;
 
-const config = inject("config", []) as ConfigCollectionItem[];
+const config = inject("config", []) as ConfigEntry[];
 
 const shipmentPage = computed(() => {
-  return config.find((c) => c.stem === "config/shipment");
+  return config.find((c) => c.stem === "config/shipping");
 });
 
-const { page: contentPage } = await usePageContent(route.path);
+const { data: page } = await useAsyncData("tienda-page", () => queryCollection("pages").path(route.path).first());
 
-const shipment = computed(
-  () => shipmentPage.value || { meta: { content: { limite: 0, costo: 0 } } },
-);
+const getShippingPayload = (entry?: ConfigEntry): ShippingPayload => {
+  const meta = entry?.meta;
+  if (!meta || typeof meta !== "object") return {};
+  const shipping = (meta as { shipping?: unknown }).shipping;
+  if (!shipping || typeof shipping !== "object") return {};
+  return shipping as ShippingPayload;
+};
+
+const shipment = computed<ShippingConfig>(() => {
+  const shipping = getShippingPayload(shipmentPage.value);
+
+  return {
+    limite: Number(shipping?.limite ?? 0),
+    costo: Number(shipping?.costo ?? 0),
+    clave: shipping?.clave,
+  };
+});
 
 const { setShippingConfig } = useCart();
 
 setShippingConfig(
-  shipment.value.meta.content as { limite: number; costo: number },
+  {
+    limite: shipment.value.limite || 0,
+    costo: shipment.value.costo || 0,
+  }
 );
 
 const { data: productData, refresh } = await useAsyncData(

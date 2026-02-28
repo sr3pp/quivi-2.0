@@ -6,5 +6,5 @@
 
 <script lang="ts" setup>
 const route = useRoute();
-const { page } = await usePageContent(route.path);
+const { data: page } = await useAsyncData("home-page", () => queryCollection("pages").path(route.path).first());
 </script>

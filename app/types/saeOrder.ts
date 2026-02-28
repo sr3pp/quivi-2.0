@@ -1,4 +1,4 @@
-export interface saeOrder {
+export interface SaeOrder {
   numOrdenCompraPortal: string;
   elaboraFactura: string;
   calle: string;
@@ -32,3 +32,8 @@ export interface saeOrder {
   metodoPago: string;
   usoCFDI: string;
 }
+
+/**
+ * @deprecated Use `SaeOrder` instead.
+ */
+export type saeOrder = SaeOrder;

@@ -9,7 +9,19 @@ export class openpayHandler {
     callback?: (orderId: string, extra?: string) => Promise<void> | void,
   ) {
     const orderId = buildOrderId();
-    const { paymentMethod, total, shippmentData, paymentPlan } = data;
+    const {
+      paymentMethod,
+      total,
+      shipmentData,
+      shippmentData,
+      paymentPlan,
+    } = data;
+    const shippingData = shipmentData ?? shippmentData;
+
+    if (!shippingData) {
+      throw new Error("Missing shipment data");
+    }
+
     const dataObj: Record<string, unknown> = {
       method: paymentMethod.value.includes("card")
         ? "card"
@@ -20,10 +32,10 @@ export class openpayHandler {
       description: `Compra en Quivi.mx. Orden: ${orderId}`,
       order_id: orderId,
       customer: {
-        name: shippmentData.name,
-        last_name: shippmentData.last_name,
-        phone_number: shippmentData.phone,
-        email: shippmentData.email,
+        name: shippingData.name,
+        last_name: shippingData.last_name,
+        phone_number: shippingData.phone,
+        email: shippingData.email,
       },
       confirm: "false",
       send_email: "false",

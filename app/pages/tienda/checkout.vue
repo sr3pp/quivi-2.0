@@ -39,12 +39,12 @@ import {
 } from "~/assets/ts/utilities";
 import type { LocationQueryValue } from "vue-router";
 import type {
+  ConfigEntry,
   CheckoutCartProduct,
   OpenpayVerificationResponse,
   PaymentCode,
   SaleOrderDraft,
 } from "~/types";
-import type { ConfigCollectionItem } from "@nuxt/content";
 
 const {
   id: routeTransactionId,
@@ -65,7 +65,7 @@ const {
   clearCheckout,
 } = useCheckout();
 
-const config = inject("config", []) as ConfigCollectionItem[];
+const config = inject("config", []) as ConfigEntry[];
 
 const termsSections = computed(() => {
   const item = config.find((c) => c.stem === "config/terms");
@@ -169,7 +169,7 @@ const processPayment = async () => {
       const data = {
         paymentMethod: paymentMethod.value,
         total: cart.value.total,
-        shippmentData: shipping.value,
+        shipmentData: shipping.value,
       };
 
       //TODO add payment plan (MSI)

@@ -1,7 +1,9 @@
 export { User } from "./user";
 export { Product } from "./product";
-export { saeOrder } from "./saeOrder";
+export { ProductPageData } from "./product";
+export { SaeOrder, saeOrder } from "./saeOrder";
 export { BillData } from "./BillData";
+export { ShipmentData } from "./ShipmentData";
 export { ShippmentData } from "./ShippmentData";
 export { SaleOrder } from "./SaleOrder";
 export { AuthMeta, SessionPayload } from "./auth";
@@ -47,6 +49,8 @@ export {
 } from "./payment";
 export { Cart } from "./Cart";
 export { Address } from "./Address";
+export { ShippingConfig, ShippingPayload, EstadosMap, ConfigEntry } from "./config";
+export { SearchResultsResponse } from "./search";
 export {
   Component,
   ComponentProps,
@@ -54,5 +58,4 @@ export {
   FieldSet,
   Media,
   Directory,
-  BreakpointObj,
 } from "./content";

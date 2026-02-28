@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { toPrice, processDiscount } from "~/assets/ts/utilities";
-import type { Product } from "~/types";
+import type { Product, ProductPageData } from "~/types";
 
 const { params } = useRoute();
 const { _id } = params;
@@ -12,13 +12,6 @@ const { data: product } = await useAsyncData<Product>(
   `product-${productId}`,
   () => $fetch<Product>(productPath),
 );
-
-type ProductPageData = Product & {
-  qty: number;
-  existences: number;
-  sae: string;
-  meassure_unity?: string;
-};
 
 const productData = product.value as ProductPageData | undefined;
 if (!productData) {

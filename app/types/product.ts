@@ -24,3 +24,10 @@ export interface Product {
   motors: object[] | [{ type: typeof Schema.Types.ObjectId; ref: string }];
   existences: number;
 }
+
+export type ProductPageData = Product & {
+  qty: number;
+  existences: number;
+  sae: string;
+  meassure_unity?: string;
+};

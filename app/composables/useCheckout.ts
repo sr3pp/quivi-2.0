@@ -2,10 +2,10 @@ import type {
   BillData,
   CheckoutStep,
   PaymentOption,
-  ShippmentData,
+  ShipmentData,
 } from "~/types";
 
-const defaultShipping = (): ShippmentData => ({
+const defaultShipping = (): ShipmentData => ({
   name: "",
   last_name: "",
   email: "",
@@ -41,7 +41,7 @@ const defaultBilling = (): BillData => ({
   },
 });
 
-const shipping = ref<ShippmentData>(defaultShipping());
+const shipping = ref<ShipmentData>(defaultShipping());
 const billing = ref<BillData>(defaultBilling());
 
 const billingSw = ref<boolean>(false);

@@ -74,8 +74,7 @@
 <script lang="ts" setup>
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { LabeledOption } from "~/types";
-import type { ConfigCollectionItem } from "@nuxt/content";
+import type { ConfigEntry, EstadosMap, LabeledOption } from "~/types";
 
 const props = defineProps({
   sat: {
@@ -84,12 +83,10 @@ const props = defineProps({
   },
 });
 
-const config: ConfigCollectionItem[] = inject("config", []);
+const config: ConfigEntry[] = inject("config", []);
 
 const { shipping, billing, billingSw, billingAddressSw, setStep } =
   useCheckout();
-
-type EstadosMap = Record<string, string[]>;
 
 const normalizeEstados = (value: unknown): EstadosMap => {
   if (!value || typeof value !== "object") {

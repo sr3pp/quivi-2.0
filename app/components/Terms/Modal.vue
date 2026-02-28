@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ConfigCollectionItem } from '@nuxt/content';
+import type { ConfigEntry } from "~/types";
 
 const modalSw = ref(false);
 
@@ -11,7 +11,7 @@ defineExpose({
   toggleTermsModal,
 });
 
-const config = inject("config") as ConfigCollectionItem[];
+const config = inject("config") as ConfigEntry[];
 
 const terms = computed(() => {
   const item = config.find((c) => c.stem === "config/terms");

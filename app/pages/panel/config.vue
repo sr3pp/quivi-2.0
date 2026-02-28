@@ -73,20 +73,23 @@ const newPromotion: any = ref({
 
 const { data: config } = await useAsyncData("config", async () => {
   const gallery = $fetch("/api/admin/gallery");
-  const config = await queryCollection("config").all()
-  
-  const { comercios, distribuidores, promotions, shipping } = config.reduce((acc: any, item: any) => {
-    if (item.stem.includes("comercios")) {
-      acc.comercios = item.data;
-    } else if (item.stem.includes("distribuidores")) {
-      acc.distribuidores = item.data;
-    } else if (item.stem.includes("promotions")) {
-      acc.promotions = item.data;
-    } else if (item.stem.includes("shipping")) {
-      acc.shipping = item.data;
-    }
-    return acc;
-  }, {});
+  const [comerciosItem, distribuidoresItem, promotionsItem, shippingItem] =
+    await Promise.all([
+      queryCollection("configComercios").first(),
+      queryCollection("configDistribuidores").first(),
+      queryCollection("configPromotions").first(),
+      queryCollection("configShipping").first(),
+    ]);
+
+  const comerciosData = (comerciosItem?.meta ?? comerciosItem ?? {}) as any;
+  const distribuidoresData = (distribuidoresItem?.meta ?? distribuidoresItem ?? {}) as any;
+  const promotionsData = (promotionsItem?.meta ?? promotionsItem ?? {}) as any;
+  const shippingData = (shippingItem?.meta ?? shippingItem ?? {}) as any;
+
+  const comercios = comerciosData.content ?? [];
+  const distribuidores = distribuidoresData.distribuidores ?? [];
+  const promotions = promotionsData.promotions ?? [];
+  const shipping = shippingData.shipping ?? shippingData ?? {};
 
   return {
     gallery,

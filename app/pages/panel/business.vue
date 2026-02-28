@@ -103,9 +103,7 @@ const normalizeBusiness = (value: unknown): BusinessConfig => {
 const business = ref<BusinessConfig>(emptyBusiness());
 
 const { data } = await useAsyncData<BusinessConfig>("business", async () => {
-  const item = await queryCollection("config")
-    .where("stem", "=", "config/business")
-    .first();
+  const item = await queryCollection("configBusiness").first();
 
   return normalizeBusiness(item?.meta ?? item);
 });

@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { ConfigEntry } from "~/types";
+
 const { toggleCart, active: cartSwitch, getCart } = useCart();
 
 const contactModal = ref(null);
@@ -7,9 +9,66 @@ const faqModal = ref(null);
 const termsModal = ref(null);
 const loading = ref(false);
 
+const toConfigEntry = (
+  stem: string,
+  item: Record<string, unknown> | null | undefined,
+): ConfigEntry => {
+  const meta = ((item?.meta as Record<string, unknown> | undefined) ??
+    (item?.data as Record<string, unknown> | undefined) ??
+    item ??
+    {}) as Record<string, unknown>;
+
+  return {
+    stem,
+    meta,
+    ...meta,
+  };
+};
+
 const { data } = await useAsyncData("main-data", async () => {
   const navigation = await queryCollectionNavigation("pages", ["order"]);
-  const config = await queryCollection("config").all();
+  const [
+    business,
+    distribuidores,
+    faqs,
+    contact,
+    shipping,
+    sat,
+    terms,
+    estados,
+    promotions,
+    comercios,
+  ] = await Promise.all([
+    queryCollection("configBusiness").first(),
+    queryCollection("configDistribuidores").first(),
+    queryCollection("configFaqs").first(),
+    queryCollection("configContact").first(),
+    queryCollection("configShipping").first(),
+    queryCollection("configSat").first(),
+    queryCollection("configTerms").first(),
+    queryCollection("configEstados").first(),
+    queryCollection("configPromotions").first(),
+    queryCollection("configComercios").first(),
+  ]);
+
+  const config = [
+    toConfigEntry("config/business", business as Record<string, unknown> | null),
+    toConfigEntry(
+      "config/distribuidores",
+      distribuidores as Record<string, unknown> | null,
+    ),
+    toConfigEntry("config/faqs", faqs as Record<string, unknown> | null),
+    toConfigEntry("config/contact", contact as Record<string, unknown> | null),
+    toConfigEntry("config/shipping", shipping as Record<string, unknown> | null),
+    toConfigEntry("config/sat", sat as Record<string, unknown> | null),
+    toConfigEntry("config/terms", terms as Record<string, unknown> | null),
+    toConfigEntry("config/estados", estados as Record<string, unknown> | null),
+    toConfigEntry(
+      "config/promotions",
+      promotions as Record<string, unknown> | null,
+    ),
+    toConfigEntry("config/comercios", comercios as Record<string, unknown> | null),
+  ];
 
   return {
     navigation,
@@ -46,12 +105,13 @@ const contact = computed(() => {
 
 const social = computed(
   () =>
-    (business.value?.meta?.content as { social?: Array<any> } | undefined)
-      ?.social ?? [],
+    (business.value?.meta?.social ?? [])
 );
-const faqsContent = computed(() => faqs.value?.meta?.content ?? []);
+
+const faqsContent = computed(() => faqs.value?.meta?.faqs ?? []);
+
 const distribuidoresContent = computed(
-  () => distribuidores.value?.meta?.content ?? [],
+  () => distribuidores.value?.meta?.distribuidores ?? [],
 );
 const contactContent = computed(() => contact.value?.meta?.content ?? null);
 

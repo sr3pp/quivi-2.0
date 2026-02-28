@@ -1,5 +1,5 @@
 import type { BillData } from "./BillData";
-import type { ShippmentData } from "./ShippmentData";
+import type { ShipmentData } from "./ShipmentData";
 
 export interface SaleOrder {
   _id?: string;
@@ -12,7 +12,7 @@ export interface SaleOrder {
     status?: boolean;
     installments?: number;
   };
-  shipment: ShippmentData;
+  shipment: ShipmentData;
   bill?: BillData | null;
   [key: string]: unknown;
 }

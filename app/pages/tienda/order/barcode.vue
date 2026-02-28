@@ -10,8 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { ConfigCollectionItem } from "@nuxt/content";
-import type { SaleOrder } from "~/types";
+import type { ConfigEntry, SaleOrder } from "~/types";
 
 const {
   public: { openpay },
@@ -22,7 +21,7 @@ const merchId = config.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
-const configData = inject("config", []) as ConfigCollectionItem[];
+const configData = inject("config", []) as ConfigEntry[];
 
 const contactPage = computed(() => {
   return configData.find((c) => c.stem === "config/contact");

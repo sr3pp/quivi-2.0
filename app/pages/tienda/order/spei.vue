@@ -16,12 +16,11 @@ UContainer
 </template>
 
 <script lang="ts" setup>
-import type { ConfigCollectionItem } from "@nuxt/content";
-import type { SaleOrder } from "~/types";
+import type { ConfigEntry, SaleOrder } from "~/types";
 
 const { order_id } = useRoute().query;
 
-const config = inject("config", []) as ConfigCollectionItem[];
+const config = inject("config", []) as ConfigEntry[];
 
 const businessPage = computed(() => {
   return config.find((c) => c.stem === "config/business");

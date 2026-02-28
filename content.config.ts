@@ -7,9 +7,151 @@ const linkSchema = z
   })
   .partial();
 
-const configSchema = z
+const satOptionSchema = z
   .object({
-    content: z.unknown().optional(),
+    name: z.string(),
+    value: z.string(),
+  })
+  .passthrough();
+
+const businessSchema = z
+  .object({
+    address: z.object({
+      street: z.string(),
+      number: z.string(),
+      neighborhood: z.string(),
+      city: z.string(),
+      state: z.string(),
+      country: z.string(),
+      zip: z.string(),
+    }),
+    bank_accounts: z.array(
+      z
+        .object({
+          account_number: z.string(),
+          CLABE: z.string().optional(),
+          bank_name: z.string(),
+        })
+        .passthrough(),
+    ),
+    social: z.array(
+      z
+        .object({
+          label: z.string(),
+          url: z.string(),
+          icon: z.string().optional(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+const comerciosSchema = z
+  .object({
+    content: z.array(
+      z
+        .object({
+          name: z.string(),
+          logo: z.string(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+const contactSchema = z
+  .object({
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+    whatsapp: z.string().optional(),
+    shchedule: z.string().optional(),
+    schedule: z.string().optional(),
+  })
+  .passthrough();
+
+const distribuidoresSchema = z
+  .object({
+    distribuidores: z.array(
+      z
+        .object({
+          id: z.number(),
+          name: z.string(),
+          logo: z.string(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+const estadosSchema = z.record(z.string(), z.array(z.string()));
+
+const faqsSchema = z
+  .object({
+    faqs: z.array(
+      z
+        .object({
+          question: z.string(),
+          answer: z.string(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+const promotionsSchema = z
+  .object({
+    promotions: z.array(
+      z
+        .object({
+          name: z.string(),
+          code: z.string(),
+          category: z.string(),
+          status: z.boolean(),
+          percent: z.number().optional(),
+          options: z.array(z.number()).optional(),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
+const shippingSchema = z
+  .object({
+    limite: z.union([z.number(), z.string()]).optional(),
+    costo: z.union([z.number(), z.string()]).optional(),
+    clave: z.string().optional(),
+  })
+  .passthrough();
+
+const shippingConfigSchema = z
+  .object({
+    shipping: shippingSchema,
+  })
+  .passthrough();
+
+const satSchema = z
+  .object({
+    usos: z.array(satOptionSchema),
+    regimenes: z.array(satOptionSchema),
+  })
+  .passthrough();
+
+const termsSchema = z
+  .object({
+    title: z.string(),
+    fecha: z.string(),
+    sections: z
+      .array(
+        z
+          .object({
+            orden: z.union([z.string(), z.number()]).optional(),
+            title: z.string(),
+            content: z.string(),
+          })
+          .passthrough(),
+      )
+      .default([]),
   })
   .passthrough();
 
@@ -62,10 +204,55 @@ export default defineContentConfig({
         }))
       })
     }),
-    config: defineCollection({
+    configBusiness: defineCollection({
       type: "data",
-      source: "config/**/*.json",
-      schema: configSchema,
+      source: "config/business.json",
+      schema: businessSchema,
+    }),
+    configComercios: defineCollection({
+      type: "data",
+      source: "config/comercios.json",
+      schema: comerciosSchema,
+    }),
+    configContact: defineCollection({
+      type: "data",
+      source: "config/contact.json",
+      schema: contactSchema,
+    }),
+    configDistribuidores: defineCollection({
+      type: "data",
+      source: "config/distribuidores.json",
+      schema: distribuidoresSchema,
+    }),
+    configEstados: defineCollection({
+      type: "data",
+      source: "config/estados.json",
+      schema: estadosSchema,
+    }),
+    configFaqs: defineCollection({
+      type: "data",
+      source: "config/faqs.json",
+      schema: faqsSchema,
+    }),
+    configPromotions: defineCollection({
+      type: "data",
+      source: "config/promotions.json",
+      schema: promotionsSchema,
+    }),
+    configSat: defineCollection({
+      type: "data",
+      source: "config/sat.json",
+      schema: satSchema,
+    }),
+    configShipping: defineCollection({
+      type: "data",
+      source: "config/shipping.json",
+      schema: shippingConfigSchema,
+    }),
+    configTerms: defineCollection({
+      type: "data",
+      source: "config/terms.json",
+      schema: termsSchema,
     }),
     downloads: defineCollection({
       type: "data",

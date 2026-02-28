@@ -4,5 +4,5 @@
 </template>
 
 <script lang="ts" setup>
-const { page } = await usePageContent("/");
+const { data: page } = await useAsyncData("home-page", () => queryCollection("pages").path("/").first());
 </script>
