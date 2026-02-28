@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 const { path } = useRoute();
 
-const [{ page }, downloads] = await Promise.all([
-  usePageContent(path),
-  $fetch(`/api/content/downloads?path=${path}`),
-]);
+const { data: page } = await useAsyncData(`catalogo-${path}`, async () => queryCollection('pages').where('path', 'LIKE', `${path}%`).first());
+
 </script>
 
 <template lang="pug">
 .catalogo-detail
     ContentRenderer(v-if="page?.body" :value="page")
-    UContainer(:with-padding="true")
-        DownloadsList(:downloads="downloads" :path="path")
+    UContainer.py-10
+        DownloadsList(:path="path.replace('/catalogo/', '')")
 </template>
