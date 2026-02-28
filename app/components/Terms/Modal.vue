@@ -11,16 +11,7 @@ defineExpose({
   toggleTermsModal,
 });
 
-const config = inject("config") as ConfigEntry[];
-
-const terms = computed(() => {
-  const item = config.find((c) => c.stem === "config/terms");
-  return {
-    title: item?.meta.title ?? "",
-    fecha: item?.meta.fecha ?? "",
-    sections: item?.meta.sections ?? [],
-  };
-});
+const { data: terms } = await useAsyncData("config-terms", () => queryCollection("configTerms").first());
 </script>
 
 <template lang="pug">

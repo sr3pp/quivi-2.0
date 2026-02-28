@@ -29,7 +29,6 @@
         UInput.w-full(v-model="formState.shipping.address.zip" placeholder="Codigo postal")
 
     fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4")
-      legend.font-bebas.text-3xl Facturacion
       UFormField(name="billingSw")
         UCheckbox(v-model="formState.billingSw" size="lg" label="Requiero Factura")
 
@@ -50,7 +49,7 @@
 
     fieldset.grid(class="grid-cols-1 md:grid-cols-2 gap-4" v-if="formState.billingSw")
       legend.font-bebas.text-3xl Direccion de facturacion
-      UFormField(label="Usar direccion de envio" name="billingAddressSw")
+      UFormField.flex.items-center(name="billingAddressSw")
         UCheckbox(v-model="formState.billingAddressSw" size="lg" label="Usar direccion de envio")
       UFormField(label="Calle" name="billing.address.street" required)
         UInput.w-full(v-model="formState.billing.address.street" :disabled="formState.billingAddressSw" placeholder="Calle")
@@ -74,7 +73,7 @@
 <script lang="ts" setup>
 import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
-import type { ConfigEntry, EstadosMap, LabeledOption } from "~/types";
+import type { EstadosMap, LabeledOption } from "~/types";
 
 const props = defineProps({
   sat: {
@@ -83,10 +82,12 @@ const props = defineProps({
   },
 });
 
-const config: ConfigEntry[] = inject("config", []);
-
 const { shipping, billing, billingSw, billingAddressSw, setStep } =
   useCheckout();
+
+const { data: estados } = await useAsyncData("config-estados", () =>
+  queryCollection("configEstados").first(),
+);
 
 const normalizeEstados = (value: unknown): EstadosMap => {
   if (!value || typeof value !== "object") {
@@ -101,7 +102,9 @@ const normalizeEstados = (value: unknown): EstadosMap => {
       }
 
       acc[estado] = municipios
-        .filter((municipio): municipio is string => typeof municipio === "string")
+        .filter(
+          (municipio): municipio is string => typeof municipio === "string",
+        )
         .map((municipio) => municipio.trim())
         .filter((municipio) => municipio !== "");
 
@@ -111,13 +114,12 @@ const normalizeEstados = (value: unknown): EstadosMap => {
   );
 };
 
-const estados = computed<EstadosMap>(() => {
-  const item = config.find((c) => c.stem === "config/estados");
-  return normalizeEstados(item?.meta);
-});
+const estadosMap = computed<EstadosMap>(() =>
+  normalizeEstados((estados.value as { meta?: unknown } | null)?.meta),
+);
 
 const stateOptions = computed(() =>
-  Object.keys(estados.value)
+  Object.keys(estadosMap.value)
     .filter((state) => state != null && String(state).trim() !== "")
     .map((state) => ({
       value: String(state).trim(),
@@ -285,9 +287,9 @@ const shippingCityOptions = ref<LabeledOption[]>([]);
 const billingCityOptions = ref<LabeledOption[]>([]);
 
 const updateMunicipios = (type: "shipping" | "billing", state: string) => {
-  const municipios = estados.value[state] ?? [];
+  const municipios: string[] = estadosMap.value[state] ?? [];
   const options = municipios
-    .filter((municipio: string) => municipio.trim() !== "")
+    .filter((municipio) => municipio.trim() !== "")
     .map((municipio) => ({
       value: municipio.trim(),
       label: municipio.trim(),

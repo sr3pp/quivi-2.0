@@ -21,13 +21,9 @@ const merchId = config.merchantId;
 const { order_id, reference } = useRoute().query;
 const reciptUrl = `${baseUrl}${merchId}/${reference}`;
 
-const configData = inject("config", []) as ConfigEntry[];
+const { data: contact } = await useNuxtData("config-contact");
 
-const contactPage = computed(() => {
-  return configData.find((c) => c.stem === "config/contact");
-});
-
-const email = contactPage.value?.email ?? "";
+const email = contact.value?.email ?? "";
 
 const iframe: Ref<HTMLIFrameElement | null> = ref(null);
 

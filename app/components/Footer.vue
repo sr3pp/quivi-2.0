@@ -38,7 +38,7 @@ footer(
                     v-for="(item, i) in social"
                     :key="i"
                   )
-                      a(class="text-current" :href="item.url" target="_blank" :aria-label="item.label" :title="item.label")
+                      NuxtLink(class="text-current" :to="item.url" target="_blank" :aria-label="item.label" :title="item.label")
                           SvgIcon(class="size-20 flex" :name="item.icon")
     UPageGrid(class="bg-[var(--color-quivi-red)] py-1")
         div(class="flex flex-col col-span-12 sm:col-span-1/3 md:col-span-4 justify-center items-center")
@@ -76,10 +76,12 @@ defineProps({
   social: {
     type: Array,
     default: () => [],
-  },
-  distribuidores: {
-    type: Array,
-    default: () => [],
-  },
+  }
+});
+
+const { data: distribuidoresPage } = await useAsyncData("config-distribuidores", () => queryCollection("configDistribuidores").first());
+
+const distribuidores = computed(() => {
+  return distribuidoresPage.value?.distribuidores ?? [];
 });
 </script>

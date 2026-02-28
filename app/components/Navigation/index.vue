@@ -26,7 +26,7 @@ nav(
           SvgIcon(class="w-[30px] h-[40px] text-[var(--color-quivi-light-red)]" name="x-o" v-else)
           span(class="hidden text-[12px] font-inria text-[var(--color-text-color)] sm:inline-block sm:text-base") Busqueda
       li(class="hidden sm:flex w-[80px] mr-2.5" v-if="contactPhone")
-        a(class="whitespace-nowrap" :href="`tel:${contactPhone}`") {{ contactPhone }}
+        NuxtLink(class="whitespace-nowrap text-primary" :to="`tel:${contactPhone}`") {{ contactPhone }}
       li(class="w-[30px] sm:w-[80px] mr-2.5")
         button(
           class="cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
@@ -62,73 +62,17 @@ nav(
     class="absolute top-full left-0 w-full z-10 max-h-0 overflow-hidden rounded-b-lg bg-gradient-to-r from-[var(--color-quivi-gray)] to-[var(--color-quivi-darkest-gray)] shadow-[0_10px_10px_rgba(51,47,46,0.3)] transition-[max-height] duration-300 sm:relative sm:z-2 sm:max-h-none sm:overflow-visible sm:w-auto sm:h-auto sm:bg-none sm:shadow-none sm:flex sm:items-center sm:ml-auto sm:mb-[-50px] sm:px-5"
     :class="menuActive ? 'max-h-screen' : ''"
   )
-    li(
-      class="group relative z-2 flex flex-col min-w-[140px] sm:mr-1"
+    NavigationItem(
       v-for="(item, i) in navigation"
-      :class="[item.highLight ? 'text-[var(--color-text-color)]' : '', item.active ? 'is-active' : '']"
       :key="i"
+      :item="item"
+      @toggle="item.active = !Boolean(item.active)"
     )
-      div(class="relative flex")
-        NuxtLink(
-          class="relative z-2 flex w-full p-4 text-[var(--color-white)] sm:min-w-[130px] sm:h-auto sm:justify-center sm:p-2.5 sm:text-center sm:font-bebas sm:text-[22px] sm:leading-[1.4]"
-          :to="item.path"
-        )
-          span {{ item.title }}
-          SvgIcon(class="size-10 ml-auto sm:hidden" name="ir-o" v-if="!item.children || (item.children && !item.children.length)")
-        button(
-          class="ml-auto p-4 bg-transparent border-0 sm:hidden"
-          @click="item.active = !Boolean(item.active)"
-          v-if="item.children && item.children.length"
-        )
-          SvgIcon(
-            class="size-10 text-[var(--color-white)] transition-transform duration-300"
-            :class="item.active ? 'rotate-180' : ''"
-            name="desplazamientoabajo-o"
-          )
-        svg(
-          class="hidden sm:block absolute inset-0 z-1 w-full h-full"
-          :style="{ fill: item.highLight ? 'url(#stateMenuBtnHighlight)' : 'url(#stateMenuBtn)' }"
-        )
-          defs
-            linearGradient(id="stateMenuBtnHover" x1="0%" y1="0%" x2="0%" y2="100%")
-              stop(offset="0%" stop-color="#000000")
-              stop(offset="100%" stop-color="#000000")
-            linearGradient(id="stateMenuBtn" x1="0%" y1="0%" x2="0%" y2="100%")
-              stop(offset="0%" :stop-color="btnColor1")
-              stop(offset="100%" :stop-color="btnColor2")
-            linearGradient(id="stateMenuBtnHighlightHover" x1="0%" y1="0%" x2="0%" y2="100%")
-              stop(offset="0%" stop-color="#E0C207")
-              stop(offset="100%" stop-color="#E0C207")
-            linearGradient(id="stateMenuBtnHighlight" x1="0%" y1="0%" x2="0%" y2="100%")
-              stop(offset="0%" :stop-color="btnColor3")
-              stop(offset="100%" :stop-color="btnColor4")
-          use(href="/icons/botonmenu-o.svg#s")
-      ol(
-        class="flex flex-col overflow-hidden max-h-0 transition-[max-height,opacity,padding-top] duration-300 sm:absolute sm:left-0 sm:top-3.5 sm:min-w-[250px] sm:rounded-b-[18px] sm:bg-gradient-to-r sm:from-[var(--color-quivi-gray)] sm:to-[var(--color-quivi-darkest-gray)] sm:shadow-[0_10px_10px_rgba(51,47,46,0.3)] sm:group-hover:max-h-screen sm:group-hover:pt-7"
-        :class="item.active ? 'max-h-screen' : ''"
-        v-if="item.children && item.children.length > 1"
-        role="list"
-      )
-        li(
-          class="relative flex w-full"
-          v-for="(el, e) in item.children.filter(child => child.stem !== item.stem && !child.stem.endsWith('/index'))"
-          :key="e"
-        )
-          NuxtLink(
-            class="w-full text-[var(--color-white)] text-left text-[18px] leading-[1.8] capitalize px-5 py-4 sm:px-4 sm:justify-start sm:font-inria"
-            :to="el.path"
-          ) {{ el.title }}
 </template>
 
 <script lang="ts" setup>
-import {
-  colorQuiviDarkestGray,
-  colorQuiviGray,
-  colorQuiviYellow,
-  colorQuiviDarkYellow,
-} from "~/assets/ts/tokens";
-
 import type { DropdownMenuItem } from "@nuxt/ui";
+import type { NavigationItemModel } from "./types";
 
 const panelItems: DropdownMenuItem[][] = [
   [
@@ -149,10 +93,6 @@ const panelItems: DropdownMenuItem[][] = [
 ];
 
 const props = defineProps({
-  navigation: {
-    type: Array,
-    required: true,
-  },
   contact: {
     type: Object,
     required: false,
@@ -160,14 +100,21 @@ const props = defineProps({
   },
 });
 
+const { data: navigationData } = await useAsyncData("navigation", async () =>
+  queryCollectionNavigation("pages", ["order"]),
+);
+
+const navigation = computed<NavigationItemModel[]>(() =>
+  ((navigationData.value ?? []) as NavigationItemModel[]).sort((a, b) => {
+    const orderA = a.order ?? a.children?.[0]?.order ?? 9999;
+    const orderB = b.order ?? b.children?.[0]?.order ?? 9999;
+    return orderA - orderB;
+  }),
+);
+
 const route = ref(useRoute());
 const searchActive = ref(false);
 const menuActive = ref(false);
-
-const btnColor1: string = colorQuiviGray;
-const btnColor2: string = colorQuiviDarkestGray;
-const btnColor3: string = colorQuiviYellow;
-const btnColor4: string = colorQuiviDarkYellow;
 
 const { toggleCart, totalCartProducts } = useCart();
 

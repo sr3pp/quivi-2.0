@@ -1,11 +1,4 @@
 <script setup lang="ts">
-defineProps({
-  faqs: {
-    type: Array,
-    default: () => [],
-  },
-});
-
 const modalSw = ref(false);
 
 defineExpose({
@@ -13,6 +6,13 @@ defineExpose({
     modalSw.value = !modalSw.value;
   },
 });
+
+const { data: faqsPage } = await useAsyncData("config-faqs", () => queryCollection("configFaqs").first());
+
+const faqs = computed(() => {
+  return faqsPage.value?.faqs ?? [];
+});
+
 </script>
 
 <template lang="pug">

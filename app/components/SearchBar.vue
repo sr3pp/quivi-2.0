@@ -20,7 +20,7 @@ div(class="relative flex h-[50px] w-full rounded-lg border border-[var(--color-q
     @click="goToSearch"
     aria-label="Buscar"
   )
-    SvgIcon(class="size-4 text-[var(--color-white)]" name="lupa-o")
+    SvgIcon(class="size-20 text-[var(--color-white)]" name="lupa-o")
   div(
     class="absolute left-0 top-full z-[2] flex w-full flex-col overflow-hidden rounded-b-lg border border-t-0 border-[rgba(91,91,95,0.3)] bg-[var(--color-white)] opacity-0 shadow-[0_4px_20px_rgba(91,91,95,0.3)] transition-[max-height,opacity] duration-300 ease-in-out"
     :class="results.length ? 'max-h-[300px] opacity-100' : 'max-h-0'"

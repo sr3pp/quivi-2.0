@@ -41,14 +41,7 @@ const defaultBilling = (): BillData => ({
   },
 });
 
-const shipping = ref<ShipmentData>(defaultShipping());
-const billing = ref<BillData>(defaultBilling());
-
-const billingSw = ref<boolean>(false);
-const billingAddressSw = ref<boolean>(false);
-const paymentLock = ref<boolean>(false);
-
-const stepsState = ref<CheckoutStep[]>([
+const defaultSteps = (): CheckoutStep[] => [
   {
     label: "Envío y facturacíon",
     enabled: true,
@@ -67,7 +60,16 @@ const stepsState = ref<CheckoutStep[]>([
     active: false,
     done: false,
   },
-]);
+];
+
+const shipping = ref<ShipmentData>(defaultShipping());
+const billing = ref<BillData>(defaultBilling());
+
+const billingSw = ref<boolean>(false);
+const billingAddressSw = ref<boolean>(false);
+const paymentLock = ref<boolean>(false);
+
+const stepsState = ref<CheckoutStep[]>(defaultSteps());
 
 const paymentMethod = ref<PaymentOption>({
   name: "",
@@ -92,6 +94,12 @@ watch(billingSw, () => {
   }
 });
 
+watch(billingAddressSw, () => {
+  if (process.client) {
+    syncLocalStorage();
+  }
+});
+
 watch(paymentMethod, () => {
   if (process.client) {
     syncLocalStorage();
@@ -106,6 +114,7 @@ function syncLocalStorage() {
         shipping: shipping.value,
         billing: billing.value,
         billingSw: billingSw.value,
+        billingAddressSw: billingAddressSw.value,
         paymentMethod: paymentMethod.value,
       }),
     );
@@ -119,31 +128,39 @@ function syncData(): void {
     const data = JSON.parse(saleData);
     shipping.value = data.shipping;
     billing.value = data.billing;
-    billingSw.value = data.billingSw;
-    paymentMethod.value = data.paymentMethod;
+    billingSw.value = Boolean(data.billingSw);
+    billingAddressSw.value = Boolean(data.billingAddressSw);
+    paymentMethod.value = data.paymentMethod ?? { name: "", value: "" };
+    paymentLock.value = Boolean(paymentMethod.value?.value);
   }
 }
 
 export function useCheckout() {
-  function handlePayment(kind: string, data: unknown) {
-    console.log(kind, data);
-  }
-
   function setStep(step: number) {
-    if (step - 1 >= 0) {
-      stepsState.value[step - 1].done = true;
-    }
-    if (step + 1 < stepsState.value.length) {
-      stepsState.value[step + 1].done = false;
-    }
-    stepsState.value[step].enabled = true;
-    const current = stepsState.value.find((activeStep) => activeStep.active);
-    current!.active = false;
+    const steps = stepsState.value;
+    if (step < 0 || step >= steps.length) return;
 
-    const newStep = stepsState.value[step];
+    const prevStep = steps[step - 1];
+    if (prevStep) {
+      prevStep.done = true;
+    }
 
-    if (newStep.enabled) {
-      newStep.active = true;
+    const nextStep = steps[step + 1];
+    if (nextStep) {
+      nextStep.done = false;
+    }
+
+    const targetStep = steps[step];
+    if (!targetStep) return;
+    targetStep.enabled = true;
+
+    const currentStep = steps.find((activeStep) => activeStep.active);
+    if (currentStep) {
+      currentStep.active = false;
+    }
+
+    if (targetStep.enabled) {
+      targetStep.active = true;
     }
   }
 
@@ -151,7 +168,10 @@ export function useCheckout() {
     shipping.value = defaultShipping();
     billing.value = defaultBilling();
     billingSw.value = false;
+    billingAddressSw.value = false;
+    paymentLock.value = false;
     paymentMethod.value = { name: "", value: "" };
+    stepsState.value = defaultSteps();
     syncLocalStorage();
   }
 
@@ -159,7 +179,6 @@ export function useCheckout() {
     billing,
     billingSw,
     billingAddressSw,
-    handlePayment,
     paymentLock,
     paymentMethod,
     setStep,

@@ -23,9 +23,19 @@ const {
   emptyCart,
   totalCartProducts,
   cart,
+  setShippingConfig
 } = useCart();
 const emit = defineEmits(["close"]);
 const isOpen = ref(active.value);
+
+const { data: cartConfig } = await useAsyncData("config-shipping", () => queryCollection("configShipping").first());
+
+if (cartConfig.value) {
+  setShippingConfig({
+    limite: cartConfig.value.limite as number || 0,
+    costo: cartConfig.value.costo as number || 0,
+  });
+}
 
 watch(active, (value) => {
   if (value) {

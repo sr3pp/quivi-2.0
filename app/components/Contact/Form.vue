@@ -28,9 +28,7 @@ import { z } from "zod";
 import type { FormSubmitEvent } from "@nuxt/ui";
 import type { ConfigEntry } from "~/types";
 
-const config = inject("config", []) as ConfigEntry[];
-
-const contactEmail = config.find((c) => c.stem === "config/contact")?.meta.email ?? "";
+const { data: contact } = await useNuxtData("config-contact");
 
 const sending = ref(false);
 const sent = ref(false);
@@ -63,7 +61,7 @@ const sendContactForm = async (
   const data = {
     context: event.data,
     template: "contact",
-    to: contactEmail,
+    to: contact.value?.email ?? "",
     subject: "Mensaje de formulario de contacto",
   };
 

@@ -1,7 +1,7 @@
 <template lang="pug">
 ul.flex.flex-col.gap-4
-    li.flex.gap-2(v-for="(product, i) in products" :key="i")
-        ProductImage(:product="product" class="size-30 aspect-squeare object-cover flex-grow-0")
+    li.flex.gap-2.justify-center(v-for="(product, i) in products" :key="i")
+        ProductImage(:product="product" class="size-30 sm:size-50 md:size-60 aspect-squeare object-cover flex-grow-0")
         .flex.flex-col.gap-2.text-sm
             p {{ product.name }}
             p.flex.justify-between 
