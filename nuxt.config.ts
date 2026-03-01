@@ -3,6 +3,25 @@ import { resolve } from "pathe";
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2026-02-11",
+  experimental: {
+    // Use classic chokidar watcher instead of granular strategy to reduce
+    // number of file descriptors on large projects.
+    watcher: "chokidar",
+  },
+  watchers: {
+    chokidar: {
+      usePolling: true,
+      interval: 300,
+      ignored: [
+        "**/.git/**",
+        "**/.nuxt/**",
+        "**/.output/**",
+        "**/node_modules/**",
+        "**/coverage/**",
+        "**/test-results/**",
+      ],
+    },
+  },
   app: {
     pageTransition: { name: "page", mode: "out-in" },
     head: {
@@ -99,6 +118,23 @@ export default defineNuxtConfig({
     colorMode: false,
   },
   css: ["@/assets/css/main.css"],
+  vite: {
+    server: {
+      watch: {
+        // Prevent "EMFILE: too many open files, watch" on large trees.
+        usePolling: true,
+        interval: 300,
+        ignored: [
+          "**/.git/**",
+          "**/.nuxt/**",
+          "**/.output/**",
+          "**/node_modules/**",
+          "**/coverage/**",
+          "**/test-results/**",
+        ],
+      },
+    },
+  },
   nitro: {
     plugins: [resolve(process.cwd(), "server/DB.ts")],
   },
