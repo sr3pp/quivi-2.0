@@ -1,10 +1,10 @@
 <template lang="pug">
   UContainer(:with-padding="true")
-      .flex.gap-4.items-center.justify-between
-        p Panel Ventas
-        UInput(v-model="search" @keyup.enter="searchSale" placeholder="Buscar")
-        UButton(@click="searchSale")
-          SvgIcon(name="lupa-o")
+    .flex.gap-4.items-center.justify-between
+      p Panel Ventas
+      UInput(v-model="search" @keyup.enter="searchSale" placeholder="Buscar")
+      UButton(@click="searchSale")
+        SvgIcon(name="lupa-o")
 
     p Panel ventas
     //button(@click="salesModal.toggle()") Create venta

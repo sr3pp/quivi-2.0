@@ -1,10 +1,10 @@
 <template lang="pug">
 UPageGrid
     div(class="flex flex-col p-6 store-filters col-span-12 sm:col-span-2 md:col-span-3 gap-2 sticky top-0")
-      p.font-bebas.text-3xl Encuentra lo que necesitas.
+      p.font-bebas.text-3xl.test Encuentra lo que necesitas.
       ProductFilters(@filter="filterProducts" :filters="filters")
     div(class="column products col-span-12 sm:col-span-4 md:col-span-9 flex flex-col gap-6")
-      p.bg-primary-dark.text-white.font-bebas.mr-auto.p-2.text-xl {{`Envios gratis en compras superiores a: ${shipment.limite || 0} MXN`}}
+      p.bg-primary-dark.text-white.font-bebas.mr-auto.p-2.text-xl {{`Envios gratis en compras superiores a: ${shipment?.limite || 0} MXN`}}
       ContentRenderer(v-if="page?.body" :value="page")
       .search-label(v-if="search || filters")
           p.font-bebas.text-2xl Resultados de la busqueda
