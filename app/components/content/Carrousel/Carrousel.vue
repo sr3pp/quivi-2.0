@@ -46,11 +46,9 @@ const toCarouselCta = (cta?: {
     :dots="dots"
     :autoplay="autoplay"
     :items="slides"
-    class="content-carousel"
   >
     <template #default="{ item: slide }">
       <CarrouselSlide
-        class="content-carousel__item"
         :title="slide.title"
         :description="slide.description"
         :eyebrow="slide.eyebrow"
@@ -60,11 +58,3 @@ const toCarouselCta = (cta?: {
     </template>
   </UCarousel>
 </template>
-
-<style scoped>
-.content-carousel {
-  --content-carousel-radius: 18px;
-  --content-carousel-background: #f7f7f9;
-  --content-carousel-text: #1f1f25;
-}
-</style>
