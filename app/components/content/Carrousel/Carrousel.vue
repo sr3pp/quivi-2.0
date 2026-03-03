@@ -67,8 +67,4 @@ const toCarouselCta = (cta?: {
   --content-carousel-background: #f7f7f9;
   --content-carousel-text: #1f1f25;
 }
-
-.content-carousel__item {
-  padding: 12px;
-}
 </style>

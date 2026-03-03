@@ -46,6 +46,21 @@ const businessSchema = z
   })
   .passthrough();
 
+const mainBrandsSchema = z
+  .object({
+    brands: z.array(
+      z.object({
+          name: z.string(),
+          logo: z.object({
+            src: z.string(),
+            alt: z.string(),
+          }),
+        })
+        .passthrough(),
+    ),
+  })
+  .passthrough();
+
 const comerciosSchema = z
   .object({
     content: z.array(
@@ -208,6 +223,11 @@ export default defineContentConfig({
       type: "data",
       source: "config/business.json",
       schema: businessSchema,
+    }),
+    configMainBrands: defineCollection({
+      type: "data",
+      source: "config/main-brands.json",
+      schema: mainBrandsSchema,
     }),
     configComercios: defineCollection({
       type: "data",

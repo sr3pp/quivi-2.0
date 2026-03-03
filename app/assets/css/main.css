@@ -16,3 +16,7 @@ h6 {
   font-family: Bebas, sans-serif;
   text-wrap: balance;
 }
+
+p{
+  margin: 0;
+}

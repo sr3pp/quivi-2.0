@@ -17,21 +17,19 @@ withDefaults(defineProps<{
 <template>
   <section>
     <UContainer
-      class="grid grid-cols-12 gap-4 py-10"
+      class="grid grid-cols-12 gap-4 sm:gap-8 py-10"
       :class="variant == 'with-image' ? 'max-w-lg' : ''"
     >
       <article
         v-if="title"
         class="col-span-1 sm:col-span-2 md:col-span-3 sm:border-r border-gray-300 sm:pr-6"
       >
-        <h2 class="text-center text-2xl sm:text-5xl">
+        <h2 class="text-center text-2xl sm:text-5xl md:text-7xl text-quivi-gray">
           {{ title }}
         </h2>
       </article>
-      <article class="col-span-1 sm:col-span-2 md:col-span-9 flex flex-col">
-        <p class="text-gray-600 my-auto">
-          {{ text }}
-        </p>
+      <article class="col-span-1 sm:col-span-2 md:col-span-9 flex flex-col text-quivi-dark-gray sm:text-lg md:text-xl gap-4 justify-center">
+        <slot />
       </article>
       <figure v-if="imageSrc" class="col-span-1 sm:col-span-2 md:col-span-3">
         <NuxtImg :src="imageSrc" :alt="imageAlt" class="mx-auto" />
