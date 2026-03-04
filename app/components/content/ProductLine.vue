@@ -34,6 +34,11 @@ const slides = computed(() => sliderPage.value?.slides || []);
                 </NuxtLink :to="slide.cta?.to">
             </template>
         </UCarousel>
+        <UContainer class="pt-20 flex justify-center">
+            <UButton color="secondary" size="lg" to="/tienda">
+                Ver todos los productos
+            </UButton>
+        </UContainer>
     </section>
 </template>
 

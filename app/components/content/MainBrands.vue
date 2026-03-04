@@ -20,9 +20,7 @@ const brands = computed(() => mainBrandsData.value?.brands || [])
         </h2>
         <UPageGrid>
             <UPageGrid class="col-span-12 sm:col-span-6 md:col-span-7 grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5">
-                <figure v-for="brand in brands" :key="brand.name" class="flex items-center">
-                    <NuxtImg :src="brand.logo.src" :alt="brand.logo.alt" class="w-full h-auto object-cover" />
-                </figure>
+                <FadeImg v-for="(brand, index) in brands" :key="brand.name + '-fade'" :src="brand.logo.src" :alt="brand.logo.alt" :delay="index + 1" />
             </UPageGrid>
             <figure class="sm:-mt-10 col-span-12 sm:col-span-6 md:col-span-5">
                 <NuxtImg src="/img/camion.png" alt="Imagen de marcas" class="w-full h-auto object-cover sm:-mt-30" />

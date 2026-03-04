@@ -17,7 +17,6 @@ UPageGrid
 
 <script lang="ts" setup>
 import { fetchProducts } from "@/assets/ts/utilities";
-import type { ConfigEntry, ShippingConfig, ShippingPayload } from "~/types";
 const route = useRoute();
 const router = useRouter();
 
@@ -39,6 +38,16 @@ const { data: productData, refresh } = await useAsyncData(
 );
 
 const {data: page } = await useAsyncData("store-page", () => queryCollection("pages").path(route.path).first());
+
+const { data: shipmentConfig } = await useAsyncData(
+  "config-shipping",
+  () => queryCollection("configShipping").first(),
+);
+
+const shipment = computed(() => ({
+  limite: Number(shipmentConfig.value?.shipping?.limite ?? 0),
+  costo: Number(shipmentConfig.value?.shipping?.costo ?? 0),
+}));
 
 const products = computed(() => productData.value?.products || []);
 const pagination = computed(() => productData.value?.pagination || {});

@@ -18,7 +18,7 @@ withDefaults(defineProps<{
   <section>
     <UContainer
       class="grid grid-cols-12 gap-4 sm:gap-8 py-10"
-      :class="variant == 'with-image' ? 'max-w-lg' : ''"
+      :class="variant == 'with-image' ? 'max-w-4xl' : ''"
     >
       <article
         v-if="title"
@@ -35,7 +35,7 @@ withDefaults(defineProps<{
         <NuxtImg :src="imageSrc" :alt="imageAlt" class="mx-auto" />
       </figure>
       <div v-if="link" class="w-full flex justify-center col-span-12">
-        <UButton :to="link.href" color="secondary">
+        <UButton :to="link.href" size="lg" color="secondary">
           {{ link.label }}
         </UButton>
       </div>
