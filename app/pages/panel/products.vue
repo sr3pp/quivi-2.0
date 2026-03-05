@@ -8,12 +8,17 @@ div
         UButton(@click="searchProduct" class="ml-2.5 min-w-[unset]")
           SvgIcon(name="lupa-o" class="size-5")
       UButton(@click="newProduct" variant="secondary" label="Nuevo producto" class="mr-2.5")
-      label(
-        class="flex cursor-pointer rounded-[25px] bg-gradient-to-r from-[var(--color-quivi-light-red)] to-[var(--color-quivi-red)] p-2.5 text-[var(--color-white)]"
-      )
-        span Carga Massiva
+      div(class="flex items-center gap-2.5")
+        UFileUpload(
+          v-model="bulkFile"
+          variant="button"
+          label="Carga masiva"
+          color="secondary"
+          :disabled="uploading"
+          accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          @change="handleFileUpload"
+        )
         Spinner(v-if="uploading" class="ml-2.5 !h-5 !w-5 !bg-[var(--color-white)]")
-        UInput(type="file" name="dbFile" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="handleFileUpload" class="hidden")
       UButton(@click="deleteAll" variant="secondary" label="Eliminar todos" class="ml-2.5 mr-0")
 
 
@@ -231,35 +236,33 @@ const handlePage = async (page: number) => {
 };
 
 const uploading: Ref<boolean> = ref(false);
-const handleFileUpload = async (e: Event) => {
+const bulkFile = ref<File | null>(null);
+
+const handleFileUpload = async (
+  e: Event | { target?: { value?: File | File[] | null } },
+) => {
   //TODO: Move notificaitons to TOAST system
   /*   notifications.value.push({
     title: "Procesando archivo",
     description: `El archivo se esta procesando, por favor espere`,
     status: true,
   }); */
+  const payload = (e as { target?: { value?: File | File[] | null } })?.target
+    ?.value;
+  const file = Array.isArray(payload) ? payload[0] : payload;
+  if (!file) return;
+
   uploading.value = true;
-
-  const target = e.target as HTMLInputElement;
-  const files = target.files ? target.files : [];
-  const file = files[0];
-
-  if (file) {
+  try {
     const formData = new FormData();
     formData.append("dbFile", file);
     await $fetch("/api/product/masive", {
       method: "POST",
       body: formData,
     });
-
+    bulkFile.value = null;
+  } finally {
     uploading.value = false;
-
-    // TODO migrate to TOAST system
-    /* notifications.value.push({
-      title: "Listo!",
-      description: `El archivo se proceso correctamente`,
-      status: true,
-    }); */
   }
 };
 </script>
