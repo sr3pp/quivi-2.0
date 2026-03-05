@@ -46,7 +46,7 @@ nav(
             ) {{ totalCartProducts }}
           SvgIcon(class="size-10 text-[var(--color-quivi-light-red)] sm:w-10 sm:h-[50px]" name="carrito-o")
           span(class="hidden text-[12px] font-inria text-[var(--color-text-color)] sm:inline-block sm:text-base") Carrito
-      li(class="w-[30px] sm:w-[80px]")
+      li(class="w-auto min-w-[30px] sm:min-w-[80px]")
         ClientOnly
           button(
             class="cursor-pointer p-0 w-full bg-transparent border-0 text-[var(--color-text-color)] flex flex-col items-center rounded-lg overflow-hidden"
@@ -56,8 +56,26 @@ nav(
             div(class="w-full h-full flex items-center justify-center bg-gradient-to-r from-[var(--color-quivi-light-red)] to-[var(--color-quivi-red)]")
               SvgIcon(class="w-[30px] h-[40px] text-[var(--color-white)] sm:w-10 sm:h-[50px]" name="registrarsecaja-o")
             span(class="hidden w-full p-1 text-[var(--color-text-color)] sm:inline-block sm:text-base") Ingresar
-          UDropdownMenu(v-else :items="panelItems" class="w-full")
-            UButton(label="User" color="neutral" variant="outline" icon="i-lucide-menu")
+          div(v-else class="flex items-center")
+            UDropdownMenu(
+              :items="panelItems"
+              :content="{ align: 'end', sideOffset: 10 }"
+              :ui="{ content: 'min-w-64' }"
+            )
+              template(#content-top)
+                div(class="border-b border-default bg-muted/40 px-3 py-3")
+                  div(class="flex items-center gap-2")
+                    UAvatar(icon="i-lucide-user" size="xs" :alt="userName")
+                    div(class="min-w-0")
+                      p(class="truncate text-sm font-semibold text-highlighted") {{ userName }}
+                      p(class="truncate text-xs text-muted") {{ userEmail }}
+              UButton(
+                label="Cuenta"
+                color="neutral"
+                variant="outline"
+                icon="i-lucide-circle-user-round"
+                trailing-icon="i-lucide-chevron-down"
+              )
   ul(
     class="absolute top-full left-0 w-full z-10 max-h-0 overflow-hidden rounded-b-lg bg-gradient-to-r from-[var(--color-quivi-gray)] to-[var(--color-quivi-darkest-gray)] shadow-[0_10px_10px_rgba(51,47,46,0.3)] transition-[max-height] duration-300 sm:relative sm:z-2 sm:max-h-none sm:overflow-visible sm:w-auto sm:h-auto sm:bg-none sm:shadow-none sm:flex sm:items-center sm:ml-auto sm:mb-[-50px] sm:px-5"
     :class="menuActive ? 'max-h-screen' : ''"
@@ -77,16 +95,24 @@ import type { NavigationItemModel } from "./types";
 const panelItems: DropdownMenuItem[][] = [
   [
     {
-      label: "Panel",
-      icon: "i-lucide-dashboard",
+      label: "Ir al panel",
+      description: "Administrar tienda y contenido",
+      icon: "i-lucide-layout-dashboard",
       href: "/panel",
+    },
+    {
+      label: "Ver sitio",
+      description: "Volver a la pagina principal",
+      icon: "i-lucide-globe",
+      href: "/",
     },
   ],
   [
     {
-      label: "Logout",
+      label: "Cerrar sesion",
+      description: "Salir de tu cuenta actual",
       color: "error",
-      icon: "i-lucide-logout",
+      icon: "i-lucide-log-out",
       onClick: () => logout(),
     },
   ],
@@ -118,8 +144,15 @@ const menuActive = ref(false);
 
 const { toggleCart, totalCartProducts } = useCart();
 
-const { isLoggedIn, logout } = useAuth();
+const { isLoggedIn, logout, session } = useAuth();
 const contactPhone = computed(() => (props.contact as any)?.phone ?? "");
+const sessionUser = computed(() => session.value?.user);
+const userName = computed(() => {
+  const profile = sessionUser.value?.profile;
+  const fromProfile = `${profile?.name ?? ""} ${profile?.lastname ?? ""}`.trim();
+  return fromProfile || sessionUser.value?.name || "Usuario";
+});
+const userEmail = computed(() => sessionUser.value?.email || "sin-correo");
 
 watch(
   () => route.value.name,

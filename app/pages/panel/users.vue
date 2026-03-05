@@ -44,6 +44,8 @@ const userModalTitle = computed(() =>
   currentUser.value ? "Editar usuario" : "Crear usuario",
 );
 const getUserId = (user: User) => user.id || user._id || "";
+const buildUserName = (user: UserFormInput) =>
+  `${user.profile?.name ?? ""} ${user.profile?.lastname ?? ""}`.trim();
 
 const getAdminLevelLabel = (level: number | undefined): string => {
   if (level === undefined) return "Usuario";
@@ -117,7 +119,7 @@ const saveUser = async (_user: UserFormInput) => {
 
   try {
     const payload = {
-      name: `${_user.profile?.name ?? ""} ${_user.profile?.lastname ?? ""}`.trim(),
+      name: buildUserName(_user),
       email: _user.email,
       password: _user.password,
       admin_level: Number(_user.admin_level ?? 0),
@@ -161,6 +163,7 @@ const updateUser = async (_user: UserFormInput) => {
       method: "PUT",
       body: {
         id: currentUser.value ? getUserId(currentUser.value) : "",
+        name: buildUserName(_user),
         ...rest,
       },
     });

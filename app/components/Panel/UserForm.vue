@@ -21,7 +21,7 @@ UForm(:state="formState" :schema="schema" @submit="onSubmit" class="space-y-4")
   UFormField(label="Tel:" name="profile.phone" required)
     UInput.w-full(v-model="formState.profile.phone" type="tel")
 
-  UFormField(label="RFC" name="profile.rfc" required)
+  UFormField(label="RFC" name="profile.rfc")
     UInput.w-full(v-model="formState.profile.rfc")
 
   .flex.justify-end.gap-2
@@ -63,7 +63,7 @@ const baseSchema = z.object({
     name: z.string().min(1, "El nombre es requerido").trim(),
     lastname: z.string().min(1, "El apellido es requerido").trim(),
     phone: z.string().min(1, "El teléfono es requerido").trim(),
-    rfc: z.string().min(1, "El RFC es requerido").trim(),
+    rfc: z.string().trim().optional(),
   }),
 });
 

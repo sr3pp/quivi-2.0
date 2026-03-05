@@ -28,34 +28,84 @@ UDashboardGroup
         )
 
       template(#footer="{ collapsed }")
-        UButton(
-          icon="i-lucide-log-out"
-          :label="collapsed ? undefined : 'Logout'"
-          color="neutral"
-          variant="ghost"
-          class="w-full"
-          :block="!collapsed"
-          :square="collapsed"
-          @click="logout"
-        )
+        div(class="space-y-2")
+          div(
+            class="flex items-center gap-2 border-b border-default pb-2"
+            :class="collapsed ? 'justify-center' : ''"
+          )
+            UAvatar(
+              icon="i-lucide-user"
+              size="xs"
+              :alt="userName"
+            )
+            div(v-if="!collapsed" class="min-w-0")
+              p(class="truncate text-sm font-medium text-highlighted") {{ userName }}
+              p(class="truncate text-xs text-muted") {{ userEmail }}
+
+          UButton(
+            to="/"
+            icon="i-lucide-globe"
+            :label="collapsed ? undefined : 'Sitio web'"
+            color="neutral"
+            variant="ghost"
+            class="w-full"
+            :block="!collapsed"
+            :square="collapsed"
+          )
+
+          UButton(
+            icon="i-lucide-log-out"
+            :label="collapsed ? undefined : 'Logout'"
+            color="neutral"
+            variant="ghost"
+            class="w-full"
+            :block="!collapsed"
+            :square="collapsed"
+            @click="logout"
+          )
 
     UDashboardPanel
       template(#header)
         UDashboardNavbar(title="Panel")
           template(#right)
-            UButton(
-              to="/panel"
-              icon="i-lucide-house"
-              label="Inicio"
-              variant="ghost"
-              color="neutral"
-            )
+            div(class="flex items-center gap-3")
+              div(class="hidden text-right md:block")
+                p(class="max-w-[220px] truncate text-sm font-medium text-highlighted") {{ userName }}
+                p(class="max-w-[220px] truncate text-xs text-muted") {{ userEmail }}
+              UButton(
+                to="/"
+                icon="i-lucide-globe"
+                label="Sitio web"
+                variant="ghost"
+                color="neutral"
+              )
+              UButton(
+                to="/panel"
+                icon="i-lucide-house"
+                label="Inicio"
+                variant="ghost"
+                color="neutral"
+              )
       template(#body)
         NuxtPage
 </template>
 
 <script lang="ts" setup>
+import type { SessionPayload } from "~/types";
+
 const route = useRoute();
+const authHeaders = process.server ? useRequestHeaders(["cookie"]) : undefined;
+const { data: sessionPayload } = await useAsyncData<SessionPayload>(
+  "panel-session",
+  () =>
+    $fetch("/api/auth/get-session", {
+      headers: authHeaders,
+      credentials: "include",
+    }),
+  {
+    default: () => null,
+  },
+);
 
 const sections = [
   { label: "Inicio", to: "/panel", icon: "i-lucide-house" },
@@ -73,6 +123,14 @@ const navItems = computed(() =>
       (item.to !== "/panel" && route.path.startsWith(`${item.to}/`)),
   })),
 );
+
+const sessionUser = computed(() => sessionPayload.value?.user);
+const userName = computed(() => {
+  const profile = sessionUser.value?.profile;
+  const fromProfile = `${profile?.name ?? ""} ${profile?.lastname ?? ""}`.trim();
+  return fromProfile || sessionUser.value?.name || "Usuario";
+});
+const userEmail = computed(() => sessionUser.value?.email || "sin-correo");
 
 const logout = async () => {
   try {
