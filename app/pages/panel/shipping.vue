@@ -1,67 +1,68 @@
 <template lang="pug">
-  UContainer(:with-padding="true")
-    .header-title
-        SrText(text="Panel Envios" class="title text-center")
-        SrFormInput(v-model="search" @keyup.enter="searchShipping" placeholder="Buscar")
-        UButton(@click="searchShipping")
-          SvgIcon(name="lupa-o")
+  div
+    UContainer(:with-padding="true")
+      .header-title
+          p Panel Envios
+          UInput(v-model="search" @keyup.enter="searchShipping" placeholder="Buscar")
+          UButton(@click="searchShipping")
+            SvgIcon.size-10(name="lupa-o")
 
-    UTable(
-      v-if="shipping"
-      :columns="columns"
-      :data="shipping"
-    )
-
-    div(class="mt-5")
-      UPagination(
-        v-model="pageModel"
-        :items-per-page="itemsPerPage"
-        :total="pagination.total || 0"
-        @update:page="handlePage"
-        color="primary"
+      UTable(
+        v-if="shipping"
+        :columns="columns"
+        :data="shipping"
       )
 
-  SrModal(ref="shippDetailModal" class="shipp-modal")
-    template(#header)
-      .shipp-modal-header
-        p Envio
-    template(#body v-if="currentShipping")
-      UPageGrid
-        div(class="col-span-'")
-          p(v-if="currentShipping.sale.length") {{`orden no. ${currentShipping.sale.at(0)._id}`}}
-        div(class="col-span-2")
-          p.status-box 
-            span {{ currentShipping.status }}
-            UBadge(:color="currentShipping.status == 'delivered' ? 'primary' : currentShipping.status == 'shipping' ? 'warning' : 'error'" :label="`Envio: ${currentShipping.status}`")
-        template(v-if="currentShipping.tracking.number")
-          div(class="col-span-1 sm:col-span-2")
-            p Tracking
-          div(class="col-span-1/2 sm:col-span-1/4")
-            p {{currentShipping.tracking.store}}
-          div(class="col-span-1/2 sm:col-span-1/4")
-            p {{currentShipping.tracking.number}}
-          div(class="col-span-1/2 sm:col-span-1/4")
-            p {{currentShipping.tracking.url}}
-          div(class="col-span-1/2 sm:col-span-1/4")
-            div
-              UButton(@click="sendTrackingMail" variant="secondary" label="Enviar al cliente" :loading="sending")
-        template(v-else)
-          UFormField(class="col-span-1 sm:col-span-1/3" label="Numero de Rastreo")
-            UInput(v-model="newTracking.number")
-          UFormField(class="col-span-1 sm:col-span-1/3" label="Tienda")
-            UInput(v-model="newTracking.store")
-          UFormField(class="col-span-1 sm:col-span-1/3" label="Url")
-            UInput(v-model="newTracking.url")
-          div(class="col-span-1" class="flex-row justify-between" style="--flex-direction-sm: row")
-            UButton(variant="secondary" label="Guardar" @click="saveTracking()" :loading="fetching")
-            UButton(variant="secondary" label="Obtener Rastreo" @click="getTracking(currentShipping.sale.at(0).sae_order)" :loading="fetching")
+      div(class="mt-5")
+        UPagination(
+          v-model="pageModel"
+          :items-per-page="itemsPerPage"
+          :total="pagination.total || 0"
+          @update:page="handlePage"
+          color="primary"
+        )
 
-      br
-      p Destinatario
-      p {{`${currentShipping.name} ${currentShipping.last_name}`}}
-      p {{currentShipping.email}}
-      p {{currentShipping.phone}}
-      p(v-if="currentShipping.address") {{Object.values(currentShipping.address).filter(el => el).join(', ')}}
+    UModal(ref="shippDetailModal" class="shipp-modal" title="Detalle de Envio")
+      template(#header)
+        .shipp-modal-header
+          p Envio
+      template(#body v-if="currentShipping")
+        UPageGrid
+          div(class="col-span-'")
+            p(v-if="currentShipping.sale.length") {{`orden no. ${currentShipping.sale.at(0)._id}`}}
+          div(class="col-span-2")
+            p.status-box 
+              span {{ currentShipping.status }}
+              UBadge(:color="currentShipping.status == 'delivered' ? 'primary' : currentShipping.status == 'shipping' ? 'warning' : 'error'" :label="`Envio: ${currentShipping.status}`")
+          template(v-if="currentShipping.tracking.number")
+            div(class="col-span-1 sm:col-span-2")
+              p Tracking
+            div(class="col-span-1/2 sm:col-span-1/4")
+              p {{currentShipping.tracking.store}}
+            div(class="col-span-1/2 sm:col-span-1/4")
+              p {{currentShipping.tracking.number}}
+            div(class="col-span-1/2 sm:col-span-1/4")
+              p {{currentShipping.tracking.url}}
+            div(class="col-span-1/2 sm:col-span-1/4")
+              div
+                UButton(@click="sendTrackingMail" variant="secondary" label="Enviar al cliente" :loading="sending")
+          template(v-else)
+            UFormField(class="col-span-1 sm:col-span-1/3" label="Numero de Rastreo")
+              UInput(v-model="newTracking.number")
+            UFormField(class="col-span-1 sm:col-span-1/3" label="Tienda")
+              UInput(v-model="newTracking.store")
+            UFormField(class="col-span-1 sm:col-span-1/3" label="Url")
+              UInput(v-model="newTracking.url")
+            div(class="col-span-1" class="flex-row justify-between" style="--flex-direction-sm: row")
+              UButton(variant="secondary" label="Guardar" @click="saveTracking()" :loading="fetching")
+              UButton(variant="secondary" label="Obtener Rastreo" @click="getTracking(currentShipping.sale.at(0).sae_order)" :loading="fetching")
+
+        br
+        p Destinatario
+        p {{`${currentShipping.name} ${currentShipping.last_name}`}}
+        p {{currentShipping.email}}
+        p {{currentShipping.phone}}
+        p(v-if="currentShipping.address") {{Object.values(currentShipping.address).filter(el => el).join(', ')}}
 </template>
 
 <script lang="ts" setup>
@@ -91,7 +92,7 @@ const shipping = ref<PanelShippingDetail[]>(data.shipping);
 const pagination = ref<{ total?: number; perPage?: number }>(data.pagination);
 const pageModel = ref(Number(pageQuery.value));
 const itemsPerPage = computed(() => Number(pagination.value.perPage ?? 10));
-const shippDetailModal = ref<PanelSalesModal | null>(null);
+const shippDetailModal = ref<boolean>(false);
 const currentShipping = ref<PanelShippingDetail | null>(null);
 const fetching = ref(false);
 const sending = ref(false);
@@ -161,7 +162,7 @@ const shippDetail = (_shipp: PanelShippingRow) => {
   if (!shipp) return;
   currentShipping.value = shipp;
   currentShipping.value.tracking = shipp.tracking || {};
-  shippDetailModal.value?.toggle();
+  shippDetailModal.value = true;
 };
 
 const getTracking = async (orderSae: string) => {

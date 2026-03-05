@@ -42,6 +42,14 @@ UDashboardGroup
     UDashboardPanel
       template(#header)
         UDashboardNavbar(title="Panel")
+          template(#right)
+            UButton(
+              to="/panel"
+              icon="i-lucide-house"
+              label="Inicio"
+              variant="ghost"
+              color="neutral"
+            )
       template(#body)
         NuxtPage
 </template>
@@ -50,16 +58,11 @@ UDashboardGroup
 const route = useRoute();
 
 const sections = [
+  { label: "Inicio", to: "/panel", icon: "i-lucide-house" },
   { label: "Users", to: "/panel/users", icon: "i-lucide-users" },
   { label: "Productos", to: "/panel/products", icon: "i-lucide-package" },
   { label: "Ventas", to: "/panel/sales", icon: "i-lucide-receipt" },
-  { label: "Envios", to: "/panel/shipping", icon: "i-lucide-truck" },
-  {
-    label: "Configuracion",
-    to: "/panel/config",
-    icon: "i-lucide-settings",
-  },
-  { label: "Negocio", to: "/panel/business", icon: "i-lucide-briefcase" },
+  { label: "Envios", to: "/panel/shipping", icon: "i-lucide-truck" }
 ];
 
 const navItems = computed(() =>
