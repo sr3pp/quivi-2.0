@@ -1,55 +1,82 @@
 <template lang="pug">
-.panel
-  Sidebar(:items="items")
-  .content
-    NuxtPage
+UDashboardGroup
+  div.flex.flex-1
+    UDashboardSidebar(
+      resizable
+      collapsible
+      :min-size="14"
+      :default-size="18"
+      :max-size="24"
+      :ui="{ footer: 'border-t border-default' }"
+    )
+      template(#header="{ collapsed }")
+        NuxtLink(
+          to="/panel"
+          class="flex w-full items-center truncate font-semibold text-highlighted"
+          :class="collapsed ? 'justify-center' : 'justify-start'"
+        )
+          span(v-if="collapsed") Q
+          span(v-else) Quivi Panel
+        UDashboardSidebarCollapse
 
+      template(#default="{ collapsed }")
+        UNavigationMenu(
+          :collapsed="collapsed"
+          :items="navItems"
+          orientation="vertical"
+          class="w-full"
+        )
+
+      template(#footer="{ collapsed }")
+        UButton(
+          icon="i-lucide-log-out"
+          :label="collapsed ? undefined : 'Logout'"
+          color="neutral"
+          variant="ghost"
+          class="w-full"
+          :block="!collapsed"
+          :square="collapsed"
+          @click="logout"
+        )
+
+    UDashboardPanel
+      template(#header)
+        UDashboardNavbar(title="Panel")
+      template(#body)
+        NuxtPage
 </template>
 
 <script lang="ts" setup>
-const items = [
-  {
-    label: "Users",
-    icon: "ingresar-o",
-    url: "/panel/users",
-  },
-  {
-    label: "Productos",
-    icon: "product-f",
-    url: "/panel/products",
-  },
-  {
-    label: "Ventas",
-    icon: "sales-f",
-    url: "/panel/sales",
-  },
-  {
-    label: "Envios",
-    icon: "send-order-f",
-    url: "/panel/shipping",
-  },
+const route = useRoute();
+
+const sections = [
+  { label: "Users", to: "/panel/users", icon: "i-lucide-users" },
+  { label: "Productos", to: "/panel/products", icon: "i-lucide-package" },
+  { label: "Ventas", to: "/panel/sales", icon: "i-lucide-receipt" },
+  { label: "Envios", to: "/panel/shipping", icon: "i-lucide-truck" },
   {
     label: "Configuracion",
-    icon: "settings-f",
-    url: "/panel/config",
+    to: "/panel/config",
+    icon: "i-lucide-settings",
   },
-  {
-    label: "Negocio",
-    icon: "business-f",
-    url: "/panel/business",
-  },
+  { label: "Negocio", to: "/panel/business", icon: "i-lucide-briefcase" },
 ];
-</script>
 
-<style lang="scss" scoped>
-.panel {
-  display: flex;
-  height: 100vh;
+const navItems = computed(() =>
+  sections.map((item) => ({
+    ...item,
+    active:
+      route.path === item.to ||
+      (item.to !== "/panel" && route.path.startsWith(`${item.to}/`)),
+  })),
+);
 
-  .content {
-    height: 100%;
-    width: 100%;
-    overflow: auto;
+const logout = async () => {
+  try {
+    await useAuth().logout();
+    await navigateTo("/");
+  } catch (error) {
+    console.error(error);
   }
-}
-</style>
+};
+</script>
