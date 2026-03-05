@@ -28,20 +28,7 @@ UDashboardGroup
         )
 
       template(#footer="{ collapsed }")
-        div(class="space-y-2")
-          div(
-            class="flex items-center gap-2 border-b border-default pb-2"
-            :class="collapsed ? 'justify-center' : ''"
-          )
-            UAvatar(
-              icon="i-lucide-user"
-              size="xs"
-              :alt="userName"
-            )
-            div(v-if="!collapsed" class="min-w-0")
-              p(class="truncate text-sm font-medium text-highlighted") {{ userName }}
-              p(class="truncate text-xs text-muted") {{ userEmail }}
-
+        div.flex.gap-2.justify-between.w-full
           UButton(
             to="/"
             icon="i-lucide-globe"
@@ -95,13 +82,20 @@ import type { SessionPayload } from "~/types";
 
 const route = useRoute();
 const authHeaders = process.server ? useRequestHeaders(["cookie"]) : undefined;
+const fetchPanelSession = async (): Promise<SessionPayload> => {
+  try {
+    return await $fetch<SessionPayload>("/api/auth/get-session" as string, {
+      headers: authHeaders as Record<string, string> | undefined,
+      credentials: "include",
+    });
+  } catch {
+    return null;
+  }
+};
+
 const { data: sessionPayload } = await useAsyncData<SessionPayload>(
   "panel-session",
-  () =>
-    $fetch("/api/auth/get-session", {
-      headers: authHeaders,
-      credentials: "include",
-    }),
+  fetchPanelSession,
   {
     default: () => null,
   },

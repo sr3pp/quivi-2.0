@@ -78,11 +78,11 @@ const items = [
     description: "Consulta rastreos, actualiza guias y notifica al cliente.",
   },
   {
-    label: "Contenido",
-    to: "/panel/content",
-    icon: "i-lucide-file-pen-line",
-    description: "Edita contenido publico y configuracion del sitio.",
-  },
+    label: "Productos",
+    to: "/panel/products",
+    icon: "i-lucide-package",
+    description: "Agrega, edita o elimina productos de tu tienda.",
+  }
 ];
 
 const { public: conf } = useRuntimeConfig();
