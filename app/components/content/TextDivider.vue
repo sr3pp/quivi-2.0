@@ -1,6 +1,5 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
-  title?: string;
   text?: string;
   variant?: "default" | "with-image";
   imageSrc?: string;
@@ -21,11 +20,11 @@ withDefaults(defineProps<{
       :class="variant == 'with-image' ? 'max-w-4xl' : ''"
     >
       <article
-        v-if="title"
+        v-if="$slots.title"
         class="col-span-1 sm:col-span-2 md:col-span-3 sm:border-r border-gray-300 sm:pr-6"
       >
         <h2 class="text-center text-2xl sm:text-5xl md:text-7xl text-quivi-gray">
-          {{ title }}
+          <slot name="title" mdc-unwrap="p"></slot>
         </h2>
       </article>
       <article class="col-span-1 sm:col-span-2 md:col-span-9 flex flex-col text-quivi-dark-gray sm:text-lg md:text-xl gap-4 justify-center">
